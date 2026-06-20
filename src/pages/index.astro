@@ -4,36 +4,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import PostCard from '../components/PostCard.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import SectionHeading from '../components/SectionHeading.astro';
-import Tag from '../components/Tag.astro';
 
 const posts = (await getCollection('blog', ({ data }) => !data.draft))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
   .slice(0, 5);
 
 const focus = ['RAG 系统与评估', 'AI Agent 工作流', '后端工程实践', 'VPS 与网络配置'];
-const stack = ['Java', 'Python', 'Astro', 'FastAPI', 'PostgreSQL', 'Docker', 'GitHub', 'Linear', 'Codex'];
-const garden = [
-  {
-    label: 'Essays',
-    title: '长文',
-    description: '系统性整理一个工程问题，保留背景、权衡、实现和复盘。',
-  },
-  {
-    label: 'Notes',
-    title: '短笔记',
-    description: '记录调试过程、工具用法、配置片段和临时观察。',
-  },
-  {
-    label: 'Garden',
-    title: '知识花园',
-    description: '沉淀长期主题：RAG、Agent、后端、DevTools、网络基础设施。',
-  },
-  {
-    label: 'Patterns',
-    title: '工程模式',
-    description: '抽取可复用的架构决策、工作流和问题排查框架。',
-  },
-];
 const projects = [
   {
     name: '通用 RAG 系统笔记',
@@ -83,20 +59,7 @@ const projects = [
   </section>
 
   <section class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-    <SectionHeading eyebrow="研究地图" title="从文章进入长期知识库。" description="参考数字花园的信息组织方式：不是所有内容都必须成为完整长文，短笔记、模式和阅读记录也应该有位置。" />
-    <div class="mt-8 grid gap-px border border-ink bg-ink md:grid-cols-4">
-      {garden.map((item) => (
-        <article class="bg-paper p-5 transition duration-150 hover:bg-soft">
-          <p class="font-mono text-xs uppercase tracking-[0.12em] text-muted">{item.label}</p>
-          <h3 class="mt-5 font-serif text-3xl font-bold leading-none">{item.title}</h3>
-          <p class="mt-4 text-sm leading-6 text-muted">{item.description}</p>
-        </article>
-      ))}
-    </div>
-  </section>
-
-  <section class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-    <SectionHeading eyebrow="精选文章" title="先看最近写了什么。" description="文章列表遵循极简技术索引：日期、标题、摘要和标签直接构成内容判断，不做普通卡片墙。" />
+    <SectionHeading eyebrow="文章" title="最近写了什么。" />
     <div class="mt-8">
       {posts.map((post) => (
         <PostCard
@@ -112,16 +75,9 @@ const projects = [
   </section>
 
   <section class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-    <SectionHeading eyebrow="项目笔记" title="文章背后的工程上下文。" description="项目区保留工程感，但不抢文章的位置。它用于说明长期关注的问题域。" />
+    <SectionHeading eyebrow="项目" title="文章背后的工程上下文。" />
     <div class="mt-8 grid gap-4 md:grid-cols-2">
       {projects.map((project) => <ProjectCard {...project} />)}
-    </div>
-  </section>
-
-  <section class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-    <SectionHeading eyebrow="技术标签" title="这个博客常出现的工具和主题。" />
-    <div class="mt-8 flex flex-wrap gap-2">
-      {stack.map((item) => <Tag label={item} />)}
     </div>
   </section>
 </BaseLayout>

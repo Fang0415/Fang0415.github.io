@@ -1,14 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import SectionHeading from '../components/SectionHeading.astro';
 import Tag from '../components/Tag.astro';
 
 const directions = ['RAG 系统', 'AI Agent', '后端设计', '开发工具链', 'VPS 网络'];
-const questions = [
-  'RAG 系统如何从 demo 走向可评估、可排查的工程系统？',
-  'Agent 工作流的边界应该在哪里，哪些部分应该回到确定性软件？',
-  '一个项目结束后，哪些工程判断值得写下来并复用？',
-];
 ---
 
 <BaseLayout title="关于" description="Fang0415 的个人技术档案。">
@@ -22,28 +16,15 @@ const questions = [
     </div>
 
     <div class="mt-12 grid gap-10 lg:grid-cols-[0.68fr_0.32fr]">
-      <div class="space-y-12">
-        <section>
-          <SectionHeading eyebrow="技术方向" title="长期关注的问题域。" />
-          <div class="mt-6 flex flex-wrap gap-2">
-            {directions.map((item) => <Tag label={item} />)}
-          </div>
-        </section>
-        <section>
-          <SectionHeading eyebrow="当前问题" title="最近反复思考的事。" />
-          <ul class="mt-6 divide-y divide-hairline border-t border-hairline">
-            {questions.map((item) => (
-              <li class="py-5 text-xl font-semibold leading-tight">{item}</li>
-            ))}
-          </ul>
-        </section>
-        <section>
-          <SectionHeading eyebrow="项目偏好" title="反馈清楚的小系统。" />
-          <p class="mt-6 max-w-3xl text-base leading-8 text-muted">
-            我更偏好实现细节真正重要的项目：数据流、可观测性、部署、失败模式和维护成本。对我来说，有价值的不只是最后跑起来的应用，也包括下次重写时仍然成立的工程判断。
-          </p>
-        </section>
-      </div>
+      <section>
+        <p class="font-mono text-xs uppercase tracking-[0.12em] text-muted">技术方向</p>
+        <div class="mt-5 flex flex-wrap gap-2">
+          {directions.map((item) => <Tag label={item} />)}
+        </div>
+        <p class="mt-8 max-w-3xl text-base leading-8 text-muted">
+          我关注实现细节真正重要的项目：数据流、可观测性、部署、失败模式和维护成本。这里记录的不只是最后跑起来的应用，也包括下次重写时仍然成立的工程判断。
+        </p>
+      </section>
 
       <aside class="h-fit border border-ink bg-soft p-6">
         <p class="font-mono text-xs uppercase tracking-[0.12em] text-muted">联系</p>
