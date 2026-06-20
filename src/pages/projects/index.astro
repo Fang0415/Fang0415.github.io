@@ -28,6 +28,8 @@ const projects = [
     status: '资料归档',
   },
 ];
+
+const archiveLanes = ['系统设计', '评估链路', '工具工作流', '部署运维'];
 ---
 
 <BaseLayout title="项目" description="系统、Agent、工具链与基础设施项目记录。">
@@ -38,6 +40,15 @@ const projects = [
       <p class="mt-6 max-w-2xl text-lg leading-8 text-muted">
         项目页展示工程能力：问题定义、技术栈、状态、链接和后续复盘入口。它不是作品墙，而是可追溯的工程档案。
       </p>
+    </div>
+
+    <div class="mt-8 grid gap-px border border-hairline bg-hairline md:grid-cols-4">
+      {archiveLanes.map((lane) => (
+        <div class="bg-paper p-4">
+          <p class="font-mono text-xs uppercase tracking-[0.12em] text-muted">Archive lane</p>
+          <p class="mt-2 text-lg font-semibold">{lane}</p>
+        </div>
+      ))}
     </div>
 
     <div class="mt-10 grid gap-4 md:grid-cols-2">

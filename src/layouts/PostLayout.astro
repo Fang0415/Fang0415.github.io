@@ -36,6 +36,13 @@ const date = post.data.pubDate.toLocaleDateString('zh-CN', {
     </header>
 
     <div class="mx-auto mt-12 max-w-[780px]">
+      <aside class="mb-10 border-y border-hairline py-4 text-sm leading-6 text-muted">
+        <div class="grid gap-3 sm:grid-cols-3">
+          <p><span class="font-mono text-xs uppercase tracking-[0.12em]">作者</span><br />Fang0415</p>
+          <p><span class="font-mono text-xs uppercase tracking-[0.12em]">栏目</span><br />技术文章</p>
+          <p><span class="font-mono text-xs uppercase tracking-[0.12em]">主题</span><br />{post.data.tags.join(' / ')}</p>
+        </div>
+      </aside>
       <div class="article-content">
         <slot />
       </div>

@@ -12,6 +12,28 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft))
 
 const focus = ['RAG 系统与评估', 'AI Agent 工作流', '后端工程实践', 'VPS 与网络配置'];
 const stack = ['Java', 'Python', 'Astro', 'FastAPI', 'PostgreSQL', 'Docker', 'GitHub', 'Linear', 'Codex'];
+const garden = [
+  {
+    label: 'Essays',
+    title: '长文',
+    description: '系统性整理一个工程问题，保留背景、权衡、实现和复盘。',
+  },
+  {
+    label: 'Notes',
+    title: '短笔记',
+    description: '记录调试过程、工具用法、配置片段和临时观察。',
+  },
+  {
+    label: 'Garden',
+    title: '知识花园',
+    description: '沉淀长期主题：RAG、Agent、后端、DevTools、网络基础设施。',
+  },
+  {
+    label: 'Patterns',
+    title: '工程模式',
+    description: '抽取可复用的架构决策、工作流和问题排查框架。',
+  },
+];
 const projects = [
   {
     name: '通用 RAG 系统笔记',
@@ -35,10 +57,10 @@ const projects = [
         Fang0415 / 技术博客 / 长期笔记
       </p>
       <h1 class="mt-8 max-w-5xl font-serif text-6xl font-bold leading-[0.95] md:text-8xl">
-        写 RAG、Agent、后端和工具链。
+        RAG、Agent、后端和工具链的长期技术档案。
       </h1>
       <p class="mt-7 max-w-2xl text-lg leading-8 text-muted">
-        我把学习、开发、部署和踩坑过程整理成中文文章。这里不是作品集首页，而是一个持续更新的技术博客：文章优先，作者在场，项目作为上下文。
+        我把学习、开发、部署和踩坑过程整理成中文文章。这里同时是个人技术杂志、工程项目档案和数字花园入口：文章优先，作者在场，项目作为上下文。
       </p>
       <div class="mt-8 flex flex-wrap gap-3">
         <a href="/blog/" class="border border-ink bg-ink px-5 py-3 text-sm font-bold text-white no-underline hover:bg-white hover:text-ink">阅读文章</a>
@@ -61,7 +83,20 @@ const projects = [
   </section>
 
   <section class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-    <SectionHeading eyebrow="最新文章" title="先看最近写了什么。" description="首页主内容放文章，而不是营销式介绍。时间、标题、摘要和标签保持清晰，方便快速判断是否值得打开。" />
+    <SectionHeading eyebrow="研究地图" title="从文章进入长期知识库。" description="参考数字花园的信息组织方式：不是所有内容都必须成为完整长文，短笔记、模式和阅读记录也应该有位置。" />
+    <div class="mt-8 grid gap-px border border-ink bg-ink md:grid-cols-4">
+      {garden.map((item) => (
+        <article class="bg-paper p-5 transition duration-150 hover:bg-soft">
+          <p class="font-mono text-xs uppercase tracking-[0.12em] text-muted">{item.label}</p>
+          <h3 class="mt-5 font-serif text-3xl font-bold leading-none">{item.title}</h3>
+          <p class="mt-4 text-sm leading-6 text-muted">{item.description}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+    <SectionHeading eyebrow="精选文章" title="先看最近写了什么。" description="文章列表遵循极简技术索引：日期、标题、摘要和标签直接构成内容判断，不做普通卡片墙。" />
     <div class="mt-8">
       {posts.map((post) => (
         <PostCard
