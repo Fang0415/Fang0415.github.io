@@ -1,0 +1,171 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --ink: #050505;
+  --muted: #6f6f6f;
+  --hairline: #e4e4e4;
+  --paper: #ffffff;
+  --soft: #f6f6f3;
+  --accent: #5e6ad2;
+  --panel: #101112;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+a {
+  color: inherit;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+
+a:hover {
+  color: var(--accent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--hairline);
+  margin: 2.5rem 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+th,
+td {
+  border-bottom: 1px solid var(--hairline);
+  padding: 0.8rem 0.65rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.article-content {
+  color: #171717;
+  font-size: 1.05rem;
+  line-height: 1.78;
+}
+
+.article-content > * + * {
+  margin-top: 1.25rem;
+}
+
+.article-content h2,
+.article-content h3,
+.article-content h4 {
+  color: var(--ink);
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 700;
+  line-height: 1.12;
+  margin-top: 2.6rem;
+}
+
+.article-content h2 {
+  font-size: clamp(2rem, 5vw, 3rem);
+}
+
+.article-content h3 {
+  font-size: clamp(1.45rem, 3vw, 2rem);
+}
+
+.article-content h4 {
+  font-size: 1.2rem;
+  font-family: inherit;
+}
+
+.article-content p {
+  margin-bottom: 0;
+}
+
+.article-content a {
+  color: #057dbc;
+  font-weight: 650;
+}
+
+.article-content ul,
+.article-content ol {
+  padding-left: 1.35rem;
+}
+
+.article-content li + li {
+  margin-top: 0.45rem;
+}
+
+.article-content blockquote {
+  border-left: 4px solid var(--ink);
+  margin: 2rem 0;
+  padding: 0.3rem 0 0.3rem 1.2rem;
+  color: #333333;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.2rem;
+  line-height: 1.55;
+}
+
+.article-content :not(pre) > code {
+  border: 1px solid var(--hairline);
+  background: var(--soft);
+  padding: 0.14rem 0.34rem;
+  border-radius: 4px;
+  color: #171717;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.88em;
+}
+
+.article-content pre {
+  overflow-x: auto;
+  border: 1px solid #2b2d33;
+  border-radius: 8px;
+  background: var(--panel);
+  color: #f7f8f8;
+  padding: 1.1rem 1.2rem;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+}
+
+.article-content pre code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.9rem;
+  line-height: 1.7;
+}

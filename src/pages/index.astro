@@ -1,0 +1,85 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostCard from '../components/PostCard.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import Tag from '../components/Tag.astro';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3);
+
+const focus = ['RAG evaluation', 'Agent workflows', 'Backend reliability', 'VPS networking'];
+const stack = ['Java', 'Python', 'Astro', 'FastAPI', 'PostgreSQL', 'Docker', 'GitHub', 'Linear', 'Codex'];
+const projects = [
+  {
+    name: 'General RAG System',
+    description: 'A retrieval and evaluation notebook for chunking, reranking, prompt contracts, and answer inspection.',
+    stack: ['RAG', 'Python', 'Eval'],
+    status: 'Active research',
+  },
+  {
+    name: 'AI Agent Workflow',
+    description: 'Task orchestration notes for coding agents, tool boundaries, review loops, and production checklists.',
+    stack: ['Agents', 'Codex', 'Linear'],
+    status: 'Working draft',
+  },
+];
+---
+
+<BaseLayout title="Fang Systems" description="记录 RAG、AI Agent、后端工程、开发工具链与网络基础设施的长期笔记。">
+  <section class="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:px-6 md:grid-cols-[1fr_360px] md:py-16 lg:px-8">
+    <div>
+      <p class="border-y border-ink py-3 font-mono text-xs uppercase tracking-[0.16em] text-muted">
+        Personal technical magazine / Engineering archive
+      </p>
+      <h1 class="mt-8 max-w-5xl font-serif text-6xl font-bold leading-[0.88] md:text-8xl">
+        Writing systems, agents, and infrastructure notes.
+      </h1>
+      <p class="mt-7 max-w-2xl text-lg leading-8 text-muted">
+        记录 RAG、AI Agent、后端工程、开发工具链与网络基础设施的长期笔记。
+      </p>
+    </div>
+    <aside class="border border-ink bg-soft p-5">
+      <p class="font-mono text-xs uppercase tracking-[0.12em] text-muted">Current focus</p>
+      <ul class="mt-6 space-y-4">
+        {focus.map((item) => (
+          <li class="border-t border-hairline pt-4 text-lg font-semibold leading-tight">{item}</li>
+        ))}
+      </ul>
+      <p class="mt-8 text-sm leading-6 text-muted">
+        The archive is intentionally opinionated: practical implementation notes, project retrospectives, and toolchain decisions.
+      </p>
+    </aside>
+  </section>
+
+  <section class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+    <SectionHeading eyebrow="Recent writing" title="Field notes, sorted by recency." description="文章列表保持杂志目录式密度，方便快速判断主题、时间和技术栈。" />
+    <div class="mt-8">
+      {posts.map((post) => (
+        <PostCard
+          title={post.data.title}
+          description={post.data.description}
+          pubDate={post.data.pubDate}
+          tags={post.data.tags}
+          href={`/blog/${post.slug}/`}
+        />
+      ))}
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+    <SectionHeading eyebrow="Selected projects" title="Engineering workbench." description="这里用更接近工程控制台的深色卡片承载项目状态、栈和链接。" />
+    <div class="mt-8 grid gap-4 md:grid-cols-2">
+      {projects.map((project) => <ProjectCard {...project} />)}
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+    <SectionHeading eyebrow="Technical stack" title="Tools I keep close." />
+    <div class="mt-8 flex flex-wrap gap-2">
+      {stack.map((item) => <Tag label={item} />)}
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,32 @@
+---
+import Tag from './Tag.astro';
+
+interface Props {
+  name: string;
+  description: string;
+  stack: string[];
+  status: string;
+  href?: string;
+}
+
+const { name, description, stack, status, href = '#' } = Astro.props;
+---
+
+<article class="group flex min-h-[260px] flex-col justify-between rounded-lg border border-white/10 bg-panel p-6 text-white shadow-lift transition duration-150 hover:-translate-y-0.5 hover:border-linear/60">
+  <div>
+    <div class="flex items-center justify-between gap-4">
+      <p class="font-mono text-xs uppercase tracking-[0.12em] text-white/45">{status}</p>
+      <span class="h-2 w-2 rounded-full bg-linear"></span>
+    </div>
+    <h3 class="mt-8 text-2xl font-semibold tracking-normal">{name}</h3>
+    <p class="mt-3 text-sm leading-6 text-white/62">{description}</p>
+  </div>
+  <div>
+    <div class="mt-8 flex flex-wrap gap-2">
+      {stack.map((item) => <Tag label={item} dark />)}
+    </div>
+    <a href={href} class="mt-6 inline-flex font-mono text-xs uppercase tracking-[0.12em] text-white/70 no-underline group-hover:text-white">
+      View archive
+    </a>
+  </div>
+</article>

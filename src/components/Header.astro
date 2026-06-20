@@ -1,0 +1,21 @@
+---
+const links = [
+  { href: '/', label: 'Index' },
+  { href: '/blog/', label: 'Blog' },
+  { href: '/projects/', label: 'Projects' },
+  { href: '/about/', label: 'About' },
+];
+---
+
+<header class="border-b border-ink bg-paper">
+  <nav class="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
+    <a href="/" class="font-mono text-sm font-bold uppercase tracking-[0.16em] no-underline">
+      Fang Systems
+    </a>
+    <div class="flex flex-wrap gap-x-5 gap-y-2 font-mono text-xs uppercase tracking-[0.12em] text-muted">
+      {links.map((link) => (
+        <a class="no-underline hover:text-ink" href={link.href}>{link.label}</a>
+      ))}
+    </div>
+  </nav>
+</header>

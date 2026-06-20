@@ -1,0 +1,47 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+
+const projects = [
+  {
+    name: 'General RAG System',
+    description: 'A practical system notebook covering document ingestion, chunking strategy, reranking, prompt contracts, and evaluation traces.',
+    stack: ['Python', 'RAG', 'Vector DB'],
+    status: 'Active research',
+  },
+  {
+    name: 'AI Agent Workflow',
+    description: 'A workflow archive for coding agents, issue decomposition, tool permissions, review loops, and repeatable delivery habits.',
+    stack: ['Agents', 'Codex', 'Linear'],
+    status: 'Working draft',
+  },
+  {
+    name: 'Developer Blog',
+    description: 'This Astro-based technical magazine for long-form notes, project records, and GitHub Pages publishing.',
+    stack: ['Astro', 'Tailwind', 'MDX'],
+    status: 'Live system',
+  },
+  {
+    name: 'VPS Infrastructure Notes',
+    description: 'Operational notes for server hardening, reverse proxy setup, DNS, TLS, networking checks, and incident retrospectives.',
+    stack: ['Linux', 'Nginx', 'Network'],
+    status: 'Reference archive',
+  },
+];
+---
+
+<BaseLayout title="Projects" description="Engineering project archive for systems, agents, tools, and infrastructure.">
+  <section class="mx-auto max-w-7xl px-4 py-10 sm:px-6 md:py-16 lg:px-8">
+    <div class="border-y border-ink py-8">
+      <p class="font-mono text-xs uppercase tracking-[0.16em] text-muted">Project archive</p>
+      <h1 class="mt-5 max-w-4xl font-serif text-6xl font-bold leading-[0.9] md:text-8xl">Systems with implementation memory.</h1>
+      <p class="mt-6 max-w-2xl text-lg leading-8 text-muted">
+        项目页展示工程能力：问题定义、技术栈、状态、链接和后续复盘入口。它不是作品墙，而是可追溯的工程档案。
+      </p>
+    </div>
+
+    <div class="mt-10 grid gap-4 md:grid-cols-2">
+      {projects.map((project) => <ProjectCard {...project} />)}
+    </div>
+  </section>
+</BaseLayout>

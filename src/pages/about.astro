@@ -1,0 +1,64 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import Tag from '../components/Tag.astro';
+
+const directions = ['RAG systems', 'AI agent operations', 'Backend design', 'DevTools', 'VPS networking'];
+const questions = [
+  'How should retrieval systems be evaluated beyond demo success?',
+  'Where should agent workflows stop and deterministic software begin?',
+  'What engineering notes are worth preserving after a project ships?',
+];
+---
+
+<BaseLayout title="About" description="Personal technical archive and engineering profile.">
+  <section class="mx-auto max-w-7xl px-4 py-10 sm:px-6 md:py-16 lg:px-8">
+    <div class="border-y border-ink py-8">
+      <p class="font-mono text-xs uppercase tracking-[0.16em] text-muted">Technical profile</p>
+      <h1 class="mt-5 max-w-4xl font-serif text-6xl font-bold leading-[0.9] md:text-8xl">A working archive for engineering judgment.</h1>
+      <p class="mt-6 max-w-2xl text-lg leading-8 text-muted">
+        这里不是简历页。它更接近一份持续更新的技术档案：记录系统设计、工具链选择、失败案例和可复用的工程判断。
+      </p>
+    </div>
+
+    <div class="mt-12 grid gap-10 lg:grid-cols-[0.68fr_0.32fr]">
+      <div class="space-y-12">
+        <section>
+          <SectionHeading eyebrow="Direction" title="Technical directions." />
+          <div class="mt-6 flex flex-wrap gap-2">
+            {directions.map((item) => <Tag label={item} />)}
+          </div>
+        </section>
+        <section>
+          <SectionHeading eyebrow="Questions" title="Current problems." />
+          <ul class="mt-6 divide-y divide-hairline border-t border-hairline">
+            {questions.map((item) => (
+              <li class="py-5 text-xl font-semibold leading-tight">{item}</li>
+            ))}
+          </ul>
+        </section>
+        <section>
+          <SectionHeading eyebrow="Project preference" title="Small systems with sharp feedback." />
+          <p class="mt-6 max-w-3xl text-base leading-8 text-muted">
+            I prefer projects where implementation details matter: data flow, observability, deployment, failure modes, and maintenance cost.
+            The useful output is not only the final application, but the decisions that can survive the next rewrite.
+          </p>
+        </section>
+      </div>
+
+      <aside class="h-fit border border-ink bg-soft p-6">
+        <p class="font-mono text-xs uppercase tracking-[0.12em] text-muted">Contact</p>
+        <dl class="mt-6 space-y-5 text-sm">
+          <div>
+            <dt class="font-mono text-xs uppercase tracking-[0.12em] text-muted">Email</dt>
+            <dd class="mt-1">your-email@example.com</dd>
+          </div>
+          <div>
+            <dt class="font-mono text-xs uppercase tracking-[0.12em] text-muted">GitHub</dt>
+            <dd class="mt-1"><a href="https://github.com/Fang0415">github.com/Fang0415</a></dd>
+          </div>
+        </dl>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>
