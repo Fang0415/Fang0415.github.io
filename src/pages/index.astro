@@ -8,54 +8,60 @@ import Tag from '../components/Tag.astro';
 
 const posts = (await getCollection('blog', ({ data }) => !data.draft))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
-  .slice(0, 3);
+  .slice(0, 5);
 
-const focus = ['RAG evaluation', 'Agent workflows', 'Backend reliability', 'VPS networking'];
+const focus = ['RAG 系统与评估', 'AI Agent 工作流', '后端工程实践', 'VPS 与网络配置'];
 const stack = ['Java', 'Python', 'Astro', 'FastAPI', 'PostgreSQL', 'Docker', 'GitHub', 'Linear', 'Codex'];
 const projects = [
   {
-    name: 'General RAG System',
-    description: 'A retrieval and evaluation notebook for chunking, reranking, prompt contracts, and answer inspection.',
+    name: '通用 RAG 系统笔记',
+    description: '记录文档切分、召回、重排、提示词契约与答案评估的实践过程。',
     stack: ['RAG', 'Python', 'Eval'],
-    status: 'Active research',
+    status: '持续记录',
   },
   {
-    name: 'AI Agent Workflow',
-    description: 'Task orchestration notes for coding agents, tool boundaries, review loops, and production checklists.',
+    name: 'AI Agent 工作流',
+    description: '整理 coding agent 的任务拆解、工具边界、审查循环和交付清单。',
     stack: ['Agents', 'Codex', 'Linear'],
-    status: 'Working draft',
+    status: '写作中',
   },
 ];
 ---
 
-<BaseLayout title="Fang Systems" description="记录 RAG、AI Agent、后端工程、开发工具链与网络基础设施的长期笔记。">
-  <section class="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:px-6 md:grid-cols-[1fr_360px] md:py-16 lg:px-8">
+<BaseLayout title="Fang 的技术博客" description="记录 RAG、AI Agent、后端工程、开发工具链与网络基础设施的中文技术博客。">
+  <section class="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:px-6 md:grid-cols-[1fr_380px] md:py-16 lg:px-8">
     <div>
       <p class="border-y border-ink py-3 font-mono text-xs uppercase tracking-[0.16em] text-muted">
-        Personal technical magazine / Engineering archive
+        Fang0415 / 技术博客 / 长期笔记
       </p>
-      <h1 class="mt-8 max-w-5xl font-serif text-6xl font-bold leading-[0.88] md:text-8xl">
-        Writing systems, agents, and infrastructure notes.
+      <h1 class="mt-8 max-w-5xl font-serif text-6xl font-bold leading-[0.95] md:text-8xl">
+        写 RAG、Agent、后端和工具链。
       </h1>
       <p class="mt-7 max-w-2xl text-lg leading-8 text-muted">
-        记录 RAG、AI Agent、后端工程、开发工具链与网络基础设施的长期笔记。
+        我把学习、开发、部署和踩坑过程整理成中文文章。这里不是作品集首页，而是一个持续更新的技术博客：文章优先，作者在场，项目作为上下文。
       </p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href="/blog/" class="border border-ink bg-ink px-5 py-3 text-sm font-bold text-white no-underline hover:bg-white hover:text-ink">阅读文章</a>
+        <a href="/about/" class="border border-ink px-5 py-3 text-sm font-bold no-underline hover:bg-soft hover:text-ink">了解作者</a>
+      </div>
     </div>
     <aside class="border border-ink bg-soft p-5">
-      <p class="font-mono text-xs uppercase tracking-[0.12em] text-muted">Current focus</p>
+      <p class="font-mono text-xs uppercase tracking-[0.12em] text-muted">作者档案</p>
+      <h2 class="mt-4 font-serif text-4xl font-bold leading-none">Fang0415</h2>
+      <p class="mt-4 text-sm leading-6 text-muted">
+        关注 AI 应用工程、后端系统、开发工具链和基础设施配置。写作目标是把一次性的工程经验沉淀成下次能复用的判断。
+      </p>
+      <p class="mt-8 font-mono text-xs uppercase tracking-[0.12em] text-muted">最近关注</p>
       <ul class="mt-6 space-y-4">
         {focus.map((item) => (
           <li class="border-t border-hairline pt-4 text-lg font-semibold leading-tight">{item}</li>
         ))}
       </ul>
-      <p class="mt-8 text-sm leading-6 text-muted">
-        The archive is intentionally opinionated: practical implementation notes, project retrospectives, and toolchain decisions.
-      </p>
     </aside>
   </section>
 
   <section class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-    <SectionHeading eyebrow="Recent writing" title="Field notes, sorted by recency." description="文章列表保持杂志目录式密度，方便快速判断主题、时间和技术栈。" />
+    <SectionHeading eyebrow="最新文章" title="先看最近写了什么。" description="首页主内容放文章，而不是营销式介绍。时间、标题、摘要和标签保持清晰，方便快速判断是否值得打开。" />
     <div class="mt-8">
       {posts.map((post) => (
         <PostCard
@@ -67,17 +73,18 @@ const projects = [
         />
       ))}
     </div>
+    <a href="/blog/" class="mt-6 inline-flex border border-ink px-4 py-2 text-sm font-bold no-underline hover:bg-ink hover:text-white">查看全部文章</a>
   </section>
 
   <section class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-    <SectionHeading eyebrow="Selected projects" title="Engineering workbench." description="这里用更接近工程控制台的深色卡片承载项目状态、栈和链接。" />
+    <SectionHeading eyebrow="项目笔记" title="文章背后的工程上下文。" description="项目区保留工程感，但不抢文章的位置。它用于说明长期关注的问题域。" />
     <div class="mt-8 grid gap-4 md:grid-cols-2">
       {projects.map((project) => <ProjectCard {...project} />)}
     </div>
   </section>
 
   <section class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-    <SectionHeading eyebrow="Technical stack" title="Tools I keep close." />
+    <SectionHeading eyebrow="技术标签" title="这个博客常出现的工具和主题。" />
     <div class="mt-8 flex flex-wrap gap-2">
       {stack.map((item) => <Tag label={item} />)}
     </div>

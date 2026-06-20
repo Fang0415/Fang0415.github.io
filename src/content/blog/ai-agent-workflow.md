@@ -1,23 +1,23 @@
 ---
-title: "AI Agent Workflow: Boundaries Make The System Useful"
-description: "A practical note on defining tool boundaries, review points, and stop conditions for coding agents."
+title: "AI Agent 工作流：边界比能力更重要"
+description: "关于 coding agent 工作流的一点实践：工具边界、审查点和停止条件决定了系统是否可靠。"
 pubDate: 2026-06-18
-tags: ["AI Agents", "Codex", "Workflow"]
+tags: ["AI Agent", "Codex", "工作流"]
 ---
 
-An agent workflow becomes useful when it has clear boundaries. The important question is not whether an agent can call tools. The question is where the workflow expects deterministic checks, human review, and explicit stop conditions.
+Agent 工作流真正有用，往往不是因为它能调用多少工具，而是因为边界足够清楚。需要提前定义：哪些事情可以让 agent 自主推进，哪些地方必须依赖确定性检查，哪些动作需要人工确认。
 
-For coding work, a reliable loop usually has these phases:
+对 coding agent 来说，一个相对可靠的循环通常是：
 
-1. Read the repository before proposing changes.
-2. Keep edits scoped to the user request.
-3. Run the smallest meaningful verification.
-4. Report what changed and what could not be verified.
+1. 先读仓库，再提出修改。
+2. 修改范围贴近用户请求。
+3. 运行最小但有意义的验证。
+4. 说明改了什么，以及哪些地方没有验证。
 
-## Stop conditions
+## 停止条件
 
-Agents should stop when the next action requires unavailable product context, credentials, or a destructive operation that the user did not approve.
+当下一步需要缺失的产品上下文、凭证，或者未经确认的破坏性操作时，agent 应该停下来。这不是能力不足，而是边界清晰。
 
-> Autonomy is useful only when the system can explain where it is taking responsibility.
+> 自主性只有在责任边界可解释时才有工程价值。
 
-The practical value comes from reducing coordination cost while preserving reviewable engineering decisions.
+它的实际价值不在于替代所有开发动作，而是在降低协作成本的同时，保留可审查的工程决策。

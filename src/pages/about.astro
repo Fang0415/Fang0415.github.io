@@ -3,19 +3,19 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import Tag from '../components/Tag.astro';
 
-const directions = ['RAG systems', 'AI agent operations', 'Backend design', 'DevTools', 'VPS networking'];
+const directions = ['RAG 系统', 'AI Agent', '后端设计', '开发工具链', 'VPS 网络'];
 const questions = [
-  'How should retrieval systems be evaluated beyond demo success?',
-  'Where should agent workflows stop and deterministic software begin?',
-  'What engineering notes are worth preserving after a project ships?',
+  'RAG 系统如何从 demo 走向可评估、可排查的工程系统？',
+  'Agent 工作流的边界应该在哪里，哪些部分应该回到确定性软件？',
+  '一个项目结束后，哪些工程判断值得写下来并复用？',
 ];
 ---
 
-<BaseLayout title="About" description="Personal technical archive and engineering profile.">
+<BaseLayout title="关于" description="Fang0415 的个人技术档案。">
   <section class="mx-auto max-w-7xl px-4 py-10 sm:px-6 md:py-16 lg:px-8">
     <div class="border-y border-ink py-8">
-      <p class="font-mono text-xs uppercase tracking-[0.16em] text-muted">Technical profile</p>
-      <h1 class="mt-5 max-w-4xl font-serif text-6xl font-bold leading-[0.9] md:text-8xl">A working archive for engineering judgment.</h1>
+      <p class="font-mono text-xs uppercase tracking-[0.16em] text-muted">关于作者</p>
+      <h1 class="mt-5 max-w-4xl font-serif text-6xl font-bold leading-[0.95] md:text-8xl">Fang0415 的技术档案。</h1>
       <p class="mt-6 max-w-2xl text-lg leading-8 text-muted">
         这里不是简历页。它更接近一份持续更新的技术档案：记录系统设计、工具链选择、失败案例和可复用的工程判断。
       </p>
@@ -24,13 +24,13 @@ const questions = [
     <div class="mt-12 grid gap-10 lg:grid-cols-[0.68fr_0.32fr]">
       <div class="space-y-12">
         <section>
-          <SectionHeading eyebrow="Direction" title="Technical directions." />
+          <SectionHeading eyebrow="技术方向" title="长期关注的问题域。" />
           <div class="mt-6 flex flex-wrap gap-2">
             {directions.map((item) => <Tag label={item} />)}
           </div>
         </section>
         <section>
-          <SectionHeading eyebrow="Questions" title="Current problems." />
+          <SectionHeading eyebrow="当前问题" title="最近反复思考的事。" />
           <ul class="mt-6 divide-y divide-hairline border-t border-hairline">
             {questions.map((item) => (
               <li class="py-5 text-xl font-semibold leading-tight">{item}</li>
@@ -38,19 +38,18 @@ const questions = [
           </ul>
         </section>
         <section>
-          <SectionHeading eyebrow="Project preference" title="Small systems with sharp feedback." />
+          <SectionHeading eyebrow="项目偏好" title="反馈清楚的小系统。" />
           <p class="mt-6 max-w-3xl text-base leading-8 text-muted">
-            I prefer projects where implementation details matter: data flow, observability, deployment, failure modes, and maintenance cost.
-            The useful output is not only the final application, but the decisions that can survive the next rewrite.
+            我更偏好实现细节真正重要的项目：数据流、可观测性、部署、失败模式和维护成本。对我来说，有价值的不只是最后跑起来的应用，也包括下次重写时仍然成立的工程判断。
           </p>
         </section>
       </div>
 
       <aside class="h-fit border border-ink bg-soft p-6">
-        <p class="font-mono text-xs uppercase tracking-[0.12em] text-muted">Contact</p>
+        <p class="font-mono text-xs uppercase tracking-[0.12em] text-muted">联系</p>
         <dl class="mt-6 space-y-5 text-sm">
           <div>
-            <dt class="font-mono text-xs uppercase tracking-[0.12em] text-muted">Email</dt>
+            <dt class="font-mono text-xs uppercase tracking-[0.12em] text-muted">邮箱</dt>
             <dd class="mt-1">your-email@example.com</dd>
           </div>
           <div>

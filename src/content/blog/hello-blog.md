@@ -1,26 +1,26 @@
 ---
-title: "Hello Blog: A Technical Magazine Starts Here"
-description: "Why this site is structured as a personal technical magazine rather than a generic blog template."
+title: "开篇：为什么要搭一个自己的技术博客"
+description: "记录这个博客的定位：不是模板站，也不是简历页，而是长期积累工程判断的地方。"
 pubDate: 2026-06-21
-tags: ["Blog", "Astro", "Engineering"]
+tags: ["博客", "Astro", "工程记录"]
 ---
 
-This site is designed as a technical archive, not a timeline of announcements. The goal is to keep implementation notes, project retrospectives, and toolchain decisions in a shape that remains useful after the original context fades.
+这个站点被设计成一个技术档案，而不是发布动态的时间线。它要保存的是实现笔记、项目复盘和工具链选择，让一些原本只存在于当时上下文里的判断，在几个月后仍然能被重新理解。
 
-The editorial structure is intentionally simple: a home page for current focus, a blog index for notes, and a project archive for systems that need more than a single article.
+我希望它更像一个中文技术博客：作者是谁、最近写了什么、文章围绕哪些问题展开，这些信息应该一眼能看清楚。项目当然重要，但项目应该服务于文章，而不是让首页变成作品集。
 
-## Principles
+## 写作原则
 
-- Write down decisions while the constraints are still visible.
-- Separate project status from article chronology.
-- Keep the publishing pipeline boring enough to maintain.
+- 在约束还清楚的时候写下决策。
+- 把文章时间线和项目状态分开。
+- 发布流程要足够简单，避免写作被工具打断。
 
 ```ts
 const site = {
-  format: "technical magazine",
-  content: ["systems", "agents", "infrastructure"],
+  format: "中文技术博客",
+  content: ["RAG", "AI Agent", "后端工程", "基础设施"],
   deployment: "github pages",
 };
 ```
 
-The first useful feature of a blog is not typography. It is the ability to publish another note without negotiating the system again.
+一个博客最有用的功能不是排版，而是下次想写一篇文章时，不需要重新和系统较劲。

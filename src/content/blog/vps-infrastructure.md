@@ -1,22 +1,22 @@
 ---
-title: "VPS Infrastructure Notes: Small Servers Need Written Memory"
-description: "Why server setup, DNS, TLS, and reverse proxy decisions deserve short operational notes."
+title: "VPS 基础设施笔记：小服务器也需要记忆"
+description: "服务器配置、DNS、TLS 和反向代理这些决定，最好在出问题之前就写下来。"
 pubDate: 2026-06-12
-tags: ["VPS", "Network", "Backend"]
+tags: ["VPS", "网络", "后端"]
 ---
 
-A small VPS can look simple until the first incident. Then every undocumented decision becomes expensive: firewall rules, SSH access, DNS records, reverse proxy config, certificate renewal, and process supervision.
+一台小 VPS 在正常运行时看起来很简单，直到第一次故障发生。那时，每个没有记录的决定都会变贵：防火墙规则、SSH 入口、DNS 记录、反向代理配置、证书续期、进程守护。
 
-The useful habit is to write notes in the same order that an incident would need them:
+更实用的写法，是按照排障时真正需要的顺序记录：
 
-- how to reach the server
-- which services should be running
-- where logs live
-- how certificates renew
-- which DNS records are expected
-- what changed most recently
+- 如何连接服务器
+- 哪些服务应该正在运行
+- 日志在哪里
+- 证书如何续期
+- DNS 记录应该是什么
+- 最近改过什么
 
-## A minimal check
+## 最小检查
 
 ```bash
 systemctl status nginx
@@ -24,4 +24,4 @@ nginx -t
 curl -I https://example.com
 ```
 
-Operational notes do not need to be long. They need to be available when the system is already under pressure.
+运维笔记不一定要长，但它必须在系统已经出问题的时候还能被快速理解。

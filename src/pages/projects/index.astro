@@ -4,37 +4,37 @@ import ProjectCard from '../../components/ProjectCard.astro';
 
 const projects = [
   {
-    name: 'General RAG System',
-    description: 'A practical system notebook covering document ingestion, chunking strategy, reranking, prompt contracts, and evaluation traces.',
+    name: '通用 RAG 系统',
+    description: '围绕文档接入、切分策略、重排、提示词契约和评估链路整理的系统笔记。',
     stack: ['Python', 'RAG', 'Vector DB'],
-    status: 'Active research',
+    status: '持续记录',
   },
   {
-    name: 'AI Agent Workflow',
-    description: 'A workflow archive for coding agents, issue decomposition, tool permissions, review loops, and repeatable delivery habits.',
+    name: 'AI Agent 工作流',
+    description: '记录 coding agent 的任务拆解、工具权限、审查循环和可复用交付习惯。',
     stack: ['Agents', 'Codex', 'Linear'],
-    status: 'Working draft',
+    status: '写作中',
   },
   {
-    name: 'Developer Blog',
-    description: 'This Astro-based technical magazine for long-form notes, project records, and GitHub Pages publishing.',
+    name: '开发者博客',
+    description: '基于 Astro 的中文技术博客，用于长文、项目记录和 GitHub Pages 发布。',
     stack: ['Astro', 'Tailwind', 'MDX'],
-    status: 'Live system',
+    status: '已上线',
   },
   {
-    name: 'VPS Infrastructure Notes',
-    description: 'Operational notes for server hardening, reverse proxy setup, DNS, TLS, networking checks, and incident retrospectives.',
+    name: 'VPS 基础设施笔记',
+    description: '记录服务器加固、反向代理、DNS、TLS、网络检查和故障复盘。',
     stack: ['Linux', 'Nginx', 'Network'],
-    status: 'Reference archive',
+    status: '资料归档',
   },
 ];
 ---
 
-<BaseLayout title="Projects" description="Engineering project archive for systems, agents, tools, and infrastructure.">
+<BaseLayout title="项目" description="系统、Agent、工具链与基础设施项目记录。">
   <section class="mx-auto max-w-7xl px-4 py-10 sm:px-6 md:py-16 lg:px-8">
     <div class="border-y border-ink py-8">
-      <p class="font-mono text-xs uppercase tracking-[0.16em] text-muted">Project archive</p>
-      <h1 class="mt-5 max-w-4xl font-serif text-6xl font-bold leading-[0.9] md:text-8xl">Systems with implementation memory.</h1>
+      <p class="font-mono text-xs uppercase tracking-[0.16em] text-muted">项目记录</p>
+      <h1 class="mt-5 max-w-4xl font-serif text-6xl font-bold leading-[0.95] md:text-8xl">文章背后的工程现场。</h1>
       <p class="mt-6 max-w-2xl text-lg leading-8 text-muted">
         项目页展示工程能力：问题定义、技术栈、状态、链接和后续复盘入口。它不是作品墙，而是可追溯的工程档案。
       </p>

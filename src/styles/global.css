@@ -97,7 +97,7 @@ th {
 .article-content h3,
 .article-content h4 {
   color: var(--ink);
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: "Noto Serif CJK SC", "Songti SC", STSong, Georgia, serif;
   font-weight: 700;
   line-height: 1.12;
   margin-top: 2.6rem;
@@ -139,7 +139,7 @@ th {
   margin: 2rem 0;
   padding: 0.3rem 0 0.3rem 1.2rem;
   color: #333333;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: "Noto Serif CJK SC", "Songti SC", STSong, Georgia, serif;
   font-size: 1.2rem;
   line-height: 1.55;
 }

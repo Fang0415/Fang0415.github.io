@@ -8,22 +8,23 @@ interface Props {
 }
 
 const { post } = Astro.props;
-const date = post.data.pubDate.toLocaleDateString('en', {
+const date = post.data.pubDate.toLocaleDateString('zh-CN', {
   year: 'numeric',
   month: 'long',
-  day: '2-digit',
+  day: 'numeric',
 });
 ---
 
 <BaseLayout title={post.data.title} description={post.data.description}>
   <article class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
     <a href="/blog/" class="font-mono text-xs uppercase tracking-[0.12em] text-muted no-underline hover:text-ink">
-      Back to blog
+      返回文章列表
     </a>
 
     <header class="mt-8 border-y border-ink py-8 md:py-12">
       <div class="max-w-4xl">
         <p class="font-mono text-xs uppercase tracking-[0.12em] text-muted">
+          Fang0415 / 
           <time datetime={post.data.pubDate.toISOString()}>{date}</time>
         </p>
         <h1 class="mt-5 font-serif text-5xl font-bold leading-[0.92] md:text-7xl">{post.data.title}</h1>
@@ -40,7 +41,7 @@ const date = post.data.pubDate.toLocaleDateString('en', {
       </div>
       <div class="mt-12 border-t border-hairline pt-6">
         <a href="/blog/" class="font-mono text-xs uppercase tracking-[0.12em] text-muted no-underline hover:text-ink">
-          Return to index
+          回到文章归档
         </a>
       </div>
     </div>

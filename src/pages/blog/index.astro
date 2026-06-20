@@ -7,13 +7,13 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 ---
 
-<BaseLayout title="Blog" description="Technical article index for systems, agents, backend, and infrastructure notes.">
+<BaseLayout title="文章" description="RAG、AI Agent、后端工程、开发工具链与网络基础设施文章归档。">
   <section class="mx-auto max-w-7xl px-4 py-10 sm:px-6 md:py-16 lg:px-8">
     <div class="border-y border-ink py-8">
-      <p class="font-mono text-xs uppercase tracking-[0.16em] text-muted">Article index</p>
-      <h1 class="mt-5 font-serif text-6xl font-bold leading-[0.9] md:text-8xl">Technical magazine directory.</h1>
+      <p class="font-mono text-xs uppercase tracking-[0.16em] text-muted">文章归档</p>
+      <h1 class="mt-5 font-serif text-6xl font-bold leading-[0.95] md:text-8xl">所有文章。</h1>
       <p class="mt-6 max-w-2xl text-lg leading-8 text-muted">
-        RAG、AI Agent、后端工程、DevTools、GitHub Pages 和 VPS 网络配置的长期笔记。
+        按发布时间倒序排列。主题包括 RAG、AI Agent、后端工程、DevTools、GitHub Pages 和 VPS 网络配置。
       </p>
     </div>
     <div class="mt-10">

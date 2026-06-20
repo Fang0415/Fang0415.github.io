@@ -1,13 +1,13 @@
 ---
-title: "Deploying Astro To GitHub Pages"
-description: "A compact checklist for publishing a static Astro site through GitHub Actions and GitHub Pages."
+title: "把 Astro 博客部署到 GitHub Pages"
+description: "一个简短的部署清单：用 GitHub Actions 构建 Astro，并把 dist 发布到 GitHub Pages。"
 pubDate: 2026-06-15
-tags: ["Astro", "GitHub Pages", "DevTools"]
+tags: ["Astro", "GitHub Pages", "部署"]
 ---
 
-GitHub Pages is a good fit for a static technical blog because the deployment path is explicit: install dependencies, build the site, upload `dist`, and let Pages serve the artifact.
+GitHub Pages 很适合静态技术博客。它的部署路径足够明确：安装依赖，构建站点，上传 `dist`，最后让 Pages 托管构建产物。
 
-For a user site such as `Fang0415.github.io`, the Astro config can stay at the root path:
+如果是用户站点，例如 `Fang0415.github.io`，Astro 可以使用根路径：
 
 ```js
 export default defineConfig({
@@ -15,7 +15,7 @@ export default defineConfig({
 });
 ```
 
-For a project repository, add `base`:
+如果是普通项目仓库，就需要添加 `base`：
 
 ```js
 export default defineConfig({
@@ -24,4 +24,4 @@ export default defineConfig({
 });
 ```
 
-The common failure mode is forgetting that local routes and deployed routes are not identical when the repository uses a subpath.
+常见问题是：本地路由和部署后的子路径不一致。用户站点通常最省心，普通项目仓库则要认真处理 `base`。
