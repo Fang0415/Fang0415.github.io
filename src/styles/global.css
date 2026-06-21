@@ -1,171 +1,363 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* ============================================================
+   Cream Blog Design System — ported to this Astro project.
+   Tokens + base helpers + prose styles, all derived from
+   cream-blog-design-system/project/tokens + base.css.
+   Charcoal is the only hue; every gray is #1c1c1c at an alpha.
+   Background is warm cream, never white.
+   ============================================================ */
+
+@import url("https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300..800;1,300..800&family=JetBrains+Mono:wght@400;500;600&display=swap");
 
 :root {
-  color-scheme: light;
-  --ink: #050505;
-  --muted: #6f6f6f;
-  --hairline: #e4e4e4;
-  --paper: #ffffff;
-  --soft: #f6f6f3;
-  --accent: #5e6ad2;
-  --panel: #101112;
+  /* --- Base palette --- */
+  --cream: #f7f4ed;
+  --cream-light: #eceae4;
+  --off-white: #fcfbf8;
+  --charcoal: #1c1c1c;
+
+  /* --- Charcoal opacity ramp --- */
+  --charcoal-83: rgba(28, 28, 28, 0.83);
+  --charcoal-82: rgba(28, 28, 28, 0.82);
+  --charcoal-40: rgba(28, 28, 28, 0.4);
+  --charcoal-12: rgba(28, 28, 28, 0.12);
+  --charcoal-08: rgba(28, 28, 28, 0.08);
+  --charcoal-04: rgba(28, 28, 28, 0.04);
+  --charcoal-03: rgba(28, 28, 28, 0.03);
+  --muted: #5f5f5d;
+
+  /* --- Earth accents --- */
+  --clay: #c2674c;   --clay-ink: #9a4631;
+  --ochre: #b0883f;  --ochre-ink: #876328;
+  --sage: #5b8c6e;   --sage-ink: #3f6b50;
+  --slate: #557588;  --slate-ink: #3c576a;
+
+  --clay-tint: color-mix(in srgb, var(--clay) 13%, var(--cream));
+  --ochre-tint: color-mix(in srgb, var(--ochre) 14%, var(--cream));
+  --sage-tint: color-mix(in srgb, var(--sage) 14%, var(--cream));
+  --slate-tint: color-mix(in srgb, var(--slate) 14%, var(--cream));
+
+  --ring: rgba(59, 130, 246, 0.5);
+
+  /* --- Semantic surfaces / text / borders --- */
+  --surface-page: var(--cream);
+  --surface-card: var(--cream);
+  --surface-dark: var(--charcoal);
+  --surface-hover: var(--charcoal-04);
+  --surface-tint: var(--charcoal-03);
+
+  --text-strong: var(--charcoal);
+  --text-body: var(--charcoal-82);
+  --text-secondary: var(--charcoal-83);
+  --text-muted: var(--muted);
+  --text-on-dark: var(--off-white);
+
+  --border-subtle: var(--cream-light);
+  --border-interactive: var(--charcoal-40);
+
+  --btn-primary-bg: var(--charcoal);
+  --btn-primary-fg: var(--off-white);
+  --btn-ghost-fg: var(--charcoal);
+  --btn-ghost-border: var(--charcoal-40);
+
+  --accent: var(--clay);
+  --accent-ink: var(--clay-ink);
+  --accent-tint: var(--clay-tint);
+
+  /* --- Typography --- */
+  --font-sans: "Hanken Grotesk", ui-sans-serif, system-ui, -apple-system,
+    BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei",
+    "Noto Sans SC", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo,
+    Consolas, monospace;
+
+  --weight-regular: 400;
+  --weight-display: 480;
+  --weight-semibold: 600;
+
+  --display-size: 60px;  --display-line: 1.05;  --display-track: -1.5px;
+  --h1-size: 48px;       --h1-line: 1;          --h1-track: -1.2px;
+  --h2-size: 36px;       --h2-line: 1.1;        --h2-track: -0.9px;
+  --h3-size: 24px;       --h3-line: 1.2;        --h3-track: -0.4px;
+  --card-title-size: 20px; --card-title-line: 1.25; --card-title-track: -0.2px;
+  --body-lg-size: 18px;  --body-lg-line: 1.5;
+  --body-size: 16px;     --body-line: 1.6;
+  --caption-size: 14px;  --caption-line: 1.5;
+  --mono-size: 13px;     --mono-track: 0.04em;
+
+  /* --- Spacing / layout --- */
+  --max-content: 1120px;
+
+  /* --- Radius --- */
+  --radius-micro: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-card: 12px;
+  --radius-container: 16px;
+  --radius-pill: 9999px;
+
+  /* --- Elevation --- */
+  --shadow-inset:
+    rgba(255, 255, 255, 0.2) 0px 0.5px 0px 0px inset,
+    rgba(0, 0, 0, 0.2) 0px 0px 0px 0.5px inset,
+    rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
+  --shadow-focus: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+
+  /* --- Motion --- */
+  --dur-fast: 140ms;
+  --dur-base: 240ms;
+  --dur-slow: 720ms;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --reveal-rise: 30px;
 }
 
-* {
-  box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
-}
+/* ============================================================
+   BASE
+   ============================================================ */
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
 
 body {
   margin: 0;
-  background: var(--paper);
-  color: var(--ink);
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  text-rendering: optimizeLegibility;
+  background: var(--surface-page);
+  color: var(--text-body);
+  font-family: var(--font-sans);
+  font-size: var(--body-size);
+  line-height: var(--body-line);
+  font-weight: var(--weight-regular);
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-::selection {
-  background: var(--ink);
-  color: var(--paper);
-}
-
-a {
-  color: inherit;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.18em;
-}
-
-a:hover {
-  color: var(--accent);
-}
+h1, h2, h3, h4, p { margin: 0; }
+a { color: var(--text-strong); }
+img { display: block; max-width: 100%; height: auto; }
+::selection { background: rgba(28, 28, 28, 0.12); }
 
 :focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 4px;
+  outline: none;
+  box-shadow: 0 0 0 2px var(--cream), 0 0 0 4px var(--ring);
+  border-radius: var(--radius-sm);
 }
 
-img {
-  display: block;
-  max-width: 100%;
-  height: auto;
+/* --- Typographic helpers --- */
+.t-display {
+  font-size: var(--display-size); line-height: var(--display-line);
+  letter-spacing: var(--display-track); font-weight: var(--weight-semibold);
+  color: var(--text-strong); text-wrap: balance;
+}
+.t-h1 {
+  font-size: var(--h1-size); line-height: var(--h1-line);
+  letter-spacing: var(--h1-track); font-weight: var(--weight-semibold);
+  color: var(--text-strong); text-wrap: balance;
+}
+.t-h2 {
+  font-size: var(--h2-size); line-height: var(--h2-line);
+  letter-spacing: var(--h2-track); font-weight: var(--weight-semibold);
+  color: var(--text-strong);
+}
+.t-h3 {
+  font-size: var(--h3-size); line-height: var(--h3-line);
+  letter-spacing: var(--h3-track); font-weight: var(--weight-semibold);
+  color: var(--text-strong);
+}
+.t-card-title {
+  font-size: var(--card-title-size); line-height: var(--card-title-line);
+  letter-spacing: var(--card-title-track); font-weight: var(--weight-regular);
+  color: var(--text-strong);
+}
+.t-body-lg { font-size: var(--body-lg-size); line-height: var(--body-lg-line); color: var(--text-body); }
+.t-body { font-size: var(--body-size); line-height: var(--body-line); color: var(--text-body); }
+.t-caption { font-size: var(--caption-size); line-height: var(--caption-line); color: var(--text-muted); }
+.t-mono {
+  font-family: var(--font-mono); font-size: var(--mono-size);
+  letter-spacing: var(--mono-track); color: var(--text-muted);
+}
+.t-eyebrow {
+  font-family: var(--font-mono); font-size: var(--mono-size);
+  letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent-ink);
 }
 
-hr {
-  border: 0;
-  border-top: 1px solid var(--hairline);
-  margin: 2.5rem 0;
+/* ============================================================
+   MOTION — scroll-reveal + reusable classes (transition-based,
+   so a paused timeline still resolves to the visible end-state).
+   ============================================================ */
+.cb-reveal, .cb-onload {
+  transition:
+    opacity var(--dur-slow) var(--ease-out),
+    transform var(--dur-slow) var(--ease-out);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+html.js-reveal .cb-reveal:not(.is-in),
+html.js-reveal .cb-onload:not(.is-in) {
+  opacity: 0;
+  transform: translateY(var(--reveal-rise));
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.95rem;
+.cb-arrow { display: inline-block; transition: transform var(--dur-base) var(--ease-out); }
+a:hover .cb-arrow, button:hover .cb-arrow { transform: translateX(3px); }
+
+.cb-underline {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-position: 0 100%; background-repeat: no-repeat;
+  background-size: 0% 1px;
+  transition: background-size var(--dur-base) var(--ease-out);
+  text-decoration: none;
+}
+.cb-underline:hover { background-size: 100% 1px; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .cb-reveal, .cb-onload { transition: none !important; opacity: 1 !important; transform: none !important; }
+  .cb-arrow, .cb-underline { transition: none !important; }
 }
 
-th,
-td {
-  border-bottom: 1px solid var(--hairline);
-  padding: 0.8rem 0.65rem;
-  text-align: left;
-  vertical-align: top;
+/* ============================================================
+   COMPONENT HOVER/STATE (CSS-driven, replacing JSX handlers)
+   ============================================================ */
+.cb-card-interactive { transition: border-color 0.18s ease; }
+.cb-card-interactive:hover { border-color: var(--charcoal-40); }
+
+/* Project cards stretch to fill their flex wrapper (equal-height grid). */
+.cb-proj-card { flex: 1; }
+
+.cb-article-card { transition: opacity 0.15s ease; }
+.cb-article-card:hover { opacity: 0.72; }
+
+.cb-btn { transition: opacity 0.15s ease, box-shadow 0.15s ease, background 0.15s ease; }
+.cb-btn:active { opacity: 0.8; }
+
+.cb-navlink { transition: color 0.15s ease; }
+.cb-navlink:hover { color: var(--text-strong) !important; }
+
+.cb-iconlink { transition: opacity 0.15s ease; }
+.cb-iconlink:hover { opacity: 0.9 !important; }
+
+.cb-footlink { transition: color 0.15s ease; }
+.cb-footlink:hover { color: var(--text-strong) !important; }
+
+/* ============================================================
+   WRITING FILTER (vanilla replacement for the React filter)
+   ============================================================ */
+.cb-filter { background: none; border: none; padding: 0; cursor: pointer; }
+.cb-filter .cb-tag-pill {
+  display: inline-flex; align-items: center; gap: 0;
+  font-family: var(--font-mono); font-size: 12px; line-height: 1;
+  letter-spacing: 0.01em; padding: 5px 10px; border-radius: var(--radius-sm);
+  white-space: nowrap; background: transparent; color: var(--text-secondary);
+  border: 1px solid var(--border-subtle); transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.cb-filter .cb-tag-pill .cb-tag-dot {
+  width: 6px; height: 6px; border-radius: var(--radius-pill);
+  background: var(--cat-dot, transparent); flex: none; display: none; margin-right: 6px;
+}
+/* active, category color */
+.cb-filter[aria-pressed="true"][data-color] .cb-tag-pill {
+  background: var(--cat-tint); color: var(--cat-ink); border-color: transparent;
+}
+.cb-filter[aria-pressed="true"][data-color] .cb-tag-pill .cb-tag-dot { display: inline-block; }
+/* active, "全部" → solid */
+.cb-filter[aria-pressed="true"]:not([data-color]) .cb-tag-pill {
+  background: var(--charcoal); color: var(--off-white); border-color: var(--charcoal);
 }
 
-th {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+/* ============================================================
+   RESPONSIVE GRID + NAV (ported from the UI-kit page <style>)
+   ============================================================ */
+@media (max-width: 860px) {
+  .cb-hero-grid, .cb-about-grid { grid-template-columns: 1fr !important; }
+  .cb-proj-grid, .cb-stack-grid { grid-template-columns: 1fr 1fr !important; }
+}
+@media (max-width: 600px) {
+  .cb-proj-grid, .cb-stack-grid { grid-template-columns: 1fr !important; }
+}
+@media (max-width: 768px) {
+  .cb-nav-links { display: none !important; }
+  .cb-nav-icons { display: none !important; }
+  .cb-nav-menu { display: inline-flex !important; }
 }
 
-.article-content {
-  color: #171717;
-  font-size: 1.05rem;
-  line-height: 1.78;
+/* ============================================================
+   ARTICLE BODY — rendered markdown prose, matching article.html.
+   18px / 1.75, charcoal body, flat charcoal code surface.
+   ============================================================ */
+.article-body {
+  font-size: 18px;
+  line-height: 1.75;
+  color: var(--text-body);
+}
+.article-body > * + * { margin-top: 24px; }
+
+.article-body h2 {
+  font-size: var(--h3-size); line-height: var(--h3-line);
+  letter-spacing: var(--h3-track); font-weight: var(--weight-semibold);
+  color: var(--text-strong); margin: 40px 0 16px;
+}
+.article-body h3 {
+  font-size: 20px; line-height: 1.3; letter-spacing: -0.2px;
+  font-weight: var(--weight-semibold); color: var(--text-strong);
+  margin: 32px 0 12px;
+}
+.article-body h4 {
+  font-size: 16px; font-weight: var(--weight-semibold);
+  color: var(--text-strong); margin: 28px 0 10px;
+}
+.article-body p { margin: 0; }
+
+.article-body a {
+  color: var(--accent-ink);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--accent-ink) 35%, transparent);
+  text-underline-offset: 0.18em;
+}
+.article-body a:hover { text-decoration-color: var(--accent-ink); }
+
+.article-body strong { font-weight: var(--weight-semibold); color: var(--text-strong); }
+
+.article-body ul, .article-body ol { padding-left: 1.4em; margin: 0; }
+.article-body ul { list-style: disc; }
+.article-body ol { list-style: decimal; }
+.article-body li + li { margin-top: 8px; }
+.article-body li { padding-left: 4px; }
+
+.article-body blockquote {
+  border-left: 2px solid var(--charcoal-40);
+  padding-left: 20px; margin: 0;
+  color: var(--text-muted); font-style: normal;
 }
 
-.article-content > * + * {
-  margin-top: 1.25rem;
+.article-body :not(pre) > code {
+  font-family: var(--font-mono); font-size: 0.86em;
+  background: var(--charcoal-04); padding: 2px 6px; border-radius: 4px;
+  color: var(--text-strong);
 }
 
-.article-content h2,
-.article-content h3,
-.article-content h4 {
-  color: var(--ink);
-  font-family: "Noto Serif CJK SC", "Songti SC", STSong, Georgia, serif;
-  font-weight: 700;
-  line-height: 1.12;
-  margin-top: 2.6rem;
+.article-body pre {
+  background: var(--charcoal); color: var(--off-white);
+  padding: 20px 22px; border-radius: var(--radius-card);
+  overflow: auto; margin: 0;
+}
+.article-body pre code {
+  font-family: var(--font-mono); font-size: 14px; line-height: 1.6;
+  background: none; padding: 0; color: inherit;
 }
 
-.article-content h2 {
-  font-size: clamp(2rem, 5vw, 3rem);
+.article-body img {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-card);
 }
 
-.article-content h3 {
-  font-size: clamp(1.45rem, 3vw, 2rem);
+.article-body hr {
+  border: 0; border-top: 1px solid var(--border-subtle); margin: 40px 0;
 }
 
-.article-content h4 {
-  font-size: 1.2rem;
-  font-family: inherit;
+.article-body table { width: 100%; border-collapse: collapse; font-size: 15px; }
+.article-body th, .article-body td {
+  border-bottom: 1px solid var(--border-subtle); padding: 10px 8px;
+  text-align: left; vertical-align: top;
 }
-
-.article-content p {
-  margin-bottom: 0;
-}
-
-.article-content a {
-  color: #057dbc;
-  font-weight: 650;
-}
-
-.article-content ul,
-.article-content ol {
-  padding-left: 1.35rem;
-}
-
-.article-content li + li {
-  margin-top: 0.45rem;
-}
-
-.article-content blockquote {
-  border-left: 4px solid var(--ink);
-  margin: 2rem 0;
-  padding: 0.3rem 0 0.3rem 1.2rem;
-  color: #333333;
-  font-family: "Noto Serif CJK SC", "Songti SC", STSong, Georgia, serif;
-  font-size: 1.2rem;
-  line-height: 1.55;
-}
-
-.article-content :not(pre) > code {
-  border: 1px solid var(--hairline);
-  background: var(--soft);
-  padding: 0.14rem 0.34rem;
-  border-radius: 4px;
-  color: #171717;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 0.88em;
-}
-
-.article-content pre {
-  overflow-x: auto;
-  border: 1px solid #2b2d33;
-  border-radius: 8px;
-  background: var(--panel);
-  color: #f7f8f8;
-  padding: 1.1rem 1.2rem;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
-}
-
-.article-content pre code {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 0.9rem;
-  line-height: 1.7;
+.article-body th {
+  font-family: var(--font-mono); font-size: 12px;
+  text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted);
 }

@@ -2,55 +2,51 @@
 import type { CollectionEntry } from 'astro:content';
 import BaseLayout from './BaseLayout.astro';
 import Tag from '../components/Tag.astro';
+import Button from '../components/Button.astro';
+import { toMeta } from '../lib/posts';
 
 interface Props {
   post: CollectionEntry<'blog'>;
 }
 
 const { post } = Astro.props;
-const date = post.data.pubDate.toLocaleDateString('zh-CN', {
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric',
-});
+const meta = toMeta(post);
 ---
 
 <BaseLayout title={post.data.title} description={post.data.description}>
-  <article class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-    <a href="/blog/" class="font-mono text-xs uppercase tracking-[0.12em] text-muted no-underline hover:text-ink">
-      返回文章列表
+  <article style="max-width: 720px; margin: 0 auto; padding: 64px 24px 96px;">
+    <a
+      href="/blog/"
+      style="font-family: var(--font-mono); font-size: 13px; color: var(--text-muted); text-decoration: none; display: inline-block; margin-bottom: 32px;"
+    >
+      ← 返回文章列表
     </a>
 
-    <header class="mt-8 border-y border-ink py-8 md:py-12">
-      <div class="max-w-4xl">
-        <p class="font-mono text-xs uppercase tracking-[0.12em] text-muted">
-          Fang0415 / 
-          <time datetime={post.data.pubDate.toISOString()}>{date}</time>
-        </p>
-        <h1 class="mt-5 font-serif text-5xl font-bold leading-[0.92] md:text-7xl">{post.data.title}</h1>
-        <p class="mt-6 max-w-3xl text-lg leading-8 text-muted">{post.data.description}</p>
-        <div class="mt-6 flex flex-wrap gap-2">
-          {post.data.tags.map((tag) => <Tag label={tag} />)}
-        </div>
-      </div>
-    </header>
+    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+      <Tag color={meta.categoryColor}>{meta.category}</Tag>
+      <span style="font-family: var(--font-mono); font-size: 12px; color: var(--text-muted);">{meta.date}</span>
+      <span style="width: 3px; height: 3px; border-radius: 50%; background: var(--charcoal-40);"></span>
+      <span style="font-family: var(--font-mono); font-size: 12px; color: var(--text-muted);">{meta.readTime}</span>
+    </div>
 
-    <div class="mx-auto mt-12 max-w-[780px]">
-      <aside class="mb-10 border-y border-hairline py-4 text-sm leading-6 text-muted">
-        <div class="grid gap-3 sm:grid-cols-3">
-          <p><span class="font-mono text-xs uppercase tracking-[0.12em]">作者</span><br />Fang0415</p>
-          <p><span class="font-mono text-xs uppercase tracking-[0.12em]">栏目</span><br />技术文章</p>
-          <p><span class="font-mono text-xs uppercase tracking-[0.12em]">主题</span><br />{post.data.tags.join(' / ')}</p>
-        </div>
-      </aside>
-      <div class="article-content">
-        <slot />
-      </div>
-      <div class="mt-12 border-t border-hairline pt-6">
-        <a href="/blog/" class="font-mono text-xs uppercase tracking-[0.12em] text-muted no-underline hover:text-ink">
-          回到文章归档
-        </a>
-      </div>
+    <h1 class="t-h1" style="font-size: clamp(32px, 5vw, 44px); line-height: 1.1; margin-bottom: 24px;">
+      {post.data.title}
+    </h1>
+
+    <p
+      class="t-body-lg"
+      style="color: var(--text-muted); margin-bottom: 40px; padding-bottom: 32px; border-bottom: 1px solid var(--border-subtle);"
+    >
+      {post.data.description}
+    </p>
+
+    <div class="article-body">
+      <slot />
+    </div>
+
+    <div style="margin-top: 56px; padding-top: 32px; border-top: 1px solid var(--border-subtle); display: flex; gap: 12px; flex-wrap: wrap;">
+      <Button variant="ghost" href="/blog/">← 回到文章列表</Button>
+      <Button variant="cream" href="/rss.xml">订阅后续更新</Button>
     </div>
   </article>
 </BaseLayout>

@@ -5,3 +5,9 @@ dist
 .env.*
 .DS_Store
 npm-debug.log*
+
+# Local-only design-system handoff bundle — never publish
+cream-blog-design-system/
+
+# Local preview/tooling config
+.claude/

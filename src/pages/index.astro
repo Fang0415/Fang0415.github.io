@@ -1,83 +1,159 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import PostCard from '../components/PostCard.astro';
+import Card from '../components/Card.astro';
+import Button from '../components/Button.astro';
+import StatusCard from '../components/StatusCard.astro';
 import ProjectCard from '../components/ProjectCard.astro';
-import SectionHeading from '../components/SectionHeading.astro';
+import TechGroup from '../components/TechGroup.astro';
+import WritingList from '../components/WritingList.astro';
+import { toMeta, sortedPosts } from '../lib/posts';
 
-const posts = (await getCollection('blog', ({ data }) => !data.draft))
-  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
-  .slice(0, 5);
+// Real posts power the writing list; the rest of the persona copy is the
+// design system's sample content (matching the RAG / AI-application voice).
+const recent = sortedPosts(await getCollection('blog', ({ data }) => !data.draft))
+  .slice(0, 4)
+  .map(toMeta);
 
-const focus = ['RAG 系统与评估', 'AI Agent 工作流', '后端工程实践', 'VPS 与网络配置'];
-const projects = [
-  {
-    name: '通用 RAG 系统笔记',
-    description: '记录文档切分、召回、重排、提示词契约与答案评估的实践过程。',
-    stack: ['RAG', 'Python', 'Eval'],
-    status: '持续记录',
-  },
-  {
-    name: 'AI Agent 工作流',
-    description: '整理 coding agent 的任务拆解、工具边界、审查循环和交付清单。',
-    stack: ['Agents', 'Codex', 'Linear'],
-    status: '写作中',
-  },
+const statusRows = [
+  { label: '当前关注', value: 'RAG 检索质量' },
+  { label: '最近项目', value: 'ragflow-mini' },
+  { label: '正在学', value: 'Rust + 向量索引' },
+  { label: '在读', value: '《DDIA》第 2 遍' },
+  { label: 'GitHub', value: '12 天连续提交' },
+];
+
+const aboutRows: [string, string][] = [
+  ['方向', '后端 · RAG · AI 应用'],
+  ['常用语言', 'Python · Go · TS'],
+  ['当前关注', '检索质量与可观测性'],
+  ['可合作', 'RAG 落地 · 系统设计咨询'],
+];
+
+type Status = 'active' | 'wip' | 'paused' | 'archived';
+type AccentColor = 'clay' | 'ochre' | 'sage' | 'slate';
+type TechItem = string | { name: string; note?: string };
+
+const projects: { name: string; description: string; tags: string[]; status: Status; statusLabel: string }[] = [
+  { name: 'ragflow-mini', description: '轻量 RAG 检索服务，支持混合检索、重排与引用回溯，单机即可部署。', tags: ['Python', 'FastAPI', 'pgvector'], status: 'active', statusLabel: '运行中' },
+  { name: 'this-blog', description: '你正在看的这个博客。无框架，HTML + 一点点 JS，构建产物可读。', tags: ['TypeScript', 'Vite', 'MDX'], status: 'active', statusLabel: '运行中' },
+  { name: 'agent-shell', description: '给本地命令行套了个 Agent 外壳，能读报错、查文档、提改法。', tags: ['Go', 'LLM', 'CLI'], status: 'wip', statusLabel: '开发中' },
+  { name: 'pgvec-bench', description: '向量索引的基准测试工具，对比 HNSW / IVF 在真实数据上的召回与延迟。', tags: ['Rust', 'pgvector'], status: 'wip', statusLabel: '开发中' },
+  { name: 'notes-sync', description: '把 Markdown 笔记同步成可检索知识库的小工具，已经够用就没再加功能。', tags: ['Python', 'SQLite'], status: 'paused', statusLabel: '维护中' },
+  { name: 'tiny-queue', description: '一个几百行的任务队列，写来理解 at-least-once 到底意味着什么。', tags: ['Go', 'Redis'], status: 'archived', statusLabel: '已归档' },
+];
+
+const techGroups: { label: string; color: AccentColor; items: TechItem[] }[] = [
+  { label: '语言', color: 'clay', items: [{ name: 'Python', note: '日常' }, { name: 'Go', note: '服务' }, 'TypeScript', 'Rust'] },
+  { label: '后端框架', color: 'slate', items: ['FastAPI', 'Gin', 'gRPC'] },
+  { label: '数据库', color: 'sage', items: ['PostgreSQL', 'Redis', 'SQLite', 'pgvector'] },
+  { label: 'AI / RAG', color: 'clay', items: ['LangGraph', 'BGE-reranker', 'vLLM', 'Embeddings'] },
+  { label: '工程工具', color: 'ochre', items: ['Git', 'Neovim', 'tmux', 'Make'] },
+  { label: '部署运维', color: 'slate', items: ['Docker', 'Caddy', 'GitHub Actions', 'Grafana'] },
 ];
 ---
 
-<BaseLayout title="Fang 的技术博客" description="记录 RAG、AI Agent、后端工程、开发工具链与网络基础设施的中文技术博客。">
-  <section class="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:px-6 md:grid-cols-[1fr_380px] md:py-16 lg:px-8">
-    <div>
-      <p class="border-y border-ink py-3 font-mono text-xs uppercase tracking-[0.16em] text-muted">
-        Fang0415 / 技术博客 / 长期笔记
-      </p>
-      <h1 class="mt-8 max-w-5xl font-serif text-6xl font-bold leading-[0.95] md:text-8xl">
-        RAG、Agent、后端和工具链的长期技术档案。
-      </h1>
-      <p class="mt-7 max-w-2xl text-lg leading-8 text-muted">
-        我把学习、开发、部署和踩坑过程整理成中文文章。这里同时是个人技术杂志、工程项目档案和数字花园入口：文章优先，作者在场，项目作为上下文。
-      </p>
-      <div class="mt-8 flex flex-wrap gap-3">
-        <a href="/blog/" class="border border-ink bg-ink px-5 py-3 text-sm font-bold text-white no-underline hover:bg-white hover:text-ink">阅读文章</a>
-        <a href="/about/" class="border border-ink px-5 py-3 text-sm font-bold no-underline hover:bg-soft hover:text-ink">了解作者</a>
+<BaseLayout>
+  {/* HERO */}
+  <section style="max-width: var(--max-content); margin: 0 auto; padding: 72px 24px 96px;">
+    <div class="cb-hero-grid" style="display: grid; grid-template-columns: minmax(0,1.5fr) minmax(0,1fr); gap: 56px; align-items: center;">
+      <div>
+        <div class="t-eyebrow cb-onload" style="margin-bottom: 22px;">后端开发 · RAG 系统 · AI 应用</div>
+        <h1 class="t-display cb-onload" style="font-size: clamp(40px, 6vw, 60px); margin-bottom: 24px; --reveal-delay: 140ms;">
+          把复杂系统做简单，<br />然后写下来。
+        </h1>
+        <p class="t-body-lg cb-onload" style="max-width: 52ch; color: var(--text-muted); margin-bottom: 32px; --reveal-delay: 300ms;">
+          我是一名后端工程师，做 RAG 检索和 AI 应用开发。这里记录技术实践、项目复盘、系统设计，以及一些还没想明白的问题。不卖课，不画饼。
+        </p>
+        <div class="cb-onload" style="display: flex; gap: 12px; flex-wrap: wrap; --reveal-delay: 440ms;">
+          <Button variant="primary" href="#writing">读最新文章</Button>
+          <Button variant="ghost" href="#projects">看我做的东西</Button>
+        </div>
+      </div>
+      <div class="cb-onload" style="--reveal-delay: 560ms;">
+        <StatusCard rows={statusRows} />
       </div>
     </div>
-    <aside class="border border-ink bg-soft p-5">
-      <p class="font-mono text-xs uppercase tracking-[0.12em] text-muted">作者档案</p>
-      <h2 class="mt-4 font-serif text-4xl font-bold leading-none">Fang0415</h2>
-      <p class="mt-4 text-sm leading-6 text-muted">
-        关注 AI 应用工程、后端系统、开发工具链和基础设施配置。写作目标是把一次性的工程经验沉淀成下次能复用的判断。
-      </p>
-      <p class="mt-8 font-mono text-xs uppercase tracking-[0.12em] text-muted">最近关注</p>
-      <ul class="mt-6 space-y-4">
-        {focus.map((item) => (
-          <li class="border-t border-hairline pt-4 text-lg font-semibold leading-tight">{item}</li>
-        ))}
-      </ul>
-    </aside>
   </section>
 
-  <section class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-    <SectionHeading eyebrow="文章" title="最近写了什么。" />
-    <div class="mt-8">
-      {posts.map((post) => (
-        <PostCard
-          title={post.data.title}
-          description={post.data.description}
-          pubDate={post.data.pubDate}
-          tags={post.data.tags}
-          href={`/blog/${post.slug}/`}
-        />
+  {/* ABOUT */}
+  <section id="about" style="max-width: var(--max-content); margin: 0 auto; padding: 0 24px 128px; scroll-margin-top: 90px;">
+    <span class="t-eyebrow cb-reveal" style="display: block; margin-bottom: 16px;">About</span>
+    <h2 class="t-h2 cb-reveal" style="--reveal-delay: 110ms; margin-bottom: 40px;">关于我</h2>
+    <div class="cb-about-grid" style="display: grid; grid-template-columns: minmax(0,1.4fr) minmax(0,1fr); gap: 48px; align-items: start;">
+      <div style="display: flex; flex-direction: column; gap: 20px;">
+        <p class="t-body-lg" style="color: var(--text-body); max-width: 60ch;">
+          写了七年后端，从单体一路拆到现在，也踩过把简单问题复杂化的坑。这两年主要在做 RAG 和 AI 应用，关心的还是老问题：数据怎么流、错误怎么传、系统怎么在半夜不叫醒我。
+        </p>
+        <p class="t-body" style="color: var(--text-muted); max-width: 60ch;">
+          我相信能把一件事讲清楚，往往说明真的想明白了。所以这个博客既是写给别人看的，也是写给两年后忘了细节的自己。如果某篇文章帮你少熬一个夜，那就值了。
+        </p>
+      </div>
+      <Card pad="none" radius="card" style="overflow: hidden;">
+        {aboutRows.map(([k, v], i) => (
+          <div style={`display: flex; justify-content: space-between; gap: 16px; padding: 16px 20px; ${i < aboutRows.length - 1 ? 'border-bottom: 1px solid var(--border-subtle);' : ''}`}>
+            <span style="font-family: var(--font-mono); font-size: 12px; color: var(--text-muted);">{k}</span>
+            <span style="font-size: 14px; color: var(--text-strong); text-align: right;">{v}</span>
+          </div>
+        ))}
+      </Card>
+    </div>
+  </section>
+
+  {/* PROJECTS */}
+  <section id="projects" style="max-width: var(--max-content); margin: 0 auto; padding: 0 24px 128px; scroll-margin-top: 90px;">
+    <span class="t-eyebrow cb-reveal" style="display: block; margin-bottom: 16px;">Projects</span>
+    <h2 class="t-h2 cb-reveal" style="--reveal-delay: 110ms; margin-bottom: 16px;">我做的东西</h2>
+    <p class="t-body-lg cb-reveal" style="--reveal-delay: 220ms; max-width: 62ch; color: var(--text-muted); margin-bottom: 40px;">
+      一些自己用得上、也愿意公开的项目。状态是真实的——有的在跑，有的在写，有的早就归档了。
+    </p>
+    <div class="cb-proj-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+      {projects.map((p, i) => (
+        <div class="cb-reveal" style={`display: flex; --reveal-delay: ${(i % 3) * 120}ms;`}>
+          <ProjectCard {...p} class="cb-proj-card" />
+        </div>
       ))}
     </div>
-    <a href="/blog/" class="mt-6 inline-flex border border-ink px-4 py-2 text-sm font-bold no-underline hover:bg-ink hover:text-white">查看全部文章</a>
   </section>
 
-  <section class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-    <SectionHeading eyebrow="项目" title="文章背后的工程上下文。" />
-    <div class="mt-8 grid gap-4 md:grid-cols-2">
-      {projects.map((project) => <ProjectCard {...project} />)}
+  {/* WRITING */}
+  <section id="writing" style="max-width: var(--max-content); margin: 0 auto; padding: 0 24px 128px; scroll-margin-top: 90px;">
+    <span class="t-eyebrow cb-reveal" style="display: block; margin-bottom: 16px;">Writing</span>
+    <h2 class="t-h2 cb-reveal" style="--reveal-delay: 110ms; margin-bottom: 40px;">最近写的</h2>
+    <WritingList posts={recent} />
+    <div style="margin-top: 32px;">
+      <Button variant="ghost" href="/blog/">查看全部文章 <span class="cb-arrow" aria-hidden="true">→</span></Button>
     </div>
+  </section>
+
+  {/* STACK */}
+  <section id="stack" style="max-width: var(--max-content); margin: 0 auto; padding: 0 24px 128px; scroll-margin-top: 90px;">
+    <span class="t-eyebrow cb-reveal" style="display: block; margin-bottom: 16px;">Stack</span>
+    <h2 class="t-h2 cb-reveal" style="--reveal-delay: 110ms; margin-bottom: 16px;">技术栈</h2>
+    <p class="t-body-lg cb-reveal" style="--reveal-delay: 220ms; max-width: 62ch; color: var(--text-muted); margin-bottom: 40px;">
+      不是为了堆关键词，而是这些工具我真的天天用、踩过坑、也愿意替它们辩护。
+    </p>
+    <div class="cb-stack-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+      {techGroups.map((g, i) => (
+        <div class="cb-reveal" style={`--reveal-delay: ${(i % 3) * 120}ms;`}>
+          <TechGroup label={g.label} color={g.color} items={g.items} />
+        </div>
+      ))}
+    </div>
+  </section>
+
+  {/* CONTACT */}
+  <section id="contact" style="max-width: var(--max-content); margin: 0 auto; padding: 0 24px 112px; scroll-margin-top: 90px;">
+    <Card pad="lg" radius="container" style="text-align: center; padding: 64px 40px;">
+      <h2 class="t-h2" style="margin-bottom: 16px;">聊聊？</h2>
+      <p class="t-body-lg" style="color: var(--text-muted); max-width: 46ch; margin: 0 auto 32px;">
+        想聊 RAG 落地、系统设计，或只是觉得某篇文章有意思——都欢迎写信。我看每一封。
+      </p>
+      <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+        <Button variant="primary" href="mailto:hi@example.com">发邮件</Button>
+        <Button variant="ghost" href="https://github.com">GitHub</Button>
+        <Button variant="cream" href="/rss.xml">订阅 RSS</Button>
+      </div>
+    </Card>
   </section>
 </BaseLayout>

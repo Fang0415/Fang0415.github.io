@@ -1,19 +1,43 @@
 ---
+// Tag — restrained mono label for tech stacks, categories, statuses.
+// Ported from cream-blog-design-system core/Tag.jsx.
 interface Props {
-  label: string;
-  dark?: boolean;
+  tone?: 'outline' | 'muted' | 'solid';
+  color?: 'clay' | 'ochre' | 'sage' | 'slate';
+  class?: string;
 }
 
-const { label, dark = false } = Astro.props;
+const { tone = 'outline', color, class: className = '' } = Astro.props;
+
+const colorMap = {
+  clay: { tint: 'var(--clay-tint)', ink: 'var(--clay-ink)', dot: 'var(--clay)' },
+  ochre: { tint: 'var(--ochre-tint)', ink: 'var(--ochre-ink)', dot: 'var(--ochre)' },
+  sage: { tint: 'var(--sage-tint)', ink: 'var(--sage-ink)', dot: 'var(--sage)' },
+  slate: { tint: 'var(--slate-tint)', ink: 'var(--slate-ink)', dot: 'var(--slate)' },
+} as const;
+
+const c = color ? colorMap[color] : null;
+
+const toneStyles: Record<string, string> = {
+  outline: 'background: transparent; color: var(--text-secondary); border: 1px solid var(--border-subtle);',
+  muted: 'background: var(--charcoal-04); color: var(--text-muted); border: 1px solid transparent;',
+  solid: 'background: var(--charcoal); color: var(--off-white); border: 1px solid var(--charcoal);',
+};
+const categoryStyle = c
+  ? `background: ${c.tint}; color: ${c.ink}; border: 1px solid transparent;`
+  : '';
+
+const resolved = c ? categoryStyle : toneStyles[tone];
+const base =
+  'display: inline-flex; align-items: center; font-family: var(--font-mono); font-size: 12px; line-height: 1; letter-spacing: 0.01em; padding: 5px 10px; border-radius: var(--radius-sm); white-space: nowrap;';
+const gap = c ? 'gap: 6px;' : 'gap: 0;';
 ---
 
-<span
-  class:list={[
-    'inline-flex items-center border px-2 py-1 font-mono text-[11px] uppercase leading-none tracking-[0.08em]',
-    dark
-      ? 'border-white/15 bg-white/[0.04] text-white/70'
-      : 'border-hairline bg-white text-muted',
-  ]}
->
-  {label}
+<span class={className} style={`${base}${gap}${resolved}`}>
+  {c && (
+    <span
+      style={`width: 6px; height: 6px; border-radius: var(--radius-pill); background: ${c.dot}; flex: none;`}
+    ></span>
+  )}
+  <slot />
 </span>

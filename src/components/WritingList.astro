@@ -1,0 +1,77 @@
+---
+// WritingList — category filter chips + a list of ArticleCards, with a
+// small vanilla script standing in for the React filter state in the
+// design system's Home.jsx. Used on the homepage and the /blog archive.
+import ArticleCard from './ArticleCard.astro';
+import { CATEGORY_ORDER, CATEGORY_COLORS, type PostMeta } from '../lib/posts';
+
+interface Props {
+  posts: PostMeta[];
+  reveal?: boolean;
+}
+
+const { posts, reveal = true } = Astro.props;
+
+// Only show category chips that actually have posts.
+const present = CATEGORY_ORDER.filter((c) => posts.some((p) => p.category === c));
+const categories = ['全部', ...present];
+
+const tints = {
+  clay: { tint: 'var(--clay-tint)', ink: 'var(--clay-ink)', dot: 'var(--clay)' },
+  ochre: { tint: 'var(--ochre-tint)', ink: 'var(--ochre-ink)', dot: 'var(--ochre)' },
+  sage: { tint: 'var(--sage-tint)', ink: 'var(--sage-ink)', dot: 'var(--sage)' },
+  slate: { tint: 'var(--slate-tint)', ink: 'var(--slate-ink)', dot: 'var(--slate)' },
+} as const;
+---
+
+<div data-writing-list>
+  <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px;">
+    {categories.map((c) => {
+      const color = c === '全部' ? null : CATEGORY_COLORS[c];
+      const cssVars = color
+        ? `--cat-tint: ${tints[color].tint}; --cat-ink: ${tints[color].ink}; --cat-dot: ${tints[color].dot};`
+        : '';
+      return (
+        <button
+          class="cb-filter"
+          data-filter={c}
+          data-color={color ?? undefined}
+          aria-pressed={c === '全部' ? 'true' : 'false'}
+          style={cssVars}
+        >
+          <span class="cb-tag-pill">
+            <span class="cb-tag-dot"></span>{c}
+          </span>
+        </button>
+      );
+    })}
+  </div>
+  <div data-writing-items>
+    {posts.map((p, i) => (
+      <div
+        data-category={p.category}
+        class:list={[reveal && 'cb-reveal']}
+        style={reveal ? `--reveal-delay: ${(i % 6) * 100}ms;` : undefined}
+      >
+        <ArticleCard {...p} />
+      </div>
+    ))}
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll('[data-writing-list]').forEach((root) => {
+    const buttons = root.querySelectorAll<HTMLButtonElement>('.cb-filter');
+    const items = root.querySelectorAll<HTMLElement>('[data-writing-items] > [data-category]');
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const filter = btn.dataset.filter;
+        buttons.forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+        items.forEach((it) => {
+          const show = filter === '全部' || it.dataset.category === filter;
+          it.style.display = show ? '' : 'none';
+        });
+      });
+    });
+  });
+</script>

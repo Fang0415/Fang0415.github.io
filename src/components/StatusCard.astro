@@ -1,0 +1,40 @@
+---
+// StatusCard — the personal "now" card for the hero: a compact list of
+// label/value rows. Ported from cream-blog-design-system blog/StatusCard.jsx.
+import Card from './Card.astro';
+
+interface Props {
+  title?: string;
+  rows?: { label: string; value: string }[];
+  class?: string;
+}
+
+const { title = '现在', rows = [], class: className = '' } = Astro.props;
+---
+
+<Card pad="none" radius="card" class={className} style="overflow: hidden;">
+  <div
+    style="display: flex; align-items: center; gap: 8px; padding: 14px 20px; border-bottom: 1px solid var(--border-subtle);"
+  >
+    <span style="width: 7px; height: 7px; border-radius: 50%; background: #5b8c6e;"></span>
+    <span
+      style="font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted);"
+    >
+      {title}
+    </span>
+  </div>
+  <div style="padding: 6px 20px 8px;">
+    {rows.map((r, i) => (
+      <div
+        style={`display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding: 11px 0; ${i < rows.length - 1 ? 'border-bottom: 1px solid var(--border-subtle);' : ''}`}
+      >
+        <span style="font-family: var(--font-mono); font-size: 12px; color: var(--text-muted); flex: none;">
+          {r.label}
+        </span>
+        <span style="font-size: 14px; color: var(--text-strong); text-align: right;">
+          {r.value}
+        </span>
+      </div>
+    ))}
+  </div>
+</Card>

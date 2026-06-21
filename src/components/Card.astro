@@ -1,0 +1,33 @@
+---
+// Card — base container. Cream surface, hairline border, no shadow.
+// Interactive cards darken their border on hover (CSS, see global.css).
+// Ported from cream-blog-design-system core/Card.jsx.
+interface Props {
+  interactive?: boolean;
+  pad?: 'none' | 'sm' | 'md' | 'lg';
+  radius?: 'md' | 'card' | 'container';
+  class?: string;
+  style?: string;
+}
+
+const {
+  interactive = false,
+  pad = 'md',
+  radius = 'card',
+  class: className = '',
+  style = '',
+} = Astro.props;
+
+const pads = { none: '0', sm: '16px', md: '24px', lg: '32px' } as const;
+const radii = {
+  md: 'var(--radius-md)',
+  card: 'var(--radius-card)',
+  container: 'var(--radius-container)',
+} as const;
+
+const base = `background: var(--surface-card); border: 1px solid var(--border-subtle); border-radius: ${radii[radius]}; padding: ${pads[pad]};`;
+---
+
+<div class:list={[interactive && 'cb-card-interactive', className]} style={`${base}${style}`}>
+  <slot />
+</div>
