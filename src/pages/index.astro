@@ -3,9 +3,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Card from '../components/Card.astro';
 import Button from '../components/Button.astro';
-import StatusCard from '../components/StatusCard.astro';
 import ProjectCard from '../components/ProjectCard.astro';
-import TechGroup from '../components/TechGroup.astro';
 import WritingList from '../components/WritingList.astro';
 import { toMeta, sortedPosts } from '../lib/posts';
 
@@ -15,14 +13,6 @@ const recent = sortedPosts(await getCollection('blog', ({ data }) => !data.draft
   .slice(0, 4)
   .map(toMeta);
 
-const statusRows = [
-  { label: '当前关注', value: 'RAG 检索质量' },
-  { label: '最近项目', value: 'ragflow-mini' },
-  { label: '正在学', value: 'Rust + 向量索引' },
-  { label: '在读', value: '《DDIA》第 2 遍' },
-  { label: 'GitHub', value: '12 天连续提交' },
-];
-
 const aboutRows: [string, string][] = [
   ['方向', '后端 · RAG · AI 应用'],
   ['常用语言', 'Python · Go · TS'],
@@ -31,53 +21,44 @@ const aboutRows: [string, string][] = [
 ];
 
 type Status = 'active' | 'wip' | 'paused' | 'archived';
-type AccentColor = 'clay' | 'ochre' | 'sage' | 'slate';
-type TechItem = string | { name: string; note?: string };
-
 const projects: { name: string; description: string; tags: string[]; status: Status; statusLabel: string }[] = [
   { name: 'ragflow-mini', description: '轻量 RAG 检索服务，支持混合检索、重排与引用回溯，单机即可部署。', tags: ['Python', 'FastAPI', 'pgvector'], status: 'active', statusLabel: '运行中' },
-  { name: 'this-blog', description: '你正在看的这个博客。无框架，HTML + 一点点 JS，构建产物可读。', tags: ['TypeScript', 'Vite', 'MDX'], status: 'active', statusLabel: '运行中' },
+  { name: 'this-blog', description: '你正在看的这个博客。Astro + Markdown，构建产物干净可读。', tags: ['Astro', 'TypeScript', 'MDX'], status: 'active', statusLabel: '运行中' },
   { name: 'agent-shell', description: '给本地命令行套了个 Agent 外壳，能读报错、查文档、提改法。', tags: ['Go', 'LLM', 'CLI'], status: 'wip', statusLabel: '开发中' },
   { name: 'pgvec-bench', description: '向量索引的基准测试工具，对比 HNSW / IVF 在真实数据上的召回与延迟。', tags: ['Rust', 'pgvector'], status: 'wip', statusLabel: '开发中' },
   { name: 'notes-sync', description: '把 Markdown 笔记同步成可检索知识库的小工具，已经够用就没再加功能。', tags: ['Python', 'SQLite'], status: 'paused', statusLabel: '维护中' },
   { name: 'tiny-queue', description: '一个几百行的任务队列，写来理解 at-least-once 到底意味着什么。', tags: ['Go', 'Redis'], status: 'archived', statusLabel: '已归档' },
 ];
-
-const techGroups: { label: string; color: AccentColor; items: TechItem[] }[] = [
-  { label: '语言', color: 'clay', items: [{ name: 'Python', note: '日常' }, { name: 'Go', note: '服务' }, 'TypeScript', 'Rust'] },
-  { label: '后端框架', color: 'slate', items: ['FastAPI', 'Gin', 'gRPC'] },
-  { label: '数据库', color: 'sage', items: ['PostgreSQL', 'Redis', 'SQLite', 'pgvector'] },
-  { label: 'AI / RAG', color: 'clay', items: ['LangGraph', 'BGE-reranker', 'vLLM', 'Embeddings'] },
-  { label: '工程工具', color: 'ochre', items: ['Git', 'Neovim', 'tmux', 'Make'] },
-  { label: '部署运维', color: 'slate', items: ['Docker', 'Caddy', 'GitHub Actions', 'Grafana'] },
-];
 ---
 
 <BaseLayout>
-  {/* HERO */}
-  <section style="max-width: var(--max-content); margin: 0 auto; padding: 72px 24px 96px;">
-    <div class="cb-hero-grid" style="display: grid; grid-template-columns: minmax(0,1.5fr) minmax(0,1fr); gap: 56px; align-items: center;">
-      <div>
-        <div class="t-eyebrow cb-onload" style="margin-bottom: 22px;">后端开发 · RAG 系统 · AI 应用</div>
-        <h1 class="t-display cb-onload" style="font-size: clamp(40px, 6vw, 60px); margin-bottom: 24px; --reveal-delay: 140ms;">
-          把复杂系统做简单，<br />然后写下来。
-        </h1>
-        <p class="t-body-lg cb-onload" style="max-width: 52ch; color: var(--text-muted); margin-bottom: 32px; --reveal-delay: 300ms;">
-          我是一名后端工程师，做 RAG 检索和 AI 应用开发。这里记录技术实践、项目复盘、系统设计，以及一些还没想明白的问题。不卖课，不画饼。
-        </p>
-        <div class="cb-onload" style="display: flex; gap: 12px; flex-wrap: wrap; --reveal-delay: 440ms;">
-          <Button variant="primary" href="#writing">读最新文章</Button>
-          <Button variant="ghost" href="#projects">看我做的东西</Button>
-        </div>
-      </div>
-      <div class="cb-onload" style="--reveal-delay: 560ms;">
-        <StatusCard rows={statusRows} />
+  {/* HERO — full-height, centered, single focus */}
+  <section style="min-height: calc(100vh - 68px); min-height: calc(100svh - 68px); max-width: var(--max-content); margin: 0 auto; padding: 0 24px; display: flex; flex-direction: column;">
+    <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+      <div class="t-eyebrow cb-onload" style="margin-bottom: 24px;">后端开发 · RAG 系统 · AI 应用</div>
+      <h1 class="t-display cb-onload" style="font-size: clamp(44px, 8vw, 76px); max-width: 16ch; margin-bottom: 28px; --reveal-delay: 140ms;">
+        把复杂系统做简单，<br />然后写下来。
+      </h1>
+      <p class="t-body-lg cb-onload" style="max-width: 52ch; color: var(--text-muted); margin: 0 auto 36px; --reveal-delay: 300ms;">
+        我是一名后端工程师，做 RAG 检索和 AI 应用开发。这里记录技术实践、项目复盘、系统设计，以及一些还没想明白的问题。不卖课，不画饼。
+      </p>
+      <div class="cb-onload" style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; --reveal-delay: 440ms;">
+        <Button variant="primary" href="#writing">读最新文章</Button>
+        <Button variant="ghost" href="#projects">看我做的东西</Button>
       </div>
     </div>
+    <a
+      href="#about"
+      class="cb-footlink cb-onload"
+      style="align-self: center; display: flex; flex-direction: column; align-items: center; gap: 8px; padding-bottom: 40px; text-decoration: none; color: var(--text-muted); --reveal-delay: 620ms;"
+    >
+      <span style="font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.06em;">向下滚动</span>
+      <span class="cb-arrow-down" aria-hidden="true" style="font-size: 18px; line-height: 1;">↓</span>
+    </a>
   </section>
 
   {/* ABOUT */}
-  <section id="about" style="max-width: var(--max-content); margin: 0 auto; padding: 0 24px 128px; scroll-margin-top: 90px;">
+  <section id="about" style="max-width: var(--max-content); margin: 0 auto; padding: 96px 24px 128px; scroll-margin-top: 90px;">
     <span class="t-eyebrow cb-reveal" style="display: block; margin-bottom: 16px;">About</span>
     <h2 class="t-h2 cb-reveal" style="--reveal-delay: 110ms; margin-bottom: 40px;">关于我</h2>
     <div class="cb-about-grid" style="display: grid; grid-template-columns: minmax(0,1.4fr) minmax(0,1fr); gap: 48px; align-items: start;">
@@ -123,22 +104,6 @@ const techGroups: { label: string; color: AccentColor; items: TechItem[] }[] = [
     <WritingList posts={recent} />
     <div style="margin-top: 32px;">
       <Button variant="ghost" href="/blog/">查看全部文章 <span class="cb-arrow" aria-hidden="true">→</span></Button>
-    </div>
-  </section>
-
-  {/* STACK */}
-  <section id="stack" style="max-width: var(--max-content); margin: 0 auto; padding: 0 24px 128px; scroll-margin-top: 90px;">
-    <span class="t-eyebrow cb-reveal" style="display: block; margin-bottom: 16px;">Stack</span>
-    <h2 class="t-h2 cb-reveal" style="--reveal-delay: 110ms; margin-bottom: 16px;">技术栈</h2>
-    <p class="t-body-lg cb-reveal" style="--reveal-delay: 220ms; max-width: 62ch; color: var(--text-muted); margin-bottom: 40px;">
-      不是为了堆关键词，而是这些工具我真的天天用、踩过坑、也愿意替它们辩护。
-    </p>
-    <div class="cb-stack-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
-      {techGroups.map((g, i) => (
-        <div class="cb-reveal" style={`--reveal-delay: ${(i % 3) * 120}ms;`}>
-          <TechGroup label={g.label} color={g.color} items={g.items} />
-        </div>
-      ))}
     </div>
   </section>
 

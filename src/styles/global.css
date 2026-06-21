@@ -198,6 +198,10 @@ html.js-reveal .cb-onload:not(.is-in) {
 .cb-arrow { display: inline-block; transition: transform var(--dur-base) var(--ease-out); }
 a:hover .cb-arrow, button:hover .cb-arrow { transform: translateX(3px); }
 
+/* Down-nudge for the hero scroll hint (no infinite loop, per the brand). */
+.cb-arrow-down { display: inline-block; transition: transform var(--dur-base) var(--ease-out); }
+a:hover .cb-arrow-down { transform: translateY(3px); }
+
 .cb-underline {
   background-image: linear-gradient(currentColor, currentColor);
   background-position: 0 100%; background-repeat: no-repeat;
@@ -210,7 +214,7 @@ a:hover .cb-arrow, button:hover .cb-arrow { transform: translateX(3px); }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .cb-reveal, .cb-onload { transition: none !important; opacity: 1 !important; transform: none !important; }
-  .cb-arrow, .cb-underline { transition: none !important; }
+  .cb-arrow, .cb-arrow-down, .cb-underline { transition: none !important; }
 }
 
 /* ============================================================
