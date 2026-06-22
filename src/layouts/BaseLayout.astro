@@ -2,6 +2,7 @@
 import Navbar from '../components/Navbar.astro';
 import MobileMenu from '../components/MobileMenu.astro';
 import Footer from '../components/Footer.astro';
+import { PROFILE } from '../lib/site';
 import '../styles/global.css';
 
 interface Props {
@@ -10,20 +11,20 @@ interface Props {
 }
 
 const {
-  title = '/dev/null',
-  description = '一名后端工程师的技术博客：RAG 检索、AI 应用与系统设计的实践、复盘与笔记。',
+  title,
+  description = 'A developer writing about backend systems, RAG, and the plumbing that makes AI features reliable.',
 } = Astro.props;
-const pageTitle = title === '/dev/null' ? title : `${title} — /dev/null`;
+const pageTitle = title ? `${title} — ${PROFILE.wordmark}` : PROFILE.wordmark;
 ---
 
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="description" content={description} />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{pageTitle}</title>
-    <!-- Hide reveal targets before paint, only when motion is allowed, so the
+    <!-- Hide reveal targets before paint (only when motion is allowed) so the
          fade-rise entrance doesn't flash. No-JS / reduced-motion show end-state. -->
     <script is:inline>
       if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -32,19 +33,17 @@ const pageTitle = title === '/dev/null' ? title : `${title} — /dev/null`;
     </script>
   </head>
   <body>
-    <div id="top">
-      <Navbar />
-      <MobileMenu />
-      <main>
-        <slot />
-      </main>
-      <Footer />
-    </div>
+    <Navbar />
+    <MobileMenu />
+    <main>
+      <slot />
+    </main>
+    <Footer />
 
     <script>
       // Scroll-reveal: fade + rise once each .cb-reveal enters the viewport.
-      // Above-the-fold .cb-onload plays on mount. Fallback timeout guarantees
-      // content never stays hidden (e.g. background tab).
+      // Above-the-fold .cb-onload plays on mount. Fallback guarantees content
+      // never stays hidden (e.g. a background tab).
       const reveals = document.querySelectorAll<HTMLElement>('.cb-reveal');
       const io = new IntersectionObserver(
         (entries) => {

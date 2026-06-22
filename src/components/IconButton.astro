@@ -1,0 +1,20 @@
+---
+// IconButton — Folio square ghost button for a single icon (social row,
+// toolbar). Ported from Folio core/IconButton.jsx.
+interface Props {
+  label: string;
+  size?: 'sm' | 'md' | 'lg';
+  variant?: 'plain' | 'outline';
+  href?: string;
+  class?: string;
+  style?: string;
+}
+
+const { label, size = 'md', variant = 'plain', href, class: className = '', style = '' } = Astro.props;
+const cls = `folio-iconbtn folio-iconbtn--${size} folio-iconbtn--${variant} ${className}`.trim();
+const Tag = href ? 'a' : 'button';
+---
+
+<Tag class={cls} href={href} style={style} aria-label={label} title={label}>
+  <slot />
+</Tag>

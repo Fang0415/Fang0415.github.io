@@ -1,0 +1,113 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Avatar from '../../components/Avatar.astro';
+import Card from '../../components/Card.astro';
+import Tag from '../../components/Tag.astro';
+import Button from '../../components/Button.astro';
+import SocialRow from '../../components/SocialRow.astro';
+import FolioIcon from '../../components/FolioIcon.astro';
+import { PROFILE } from '../../lib/site';
+
+const focus = [
+  { label: 'RAG & retrieval', note: 'chunking, hybrid search, evals' },
+  { label: 'Backend systems', note: 'Postgres, queues, observability' },
+  { label: 'Developer tooling', note: 'small, sharp, single-purpose CLIs' },
+];
+const tools = ['Python', 'Go', 'Rust', 'Postgres', 'pgvector', 'FastAPI', 'DuckDB', 'Neovim', 'Linux'];
+const now = [
+  'Rebuilding ragkit around a cleaner eval harness.',
+  'Reading about vector index internals (HNSW, IVF).',
+  'Writing one post a week — trying to keep the habit.',
+];
+const background: [string, string][] = [
+  ['now', 'Backend / AI infra, building retrieval systems'],
+  ['before', 'Platform & data engineering at a mid-size SaaS'],
+  ['writing', 'RAG, Postgres, evals, and developer workflow'],
+  ['off-screen', 'Mechanical keyboards, long runs, terrible coffee'],
+];
+---
+
+<BaseLayout title="About" description="A bit about me — backend engineer working on RAG and AI infrastructure.">
+  <section style="padding-top: 28px;">
+    <div class="kit-container">
+      <div class="about-cover rise">
+        <img src="/assets/hero-sunflower.jpg" alt="A summer afternoon in a sunflower field" />
+      </div>
+      <div class="about-intro rise rise-2">
+        <Avatar name={PROFILE.name} size={96} />
+        <div>
+          <h1>A bit about me</h1>
+          <p>{PROFILE.role} · based in {PROFILE.location}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="kit-section" style="padding-top: 40px;">
+    <div class="kit-container about-grid">
+      <aside class="about-aside">
+        <div class="sec-eyebrow" style="margin-bottom: 12px;">Find me</div>
+        <SocialRow size="md" />
+        <div style="margin-top: 20px;">
+          <Button variant="secondary" size="sm" href={`mailto:${PROFILE.email}`}>
+            <FolioIcon name="mail" slot="icon-left" class="icon" />
+            Email me
+          </Button>
+        </div>
+      </aside>
+
+      <div>
+        <div class="about-block">
+          <div class="prose" style="font-size: var(--fs-body-lg);">
+            <p>
+              I'm {PROFILE.name}, a backend engineer who got pulled into AI infrastructure and
+              stayed. Most of my work lives in the unglamorous middle of the stack — retrieval
+              pipelines, queues, the plumbing that decides whether an AI feature is reliable or
+              just a good demo.
+            </p>
+            <p>
+              I like <strong>small, sharp tools</strong> and writing things down. This site is where
+              I keep what I learn so it is reusable later — for me first, and for anyone else who
+              finds it useful.
+            </p>
+          </div>
+        </div>
+
+        <div class="about-block">
+          <h2>What I focus on</h2>
+          <div class="grid-3">
+            {focus.map((f) => (
+              <Card soft>
+                <div style="font-weight: 700; margin-bottom: 6px;">{f.label}</div>
+                <div style="font-size: var(--fs-body-sm); color: var(--text-secondary); line-height: 1.55;">{f.note}</div>
+              </Card>
+            ))}
+          </div>
+        </div>
+
+        <div class="about-block">
+          <h2>Now</h2>
+          <ul class="prose" style="font-size: var(--fs-body); padding-left: 1.1em;">
+            {now.map((n) => <li>{n}</li>)}
+          </ul>
+        </div>
+
+        <div class="about-block">
+          <h2>Tools I reach for</h2>
+          <div class="tool-grid">
+            {tools.map((t) => <Tag>{t}</Tag>)}
+          </div>
+        </div>
+
+        <div class="about-block">
+          <h2>A little background</h2>
+          <div class="kv">
+            {background.map(([k, v]) => (
+              <div class="kv-row"><span class="k">{k}</span><span class="v">{v}</span></div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

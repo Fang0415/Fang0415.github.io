@@ -1,0 +1,23 @@
+---
+// Avatar — Folio circular (or square) identity tile. Image or initials
+// on a brand-tint ground. Ported from Folio core/Avatar.jsx.
+interface Props {
+  src?: string;
+  name?: string;
+  size?: 'sm' | 'md' | 'lg' | 'xl' | number;
+  square?: boolean;
+  class?: string;
+  style?: string;
+}
+
+const { src, name = '', size = 'md', square = false, class: className = '', style = '' } = Astro.props;
+
+const SIZES: Record<string, number> = { sm: 28, md: 40, lg: 56, xl: 96 };
+const px = typeof size === 'number' ? size : (SIZES[size] || 40);
+const initials = name.trim().split(/\s+/).slice(0, 2).map((w) => w[0] || '').join('').toUpperCase();
+const cls = `folio-avatar ${square ? 'folio-avatar--square' : ''} ${className}`.trim();
+---
+
+<span class={cls} style={`--_s: ${px}px;${style}`}>
+  {src ? <img src={src} alt={name} /> : <span>{initials}</span>}
+</span>

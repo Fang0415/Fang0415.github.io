@@ -1,0 +1,18 @@
+---
+// Badge — Folio status pill with optional leading dot.
+// Ported from Folio core/Badge.jsx.
+interface Props {
+  variant?: 'neutral' | 'brand' | 'success' | 'warning' | 'error' | 'info';
+  dot?: boolean;
+  class?: string;
+  style?: string;
+}
+
+const { variant = 'neutral', dot = false, class: className = '', style = '' } = Astro.props;
+const cls = `folio-badge folio-badge--${variant} ${className}`.trim();
+---
+
+<span class={cls} style={style}>
+  {dot && <span class="folio-badge__dot" aria-hidden="true" />}
+  <slot />
+</span>

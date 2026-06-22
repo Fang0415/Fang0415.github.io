@@ -1,43 +1,29 @@
 ---
-// Tag — restrained mono label for tech stacks, categories, statuses.
-// Ported from cream-blog-design-system core/Tag.jsx.
+// Tag — Folio mono label for tech stacks, categories, statuses.
+// Variants tint with the brand ramp. Ported from Folio core/Tag.jsx.
 interface Props {
-  tone?: 'outline' | 'muted' | 'solid';
-  color?: 'clay' | 'ochre' | 'sage' | 'slate';
+  variant?: 'default' | 'solid' | 'teal' | 'amber' | 'sky';
+  mono?: boolean;
+  dot?: boolean;
+  href?: string;
   class?: string;
+  style?: string;
 }
 
-const { tone = 'outline', color, class: className = '' } = Astro.props;
+const {
+  variant = 'default',
+  mono = true,
+  dot = false,
+  href,
+  class: className = '',
+  style = '',
+} = Astro.props;
 
-const colorMap = {
-  clay: { tint: 'var(--clay-tint)', ink: 'var(--clay-ink)', dot: 'var(--clay)' },
-  ochre: { tint: 'var(--ochre-tint)', ink: 'var(--ochre-ink)', dot: 'var(--ochre)' },
-  sage: { tint: 'var(--sage-tint)', ink: 'var(--sage-ink)', dot: 'var(--sage)' },
-  slate: { tint: 'var(--slate-tint)', ink: 'var(--slate-ink)', dot: 'var(--slate)' },
-} as const;
-
-const c = color ? colorMap[color] : null;
-
-const toneStyles: Record<string, string> = {
-  outline: 'background: transparent; color: var(--text-secondary); border: 1px solid var(--border-subtle);',
-  muted: 'background: var(--charcoal-04); color: var(--text-muted); border: 1px solid transparent;',
-  solid: 'background: var(--charcoal); color: var(--off-white); border: 1px solid var(--charcoal);',
-};
-const categoryStyle = c
-  ? `background: ${c.tint}; color: ${c.ink}; border: 1px solid transparent;`
-  : '';
-
-const resolved = c ? categoryStyle : toneStyles[tone];
-const base =
-  'display: inline-flex; align-items: center; font-family: var(--font-mono); font-size: 12px; line-height: 1; letter-spacing: 0.01em; padding: 5px 10px; border-radius: var(--radius-sm); white-space: nowrap;';
-const gap = c ? 'gap: 6px;' : 'gap: 0;';
+const cls = `folio-tag folio-tag--${variant} ${mono ? '' : 'folio-tag--sans'} ${className}`.trim();
+const Tag = href ? 'a' : 'span';
 ---
 
-<span class={className} style={`${base}${gap}${resolved}`}>
-  {c && (
-    <span
-      style={`width: 6px; height: 6px; border-radius: var(--radius-pill); background: ${c.dot}; flex: none;`}
-    ></span>
-  )}
+<Tag class={cls} href={href} style={style}>
+  {dot && <span class="folio-tag__dot" aria-hidden="true" />}
   <slot />
-</span>
+</Tag>

@@ -1,77 +1,102 @@
 ---
-// WritingList — category filter chips + a list of ArticleCards, with a
-// small vanilla script standing in for the React filter state in the
-// design system's Home.jsx. Used on the homepage and the /blog archive.
-import ArticleCard from './ArticleCard.astro';
-import { CATEGORY_ORDER, CATEGORY_COLORS, type PostMeta } from '../lib/posts';
+// WritingList — Folio post list (row layout) with a category filter bar and
+// optional search pill. Used on the homepage and the /blog archive.
+import PostCard from './PostCard.astro';
+import FolioIcon from './FolioIcon.astro';
+import { CATEGORY_ORDER, type PostMeta } from '../lib/posts';
 
 interface Props {
   posts: PostMeta[];
-  reveal?: boolean;
+  search?: boolean;
 }
 
-const { posts, reveal = true } = Astro.props;
+const { posts, search = true } = Astro.props;
 
 // Only show category chips that actually have posts.
 const present = CATEGORY_ORDER.filter((c) => posts.some((p) => p.category === c));
-const categories = ['全部', ...present];
-
-const tints = {
-  clay: { tint: 'var(--clay-tint)', ink: 'var(--clay-ink)', dot: 'var(--clay)' },
-  ochre: { tint: 'var(--ochre-tint)', ink: 'var(--ochre-ink)', dot: 'var(--ochre)' },
-  sage: { tint: 'var(--sage-tint)', ink: 'var(--sage-ink)', dot: 'var(--sage)' },
-  slate: { tint: 'var(--slate-tint)', ink: 'var(--slate-ink)', dot: 'var(--slate)' },
-} as const;
+const categories = ['All', ...present];
 ---
 
 <div data-writing-list>
-  <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px;">
-    {categories.map((c) => {
-      const color = c === '全部' ? null : CATEGORY_COLORS[c];
-      const cssVars = color
-        ? `--cat-tint: ${tints[color].tint}; --cat-ink: ${tints[color].ink}; --cat-dot: ${tints[color].dot};`
-        : '';
-      return (
-        <button
-          class="cb-filter"
-          data-filter={c}
-          data-color={color ?? undefined}
-          aria-pressed={c === '全部' ? 'true' : 'false'}
-          style={cssVars}
-        >
-          <span class="cb-tag-pill">
-            <span class="cb-tag-dot"></span>{c}
-          </span>
-        </button>
-      );
-    })}
+  <div class="filter-bar">
+    {categories.map((c) => (
+      <button class={`filter-chip ${c === 'All' ? 'filter-chip--active' : ''}`} data-filter={c}>{c}</button>
+    ))}
+    {search && (
+      <>
+        <span class="filter-spacer"></span>
+        <div class="wl-search">
+          <FolioIcon name="search" class="icon" />
+          <input type="search" placeholder="Search posts…" data-writing-search aria-label="Search posts" />
+        </div>
+      </>
+    )}
   </div>
-  <div data-writing-items>
-    {posts.map((p, i) => (
-      <div
-        data-category={p.category}
-        class:list={[reveal && 'cb-reveal']}
-        style={reveal ? `--reveal-delay: ${(i % 6) * 100}ms;` : undefined}
-      >
-        <ArticleCard {...p} />
+
+  <div class="post-list" data-writing-items>
+    {posts.map((p) => (
+      <div data-category={p.category} data-haystack={`${p.title} ${p.excerpt}`.toLowerCase()}>
+        <PostCard
+          layout="row"
+          title={p.title}
+          excerpt={p.excerpt}
+          date={p.date}
+          href={p.href}
+          tags={[p.category]}
+        />
       </div>
     ))}
   </div>
+  <div class="wl-empty" data-writing-empty hidden>No posts match your search.</div>
 </div>
+
+<style>
+  .wl-search {
+    display: flex; align-items: center; gap: 8px; width: 240px;
+    padding: 7px 14px; border-radius: var(--radius-full);
+    background: var(--bg-soft); border: 1px solid var(--border-default);
+    color: var(--text-muted); transition: border-color .15s ease, background .15s ease;
+  }
+  .wl-search:focus-within { border-color: var(--border-strong); background: var(--surface-card); }
+  .wl-search .icon { width: 16px; height: 16px; flex: none; }
+  .wl-search input {
+    border: none; outline: none; background: none; width: 100%;
+    font-family: var(--font-sans); font-size: var(--fs-body-sm); color: var(--text-primary);
+  }
+  .wl-empty {
+    padding: 48px 0; text-align: center; color: var(--text-muted);
+    font-family: var(--font-mono); font-size: 13px;
+  }
+</style>
 
 <script>
   document.querySelectorAll('[data-writing-list]').forEach((root) => {
-    const buttons = root.querySelectorAll<HTMLButtonElement>('.cb-filter');
+    const buttons = root.querySelectorAll<HTMLButtonElement>('.filter-chip');
     const items = root.querySelectorAll<HTMLElement>('[data-writing-items] > [data-category]');
+    const searchEl = root.querySelector<HTMLInputElement>('[data-writing-search]');
+    const empty = root.querySelector<HTMLElement>('[data-writing-empty]');
+    let cat = 'All';
+    let q = '';
+
+    const apply = () => {
+      let shown = 0;
+      items.forEach((it) => {
+        const inCat = cat === 'All' || it.dataset.category === cat;
+        const inQ = !q || (it.dataset.haystack || '').includes(q);
+        const show = inCat && inQ;
+        it.style.display = show ? '' : 'none';
+        if (show) shown++;
+      });
+      if (empty) empty.hidden = shown !== 0;
+    };
+
     buttons.forEach((btn) => {
       btn.addEventListener('click', () => {
-        const filter = btn.dataset.filter;
-        buttons.forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
-        items.forEach((it) => {
-          const show = filter === '全部' || it.dataset.category === filter;
-          it.style.display = show ? '' : 'none';
-        });
+        cat = btn.dataset.filter || 'All';
+        buttons.forEach((b) => b.classList.toggle('filter-chip--active', b === btn));
+        apply();
       });
     });
+    searchEl?.addEventListener('input', () => { q = searchEl.value.trim().toLowerCase(); apply(); });
   });
 </script>

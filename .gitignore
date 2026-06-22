@@ -6,8 +6,9 @@ dist
 .DS_Store
 npm-debug.log*
 
-# Local-only design-system handoff bundle — never publish
+# Local-only design-system handoff bundles — never publish
 cream-blog-design-system/
+my blog design system/
 
 # Local preview/tooling config
 .claude/

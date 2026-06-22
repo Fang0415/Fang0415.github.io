@@ -7,13 +7,20 @@ import { toMeta, sortedPosts } from '../../lib/posts';
 const posts = sortedPosts(await getCollection('blog', ({ data }) => !data.draft)).map(toMeta);
 ---
 
-<BaseLayout title="全部文章" description="RAG、系统设计、AI 应用与工程实践文章归档，按发布时间倒序。">
-  <section style="max-width: var(--max-content); margin: 0 auto; padding: 64px 24px 96px;">
-    <span class="t-eyebrow" style="display: block; margin-bottom: 16px;">Writing</span>
-    <h1 class="t-h1" style="font-size: clamp(36px, 6vw, 48px); margin-bottom: 16px;">全部文章</h1>
-    <p class="t-body-lg" style="max-width: 62ch; color: var(--text-muted); margin-bottom: 48px;">
-      按发布时间倒序。主题围绕 RAG 检索、系统设计、AI 应用与工程实践——记录踩过的坑和想明白的事。
-    </p>
-    <WritingList posts={posts} reveal={false} />
+<BaseLayout title="Writing" description="Notes on backend systems, RAG, and developer tooling.">
+  <section class="page-head">
+    <div class="kit-container">
+      <h1 class="rise">Writing</h1>
+      <p class="rise rise-2">
+        Notes on backend systems, RAG, and developer tooling. I write to think things
+        through and to keep what I learn reusable later.
+      </p>
+    </div>
+  </section>
+
+  <section class="kit-section" style="padding-top: 36px;">
+    <div class="kit-container">
+      <WritingList posts={posts} />
+    </div>
   </section>
 </BaseLayout>

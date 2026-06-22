@@ -1,37 +1,24 @@
 ---
-// Button — primary action element. Three variants: primary (dark, inset
-// shadow), ghost (outline), cream (flat surface). Renders <a> if href set.
-// Ported from cream-blog-design-system core/Button.jsx.
+// Button — Folio CTA. Variants: primary (gold), secondary (outline),
+// ghost, text. Pill geometry. Renders <a> when href is set.
+// Ported from Folio core/Button.jsx.
 interface Props {
-  variant?: 'primary' | 'ghost' | 'cream';
+  variant?: 'primary' | 'secondary' | 'ghost' | 'text';
   size?: 'sm' | 'md' | 'lg';
   href?: string;
   class?: string;
+  style?: string;
 }
 
-const { variant = 'primary', size = 'md', href, class: className = '' } = Astro.props;
-
-const base =
-  'display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: var(--font-sans); font-weight: var(--weight-regular); line-height: 1.5; border-radius: var(--radius-sm); cursor: pointer; text-decoration: none; white-space: nowrap; border: 1px solid transparent; box-sizing: border-box;';
-
-const sizes: Record<string, string> = {
-  sm: 'padding: 6px 12px; font-size: var(--caption-size);',
-  md: 'padding: 9px 16px; font-size: var(--body-size);',
-  lg: 'padding: 12px 22px; font-size: var(--body-lg-size);',
-};
-
-const variants: Record<string, string> = {
-  primary:
-    'background: var(--btn-primary-bg); color: var(--btn-primary-fg); box-shadow: var(--shadow-inset);',
-  ghost:
-    'background: transparent; color: var(--btn-ghost-fg); border: 1px solid var(--btn-ghost-border);',
-  cream: 'background: var(--surface-card); color: var(--text-strong);',
-};
-
-const style = `${base}${sizes[size]}${variants[variant]}`;
+const { variant = 'primary', size = 'md', href, class: className = '', style = '' } = Astro.props;
+const cls = `folio-btn folio-btn--${variant} folio-btn--${size} ${className}`.trim();
 const Tag = href ? 'a' : 'button';
+const hasLeft = Astro.slots.has('icon-left');
+const hasRight = Astro.slots.has('icon-right');
 ---
 
-<Tag class:list={['cb-btn', className]} href={href} style={style}>
-  <slot />
+<Tag class={cls} href={href} style={style}>
+  {hasLeft && <span class="folio-btn__icon" aria-hidden="true"><slot name="icon-left" /></span>}
+  <span><slot /></span>
+  {hasRight && <span class="folio-btn__icon" aria-hidden="true"><slot name="icon-right" /></span>}
 </Tag>

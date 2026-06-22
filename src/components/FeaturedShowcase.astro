@@ -1,0 +1,158 @@
+---
+// FeaturedShowcase — the home "Selected work" pinned-scroll strip.
+// While the section is on screen, vertical scroll steps through the
+// projects: the intro text cross-fades and a window-preview card slides
+// up over the previous one, tracking the scroll position frame-for-frame.
+// On mobile (<=880px) the pin is disabled and it renders as a single card.
+// Ported from Folio Home.jsx FeaturedShowcase + FsWinCard.
+import { PROJECTS, SHOWCASE_STATUS } from '../lib/site';
+import FolioIcon from './FolioIcon.astro';
+
+const items = PROJECTS.slice(0, 4);
+const N = items.length;
+const data = items.map((p) => {
+  const [label, kind] = SHOWCASE_STATUS[p.status];
+  return { ...p, statusLabel: label, statusKind: kind };
+});
+---
+
+<section class="fs-track" data-fs-track style={`height: calc(${N} * 100vh);`}>
+  <div class="fs-pin">
+    <div class="kit-container">
+      <div class="sec-head">
+        <div>
+          <p class="sec-eyebrow">Selected work</p>
+          <h2 class="sec-title">Things I've built</h2>
+        </div>
+        <a class="sec-link" href="/projects/">All projects <FolioIcon name="arrow-right" class="icon" /></a>
+      </div>
+
+      <div class="fs">
+        {/* Intro column — one block per project, only the active one shown */}
+        <div class="fs-intro-wrap">
+          {data.map((p, i) => (
+            <div class="fs-intro" data-fs-intro={i} hidden={i !== 0}>
+              <div class="fs-count">{String(i + 1).padStart(2, '0')} <span>/ {String(N).padStart(2, '0')}</span></div>
+              <div class="fs-meta">
+                <span class={`fs-status fs-status--${p.statusKind}`}>{p.statusLabel}</span>
+                <span class="fs-eyebrow">{p.category}</span>
+              </div>
+              <h3 class="fs-title">{p.title}</h3>
+              <p class="fs-desc">{p.description}</p>
+              <div class="fs-tech">{p.stack.map((t) => <span class="fs-chip">{t}</span>)}</div>
+              <div class="fs-links">
+                {p.demo && <a class="fs-link" href={p.demo}>View demo ↗</a>}
+                {p.repo && <a class="fs-link fs-link--muted" href={p.repo}>GitHub ↗</a>}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Window-preview stack — base card + sliding overlay card */}
+        <div class="fs-win-stack" data-fs-stack>
+          {data.map((p, i) => (
+            <div class="fs-win-layer" data-fs-layer={i} style={`z-index:${i + 1};`} hidden={i > 1}>
+              <div class="fs-win">
+                <div class="fs-win__bar">
+                  <span class="fs-win__dot" style="background:#f0738b;"></span>
+                  <span class="fs-win__dot" style="background:#f6b417;"></span>
+                  <span class="fs-win__dot" style="background:#5aa53f;"></span>
+                  <span class="fs-win__title">{p.id}</span>
+                </div>
+                <div class="fs-win__body"><span class="fs-win__tag">{p.title} — live preview</span></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div class="fs-steps" data-fs-steps>
+        {data.map((p, i) => (
+          <button class={`fs-step ${i === 0 ? 'is-active' : ''}`} data-fs-step={i} aria-label={`Show ${p.title}`}></button>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Scroll-driven pin: convert the page's scroll through the tall track
+  // into a continuous 0..(N-1) position. Whole numbers = a card fully shown.
+  // The overlay card's translateY is set directly from scroll progress, so
+  // motion tracks the user's hand with no fixed-duration animation.
+  const track = document.querySelector<HTMLElement>('[data-fs-track]');
+  if (track) {
+    const intros = Array.from(track.querySelectorAll<HTMLElement>('[data-fs-intro]'));
+    const layers = Array.from(track.querySelectorAll<HTMLElement>('[data-fs-layer]'));
+    const steps = Array.from(track.querySelectorAll<HTMLElement>('[data-fs-step]'));
+    const N = intros.length;
+    const mq = window.matchMedia('(max-width: 880px)');
+    let raf = 0;
+    let lastSel = -1;
+
+    const paint = (pos: number) => {
+      const posC = Math.max(0, Math.min(pos, N - 1));
+      const baseIdx = Math.min(Math.floor(posC), N - 1);
+      const frac = posC - baseIdx;
+      const nextIdx = baseIdx + 1 < N ? baseIdx + 1 : null;
+      const sel = Math.round(posC);
+
+      // Window stack: show the base card, slide the next one up over it.
+      layers.forEach((layer, i) => {
+        const over = layer.classList.contains('fs-win-layer--over');
+        if (i === baseIdx) {
+          layer.hidden = false;
+          layer.style.zIndex = '1';
+          layer.style.transform = 'translateY(0%)';
+          layer.classList.remove('fs-win-layer--over');
+        } else if (i === nextIdx && frac > 0.0005) {
+          layer.hidden = false;
+          layer.style.zIndex = '2';
+          layer.style.transform = `translateY(${(1 - frac) * 100}%)`;
+          layer.classList.add('fs-win-layer--over');
+        } else {
+          layer.hidden = true;
+          if (over) layer.classList.remove('fs-win-layer--over');
+        }
+      });
+
+      // Intro + steps only change on a whole-number selection.
+      if (sel !== lastSel) {
+        lastSel = sel;
+        intros.forEach((el, i) => {
+          const active = i === sel;
+          el.hidden = !active;
+          if (active) { el.classList.remove('fs-anim'); void el.offsetWidth; el.classList.add('fs-anim'); }
+        });
+        steps.forEach((el, i) => el.classList.toggle('is-active', i === sel));
+      }
+    };
+
+    const update = () => {
+      raf = 0;
+      if (mq.matches) { paint(lastSel < 0 ? 0 : lastSel); return; }
+      const vh = window.innerHeight;
+      const total = track.offsetHeight - vh;
+      const scrolled = Math.min(Math.max(-track.getBoundingClientRect().top, 0), Math.max(total, 1));
+      const p = total > 0 ? scrolled / total : 0;
+      paint(Math.max(0, Math.min(p * (N - 1), N - 1)));
+    };
+
+    const onScroll = () => { if (!raf) raf = requestAnimationFrame(update); };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+
+    // Clicking a step dot scrolls the page to that project's band.
+    steps.forEach((btn, i) => {
+      btn.addEventListener('click', () => {
+        if (mq.matches) { paint(i); return; }
+        const vh = window.innerHeight;
+        const total = track.offsetHeight - vh;
+        const trackTop = track.getBoundingClientRect().top + window.scrollY;
+        window.scrollTo({ top: Math.round(trackTop + (i / (N - 1)) * total), behavior: 'smooth' });
+      });
+    });
+
+    update();
+  }
+</script>

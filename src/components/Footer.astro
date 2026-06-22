@@ -1,67 +1,38 @@
 ---
-// Footer — quiet multi-column footer in a bordered container. Personal
-// sign-off, nav columns, contact links. Ported from navigation/Footer.jsx.
-interface Props {
-  signoff?: string;
-  brand?: string;
-}
-
-const {
-  signoff = '把工程问题写清楚，把复杂系统做简单。',
-  brand = '/dev/null',
-} = Astro.props;
-
-const columns = [
-  {
-    title: '导航',
-    links: [
-      { label: '关于我', href: '/#about' },
-      { label: '项目', href: '/#projects' },
-      { label: '文章', href: '/blog/' },
-    ],
-  },
-  {
-    title: '联系',
-    links: [
-      { label: 'GitHub', href: 'https://github.com' },
-      { label: 'Email', href: 'mailto:hi@example.com' },
-      { label: 'RSS', href: '/rss.xml' },
-    ],
-  },
-];
+// Footer — Folio warm soft band. Brand sign-off + social row on the left,
+// two nav columns on the right, hairline base row.
+// Ported from Folio Chrome.jsx Footer + kit.css footer rules.
+import SocialRow from './SocialRow.astro';
+import { PROFILE } from '../lib/site';
 ---
 
-<footer style="padding: 0 24px 40px;">
-  <div style="max-width: var(--max-content); margin: 0 auto; border: 1px solid var(--border-subtle); border-radius: var(--radius-container); background: var(--surface-card); padding: 48px 40px 36px;">
-    <div style="display: flex; justify-content: space-between; gap: 48px; flex-wrap: wrap;">
-      <div style="max-width: 360px;">
-        <div style="font-family: var(--font-mono); font-size: 15px; font-weight: 500; color: var(--text-strong); margin-bottom: 14px;">
-          {brand}
-        </div>
-        <p style="font-size: var(--body-lg-size); line-height: 1.45; letter-spacing: -0.01em; color: var(--text-secondary); margin: 0;">
-          {signoff}
-        </p>
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="mark">{PROFILE.mark}</div>
+      <div class="footer-tag">
+        Built and written by {PROFILE.name}. A place to keep engineering notes, project
+        write-ups, and what I learn building with AI. Still iterating.
       </div>
-      <div style="display: flex; gap: 64px; flex-wrap: wrap;">
-        {columns.map((col) => (
-          <div>
-            <div style="font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 16px;">
-              {col.title}
-            </div>
-            <div style="display: flex; flex-direction: column; gap: 11px;">
-              {col.links.map((l) => (
-                <a class="cb-footlink" href={l.href} style="font-size: 14px; color: var(--text-secondary); text-decoration: none;">
-                  {l.label}
-                </a>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
+      <div style="margin-top: 18px;"><SocialRow size="sm" /></div>
     </div>
-    <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border-subtle); display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
-      <span style="font-family: var(--font-mono); font-size: 12px; color: var(--text-muted);">© 2026 · 用 HTML 和咖啡写成</span>
-      <span style="font-family: var(--font-mono); font-size: 12px; color: var(--text-muted);">Built in the open</span>
+    <div class="footer-col">
+      <h4>Site</h4>
+      <a href="/">Home</a>
+      <a href="/projects/">Projects</a>
+      <a href="/blog/">Blog</a>
+      <a href="/about/">About</a>
     </div>
+    <div class="footer-col">
+      <h4>Elsewhere</h4>
+      <a href={PROFILE.github}>GitHub</a>
+      <a href={PROFILE.x}>X / Twitter</a>
+      <a href="/rss.xml">RSS feed</a>
+      <a href={`mailto:${PROFILE.email}`}>Email</a>
+    </div>
+  </div>
+  <div class="footer-base">
+    <span>© 2026 {PROFILE.name}</span>
+    <span>Built with care · no trackers</span>
   </div>
 </footer>

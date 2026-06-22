@@ -1,0 +1,71 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import { PROJECTS } from '../../lib/site';
+
+const categories = ['All', ...Array.from(new Set(PROJECTS.map((p) => p.category)))];
+---
+
+<BaseLayout title="Projects" description="Side projects, tools, and experiments — mostly backend systems and retrieval infrastructure.">
+  <section class="page-head">
+    <div class="kit-container">
+      <h1 class="rise">Things I've built</h1>
+      <p class="rise rise-2">
+        Side projects, tools, and experiments — mostly backend systems and retrieval
+        infrastructure. A few are maintained; a few are parked but still useful.
+      </p>
+    </div>
+  </section>
+
+  <section class="kit-section--tight kit-section" style="padding-top: 32px;">
+    <div class="kit-container">
+      <div class="filter-bar" data-proj-filter>
+        {categories.map((c) => (
+          <button class={`filter-chip ${c === 'All' ? 'filter-chip--active' : ''}`} data-filter={c}>{c}</button>
+        ))}
+        <span class="filter-spacer"></span>
+        <span style="font-family: var(--font-mono); font-size: 12px; color: var(--text-muted);" data-proj-count>
+          {PROJECTS.length} projects
+        </span>
+      </div>
+      <div class="grid-auto" style="margin-top: 24px;" data-proj-grid>
+        {PROJECTS.map((p) => (
+          <div data-category={p.category}>
+            <ProjectCard
+              title={p.title}
+              description={p.description}
+              stack={p.stack}
+              status={p.status}
+              href={`/projects/#${p.id}`}
+              repo={p.repo}
+              demo={p.demo}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const root = document.querySelector('[data-proj-filter]');
+  const grid = document.querySelector('[data-proj-grid]');
+  const count = document.querySelector('[data-proj-count]');
+  if (root && grid) {
+    const buttons = root.querySelectorAll<HTMLButtonElement>('.filter-chip');
+    const items = grid.querySelectorAll<HTMLElement>('[data-category]');
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const filter = btn.dataset.filter || 'All';
+        buttons.forEach((b) => b.classList.toggle('filter-chip--active', b === btn));
+        let shown = 0;
+        items.forEach((it) => {
+          const show = filter === 'All' || it.dataset.category === filter;
+          it.style.display = show ? '' : 'none';
+          if (show) shown++;
+        });
+        if (count) count.textContent = `${shown} ${shown === 1 ? 'project' : 'projects'}`;
+      });
+    });
+  }
+</script>

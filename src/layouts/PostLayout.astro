@@ -2,8 +2,11 @@
 import type { CollectionEntry } from 'astro:content';
 import BaseLayout from './BaseLayout.astro';
 import Tag from '../components/Tag.astro';
+import Avatar from '../components/Avatar.astro';
 import Button from '../components/Button.astro';
+import FolioIcon from '../components/FolioIcon.astro';
 import { toMeta } from '../lib/posts';
+import { PROFILE } from '../lib/site';
 
 interface Props {
   post: CollectionEntry<'blog'>;
@@ -14,39 +17,45 @@ const meta = toMeta(post);
 ---
 
 <BaseLayout title={post.data.title} description={post.data.description}>
-  <article style="max-width: 720px; margin: 0 auto; padding: 64px 24px 96px;">
-    <a
-      href="/blog/"
-      style="font-family: var(--font-mono); font-size: 13px; color: var(--text-muted); text-decoration: none; display: inline-block; margin-bottom: 32px;"
-    >
-      ← 返回文章列表
-    </a>
+  <div class="kit-narrow" style="padding-top: 28px;">
+    <Button variant="text" href="/blog/">
+      <FolioIcon name="arrow-left" slot="icon-left" class="icon" />
+      Back to writing
+    </Button>
+  </div>
 
-    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
-      <Tag color={meta.categoryColor}>{meta.category}</Tag>
-      <span style="font-family: var(--font-mono); font-size: 12px; color: var(--text-muted);">{meta.date}</span>
-      <span style="width: 3px; height: 3px; border-radius: 50%; background: var(--charcoal-40);"></span>
-      <span style="font-family: var(--font-mono); font-size: 12px; color: var(--text-muted);">{meta.readTime}</span>
+  <header class="kit-narrow article-head rise">
+    <div class="article-meta">
+      <span style="color: var(--brand-deep); font-weight: 600;">{meta.category}</span>
+      <span class="dot"></span><span>{meta.date}</span>
+      <span class="dot"></span><span>{meta.readTime}</span>
     </div>
+    <h1>{post.data.title}</h1>
+    <div style="display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <Avatar name={PROFILE.name} size="sm" />
+        <span style="font-size: var(--fs-body-sm); color: var(--text-secondary);">{PROFILE.name}</span>
+      </div>
+      <div class="article-tags">
+        {post.data.tags.map((t) => <Tag>{t}</Tag>)}
+      </div>
+    </div>
+  </header>
 
-    <h1 class="t-h1" style="font-size: clamp(32px, 5vw, 44px); line-height: 1.1; margin-bottom: 24px;">
-      {post.data.title}
-    </h1>
-
-    <p
-      class="t-body-lg"
-      style="color: var(--text-muted); margin-bottom: 40px; padding-bottom: 32px; border-bottom: 1px solid var(--border-subtle);"
-    >
-      {post.data.description}
-    </p>
-
+  <article class="kit-narrow">
     <div class="article-body">
       <slot />
     </div>
 
-    <div style="margin-top: 56px; padding-top: 32px; border-top: 1px solid var(--border-subtle); display: flex; gap: 12px; flex-wrap: wrap;">
-      <Button variant="ghost" href="/blog/">← 回到文章列表</Button>
-      <Button variant="cream" href="/rss.xml">订阅后续更新</Button>
+    <div style="margin-top:56px; padding-top:32px; border-top:1px solid var(--border-default); display:flex; gap:12px; flex-wrap:wrap;">
+      <Button variant="secondary" href="/blog/">
+        <FolioIcon name="arrow-left" slot="icon-left" class="icon" />
+        Back to writing
+      </Button>
+      <Button variant="ghost" href="/rss.xml">
+        <FolioIcon name="rss" slot="icon-left" class="icon" />
+        Subscribe
+      </Button>
     </div>
   </article>
 </BaseLayout>

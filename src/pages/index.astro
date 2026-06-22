@@ -1,124 +1,102 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import FeaturedShowcase from '../components/FeaturedShowcase.astro';
+import PostCard from '../components/PostCard.astro';
 import Card from '../components/Card.astro';
+import Avatar from '../components/Avatar.astro';
 import Button from '../components/Button.astro';
-import ProjectCard from '../components/ProjectCard.astro';
-import WritingList from '../components/WritingList.astro';
+import SocialRow from '../components/SocialRow.astro';
+import FolioIcon from '../components/FolioIcon.astro';
+import { PROFILE } from '../lib/site';
 import { toMeta, sortedPosts } from '../lib/posts';
 
-// Real posts power the writing list; the rest of the persona copy is the
-// design system's sample content (matching the RAG / AI-application voice).
-const recent = sortedPosts(await getCollection('blog', ({ data }) => !data.draft))
-  .slice(0, 4)
+const latest = sortedPosts(await getCollection('blog', ({ data }) => !data.draft))
+  .slice(0, 3)
   .map(toMeta);
-
-const aboutRows: [string, string][] = [
-  ['方向', '后端 · RAG · AI 应用'],
-  ['常用语言', 'Python · Go · TS'],
-  ['当前关注', '检索质量与可观测性'],
-  ['可合作', 'RAG 落地 · 系统设计咨询'],
-];
-
-type Status = 'active' | 'wip' | 'paused' | 'archived';
-const projects: { name: string; description: string; tags: string[]; status: Status; statusLabel: string }[] = [
-  { name: 'ragflow-mini', description: '轻量 RAG 检索服务，支持混合检索、重排与引用回溯，单机即可部署。', tags: ['Python', 'FastAPI', 'pgvector'], status: 'active', statusLabel: '运行中' },
-  { name: 'this-blog', description: '你正在看的这个博客。Astro + Markdown，构建产物干净可读。', tags: ['Astro', 'TypeScript', 'MDX'], status: 'active', statusLabel: '运行中' },
-  { name: 'agent-shell', description: '给本地命令行套了个 Agent 外壳，能读报错、查文档、提改法。', tags: ['Go', 'LLM', 'CLI'], status: 'wip', statusLabel: '开发中' },
-  { name: 'pgvec-bench', description: '向量索引的基准测试工具，对比 HNSW / IVF 在真实数据上的召回与延迟。', tags: ['Rust', 'pgvector'], status: 'wip', statusLabel: '开发中' },
-  { name: 'notes-sync', description: '把 Markdown 笔记同步成可检索知识库的小工具，已经够用就没再加功能。', tags: ['Python', 'SQLite'], status: 'paused', statusLabel: '维护中' },
-  { name: 'tiny-queue', description: '一个几百行的任务队列，写来理解 at-least-once 到底意味着什么。', tags: ['Go', 'Redis'], status: 'archived', statusLabel: '已归档' },
-];
 ---
 
 <BaseLayout>
-  {/* HERO — full-height, centered, single focus */}
-  <section style="min-height: calc(100vh - 68px); min-height: calc(100svh - 68px); max-width: var(--max-content); margin: 0 auto; padding: 0 24px; display: flex; flex-direction: column;">
-    <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
-      <div class="t-eyebrow cb-onload" style="margin-bottom: 24px;">后端开发 · RAG 系统 · AI 应用</div>
-      <h1 class="t-display cb-onload" style="font-size: clamp(44px, 8vw, 76px); max-width: 16ch; margin-bottom: 28px; --reveal-delay: 140ms;">
-        把复杂系统做简单，<br />然后写下来。
-      </h1>
-      <p class="t-body-lg cb-onload" style="max-width: 52ch; color: var(--text-muted); margin: 0 auto 36px; --reveal-delay: 300ms;">
-        我是一名后端工程师，做 RAG 检索和 AI 应用开发。这里记录技术实践、项目复盘、系统设计，以及一些还没想明白的问题。不卖课，不画饼。
-      </p>
-      <div class="cb-onload" style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; --reveal-delay: 440ms;">
-        <Button variant="primary" href="#writing">读最新文章</Button>
-        <Button variant="ghost" href="#projects">看我做的东西</Button>
+  {/* Hero — image-led feature */}
+  <section class="hero hero--feature">
+    <div class="hero-banner rise">
+      <img class="hero-banner-img" src="/assets/hero-sunflower.jpg"
+        alt="A summer afternoon in a sunflower field" />
+      <div class="kit-container hero-banner-inner">
+        <p class="hero-eyebrow hero-eyebrow--on-image">
+          <span class="hero-dot"></span>
+          {PROFILE.role} <span class="loc">· {PROFILE.location}</span>
+        </p>
+        <h1>I build <em>{PROFILE.hero}</em>.</h1>
       </div>
     </div>
-    <a
-      href="#about"
-      class="cb-footlink cb-onload"
-      style="align-self: center; display: flex; flex-direction: column; align-items: center; gap: 8px; padding-bottom: 40px; text-decoration: none; color: var(--text-muted); --reveal-delay: 620ms;"
-    >
-      <span style="font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.06em;">向下滚动</span>
-      <span class="cb-arrow-down" aria-hidden="true" style="font-size: 18px; line-height: 1;">↓</span>
-    </a>
-  </section>
-
-  {/* ABOUT */}
-  <section id="about" style="max-width: var(--max-content); margin: 0 auto; padding: 96px 24px 128px; scroll-margin-top: 90px;">
-    <span class="t-eyebrow cb-reveal" style="display: block; margin-bottom: 16px;">About</span>
-    <h2 class="t-h2 cb-reveal" style="--reveal-delay: 110ms; margin-bottom: 40px;">关于我</h2>
-    <div class="cb-about-grid" style="display: grid; grid-template-columns: minmax(0,1.4fr) minmax(0,1fr); gap: 48px; align-items: start;">
-      <div style="display: flex; flex-direction: column; gap: 20px;">
-        <p class="t-body-lg" style="color: var(--text-body); max-width: 60ch;">
-          写了七年后端，从单体一路拆到现在，也踩过把简单问题复杂化的坑。这两年主要在做 RAG 和 AI 应用，关心的还是老问题：数据怎么流、错误怎么传、系统怎么在半夜不叫醒我。
-        </p>
-        <p class="t-body" style="color: var(--text-muted); max-width: 60ch;">
-          我相信能把一件事讲清楚，往往说明真的想明白了。所以这个博客既是写给别人看的，也是写给两年后忘了细节的自己。如果某篇文章帮你少熬一个夜，那就值了。
+    <div class="kit-container hero-sub rise rise-2">
+      <p class="hero-lead">{PROFILE.lead}</p>
+      <div class="hero-actions">
+        <Button variant="primary" href="/projects/">
+          See what I've built
+          <FolioIcon name="arrow-right" slot="icon-right" class="icon" />
+        </Button>
+        <Button variant="secondary" href="/blog/">Read the blog</Button>
+      </div>
+      <div class="hero-foot">
+        <SocialRow />
+        <p class="hero-now">
+          <span class="hero-now-dot"></span>
+          Now · building <strong>ragkit</strong> · writing up backend notes
         </p>
       </div>
-      <Card pad="none" radius="card" style="overflow: hidden;">
-        {aboutRows.map(([k, v], i) => (
-          <div style={`display: flex; justify-content: space-between; gap: 16px; padding: 16px 20px; ${i < aboutRows.length - 1 ? 'border-bottom: 1px solid var(--border-subtle);' : ''}`}>
-            <span style="font-family: var(--font-mono); font-size: 12px; color: var(--text-muted);">{k}</span>
-            <span style="font-size: 14px; color: var(--text-strong); text-align: right;">{v}</span>
+    </div>
+  </section>
+
+  {/* Featured projects — pinned scroll showcase */}
+  <FeaturedShowcase />
+
+  {/* Latest writing */}
+  <section class="kit-section kit-section--tight" style="background: var(--bg-soft);">
+    <div class="kit-container">
+      <div class="sec-head">
+        <div>
+          <p class="sec-eyebrow">Notes</p>
+          <h2 class="sec-title">Writing</h2>
+        </div>
+        <a class="sec-link" href="/blog/">All posts <FolioIcon name="arrow-right" class="icon" /></a>
+      </div>
+      <div class="grid-3">
+        {latest.map((post, i) => (
+          <div class="cb-reveal" style={`--reveal-delay: ${i * 100}ms;`}>
+            <PostCard
+              layout="card"
+              title={post.title}
+              excerpt={post.excerpt}
+              date={post.date}
+              readingTime={post.readTime}
+              category={post.category}
+              href={post.href}
+            />
           </div>
         ))}
+      </div>
+    </div>
+  </section>
+
+  {/* About preview */}
+  <section class="kit-section">
+    <div class="kit-container">
+      <Card padLg class="cb-reveal about-preview">
+        <Avatar name={PROFILE.name} size="xl" />
+        <div>
+          <p class="sec-eyebrow" style="margin-bottom:8px;">About</p>
+          <p style="font-size:var(--fs-h3); font-weight:600; line-height:1.5; margin:0; letter-spacing:-0.01em; max-width:32em;">
+            I'm {PROFILE.name}, a backend engineer who likes small sharp tools and writing things down.
+            Lately that means retrieval systems, evals, and the unglamorous plumbing that makes AI features reliable.
+          </p>
+        </div>
+        <Button variant="ghost" href="/about/">
+          More
+          <FolioIcon name="arrow-right" slot="icon-right" class="icon" />
+        </Button>
       </Card>
     </div>
-  </section>
-
-  {/* PROJECTS */}
-  <section id="projects" style="max-width: var(--max-content); margin: 0 auto; padding: 0 24px 128px; scroll-margin-top: 90px;">
-    <span class="t-eyebrow cb-reveal" style="display: block; margin-bottom: 16px;">Projects</span>
-    <h2 class="t-h2 cb-reveal" style="--reveal-delay: 110ms; margin-bottom: 16px;">我做的东西</h2>
-    <p class="t-body-lg cb-reveal" style="--reveal-delay: 220ms; max-width: 62ch; color: var(--text-muted); margin-bottom: 40px;">
-      一些自己用得上、也愿意公开的项目。状态是真实的——有的在跑，有的在写，有的早就归档了。
-    </p>
-    <div class="cb-proj-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
-      {projects.map((p, i) => (
-        <div class="cb-reveal" style={`display: flex; --reveal-delay: ${(i % 3) * 120}ms;`}>
-          <ProjectCard {...p} class="cb-proj-card" />
-        </div>
-      ))}
-    </div>
-  </section>
-
-  {/* WRITING */}
-  <section id="writing" style="max-width: var(--max-content); margin: 0 auto; padding: 0 24px 128px; scroll-margin-top: 90px;">
-    <span class="t-eyebrow cb-reveal" style="display: block; margin-bottom: 16px;">Writing</span>
-    <h2 class="t-h2 cb-reveal" style="--reveal-delay: 110ms; margin-bottom: 40px;">最近写的</h2>
-    <WritingList posts={recent} />
-    <div style="margin-top: 32px;">
-      <Button variant="ghost" href="/blog/">查看全部文章 <span class="cb-arrow" aria-hidden="true">→</span></Button>
-    </div>
-  </section>
-
-  {/* CONTACT */}
-  <section id="contact" style="max-width: var(--max-content); margin: 0 auto; padding: 0 24px 112px; scroll-margin-top: 90px;">
-    <Card pad="lg" radius="container" style="text-align: center; padding: 64px 40px;">
-      <h2 class="t-h2" style="margin-bottom: 16px;">聊聊？</h2>
-      <p class="t-body-lg" style="color: var(--text-muted); max-width: 46ch; margin: 0 auto 32px;">
-        想聊 RAG 落地、系统设计，或只是觉得某篇文章有意思——都欢迎写信。我看每一封。
-      </p>
-      <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
-        <Button variant="primary" href="mailto:hi@example.com">发邮件</Button>
-        <Button variant="ghost" href="https://github.com">GitHub</Button>
-        <Button variant="cream" href="/rss.xml">订阅 RSS</Button>
-      </div>
-    </Card>
   </section>
 </BaseLayout>

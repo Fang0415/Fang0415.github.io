@@ -1,52 +1,66 @@
 ---
-// ProjectCard — name, description, tech tags, status, entry link.
-// Bordered cream card, border darkens on hover. Ported from blog/ProjectCard.jsx.
+// ProjectCard — Folio project tile. Title (whole-card click target via a
+// ::after overlay), status badge, description, stack tags, repo/demo links.
+// The Card stays a <div> so the repo/demo links can nest legally.
+// Ported from Folio cards/ProjectCard.jsx.
 import Card from './Card.astro';
 import Tag from './Tag.astro';
-import StatusBadge from './StatusBadge.astro';
+import Badge from './Badge.astro';
 
 interface Props {
-  name: string;
-  description: string;
-  tags?: string[];
-  status?: 'active' | 'wip' | 'paused' | 'archived';
-  statusLabel?: string;
+  title: string;
+  description?: string;
+  stack?: string[];
+  status?: 'active' | 'building' | 'shipped' | 'archived';
   href?: string;
+  repo?: string;
+  demo?: string;
   class?: string;
+  style?: string;
 }
 
 const {
-  name,
+  title,
   description,
-  tags = [],
-  status = 'active',
-  statusLabel = '运行中',
-  href = '#',
+  stack = [],
+  status,
+  href,
+  repo,
+  demo,
   class: className = '',
+  style = '',
 } = Astro.props;
+
+const STATUS_VARIANT: Record<string, 'success' | 'warning' | 'brand' | 'neutral'> = {
+  active: 'success',
+  building: 'warning',
+  shipped: 'brand',
+  archived: 'neutral',
+};
+const statusLabel = status ? status.charAt(0).toUpperCase() + status.slice(1) : '';
 ---
 
-<Card interactive pad="none" class={className} style="display: flex; flex-direction: column;">
-  <div style="padding: 24px 24px 20px;">
-    <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 10px;">
-      <h3
-        style="font-size: var(--card-title-size); line-height: var(--card-title-line); letter-spacing: var(--card-title-track); font-weight: var(--weight-semibold); color: var(--text-strong); margin: 0;"
-      >
-        {name}
+<Card interactive={!!href} class={className} style={style}>
+  <div class="folio-project">
+    <div class="folio-project__head">
+      <h3 class="folio-project__title">
+        {href ? <a class="folio-project__titlelink" href={href}>{title}</a> : title}
       </h3>
-      <StatusBadge status={status} style="flex: none;">{statusLabel}</StatusBadge>
+      {status && (
+        <Badge variant={STATUS_VARIANT[status] || 'neutral'} dot>{statusLabel}</Badge>
+      )}
     </div>
-    <p style="font-size: var(--body-size); line-height: 1.55; color: var(--text-muted); margin: 0 0 18px;">
-      {description}
-    </p>
-    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-      {tags.map((t) => <Tag>{t}</Tag>)}
-    </div>
+    {description && <p class="folio-project__desc">{description}</p>}
+    {stack.length > 0 && (
+      <div class="folio-project__tags">
+        {stack.map((s) => <Tag>{s}</Tag>)}
+      </div>
+    )}
+    {(repo || demo) && (
+      <div class="folio-project__foot">
+        {repo && <a href={repo}>⌥ Code</a>}
+        {demo && <a href={demo}>↗ Demo</a>}
+      </div>
+    )}
   </div>
-  <a
-    href={href}
-    style="margin-top: auto; padding: 14px 24px; border-top: 1px solid var(--border-subtle); font-family: var(--font-mono); font-size: 13px; color: var(--text-strong); text-decoration: none; display: flex; align-items: center; gap: 6px;"
-  >
-    查看项目 <span class="cb-arrow" aria-hidden="true">→</span>
-  </a>
 </Card>

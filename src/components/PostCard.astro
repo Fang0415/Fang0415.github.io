@@ -1,0 +1,60 @@
+---
+// PostCard — Folio writing tile. Two layouts: `card` (meta · title ·
+// excerpt) and `row` (date rail + body). Ported from Folio cards/PostCard.jsx.
+import Card from './Card.astro';
+import Tag from './Tag.astro';
+
+interface Props {
+  title: string;
+  excerpt?: string;
+  date?: string;
+  readingTime?: string;
+  category?: string;
+  tags?: string[];
+  href?: string;
+  layout?: 'card' | 'row';
+  class?: string;
+  style?: string;
+}
+
+const {
+  title,
+  excerpt,
+  date,
+  readingTime,
+  category,
+  tags = [],
+  href,
+  layout = 'card',
+  class: className = '',
+  style = '',
+} = Astro.props;
+---
+
+{layout === 'row' ? (
+  <Card interactive href={href} class={className} style={`border:none;border-radius:0;padding:20px 0;${style}`}>
+    <div class="folio-post folio-post--row">
+      <div class="folio-post__date">{date}</div>
+      <div class="folio-post__body">
+        <h3 class="folio-post__title">{title}</h3>
+        {excerpt && <p class="folio-post__excerpt">{excerpt}</p>}
+        {tags.length > 0 && (
+          <div class="folio-post__tags">{tags.map((t) => <Tag mono={false}>{t}</Tag>)}</div>
+        )}
+      </div>
+    </div>
+  </Card>
+) : (
+  <Card interactive href={href} class={className} style={style}>
+    <div class="folio-post">
+      <div class="folio-post__meta">
+        {category && <span style="color:var(--link);font-weight:600;">{category}</span>}
+        {category && <span class="dot" />}
+        {date && <span>{date}</span>}
+        {readingTime && (<><span class="dot" /><span>{readingTime}</span></>)}
+      </div>
+      <h3 class="folio-post__title">{title}</h3>
+      {excerpt && <p class="folio-post__excerpt">{excerpt}</p>}
+    </div>
+  </Card>
+)}
