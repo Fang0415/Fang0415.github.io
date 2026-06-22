@@ -204,6 +204,11 @@ img { display: block; max-width: 100%; height: auto; }
 
 .icon { width: 18px; height: 18px; stroke-width: 1.75; vertical-align: middle; }
 
+/* The HTML `hidden` attribute must win over component display rules
+   (e.g. .fs-intro's display:flex), since the showcase toggles visibility
+   by adding/removing `hidden`. */
+[hidden] { display: none !important; }
+
 /* ── Typographic helpers (used by the .astro pages) ── */
 .t-eyebrow {
   font-family: var(--font-mono); font-size: var(--fs-eyebrow);
