@@ -6,10 +6,10 @@ export const PROFILE = {
   name: 'Lin Wei',
   wordmark: 'lin.dev',
   mark: 'L',
-  role: 'Backend Developer · RAG Builder',
-  location: 'Shenzhen, CN',
-  hero: 'backend systems and tools for AI',
-  lead: 'I work on backend systems, RAG, and developer tooling — and I write down what I learn so it stays reusable later.',
+  role: '后端开发 · RAG 实践者',
+  location: '深圳',
+  hero: '面向 AI 的后端系统和工具',
+  lead: '我关注后端系统、RAG 和开发工具链，也会把实践中踩过的坑和形成的判断写下来，方便之后复用。',
   email: 'hi@lin.dev',
   github: 'https://github.com/',
   x: 'https://x.com/',
@@ -31,47 +31,47 @@ export interface Project {
 export const PROJECTS: Project[] = [
   {
     id: 'ragkit', title: 'ragkit', status: 'active', category: 'AI / RAG',
-    description: 'A composable, local-first retrieval layer for LLM apps — pluggable chunking, hybrid search, and a small eval harness.',
+    description: '一个面向 LLM 应用的本地优先检索层，支持可插拔切分、混合检索和轻量评估工具。',
     stack: ['Python', 'Postgres', 'pgvector', 'FastAPI'], repo: '#', demo: '#',
   },
   {
-    id: 'notes-cli', title: 'notes-cli', status: 'building', category: 'Tooling',
-    description: 'A tiny terminal tool for capturing engineering notes straight into a searchable, plain-text archive.',
+    id: 'notes-cli', title: 'notes-cli', status: 'building', category: '工具链',
+    description: '一个小型命令行工具，用来把工程笔记直接沉淀成可搜索的纯文本档案。',
     stack: ['Go', 'SQLite'], repo: '#',
   },
   {
-    id: 'streamq', title: 'streamq', status: 'shipped', category: 'Backend',
-    description: 'A lightweight durable queue built on Postgres LISTEN/NOTIFY for small services that do not want Kafka.',
+    id: 'streamq', title: 'streamq', status: 'shipped', category: '后端',
+    description: '基于 Postgres LISTEN/NOTIFY 的轻量持久队列，适合暂时不想引入 Kafka 的小服务。',
     stack: ['Rust', 'Postgres'], repo: '#', demo: '#',
   },
   {
     id: 'embed-bench', title: 'embed-bench', status: 'active', category: 'AI / RAG',
-    description: 'A reproducible benchmark harness for embedding models on domain-specific retrieval tasks.',
+    description: '一个可复现实验框架，用来评估 embedding 模型在垂直领域检索任务上的表现。',
     stack: ['Python', 'DuckDB'], repo: '#',
   },
   {
-    id: 'dotfiles', title: 'dotfiles', status: 'archived', category: 'Tooling',
-    description: 'My terminal, editor, and shell setup. Mostly here so I can re-provision a machine in one command.',
+    id: 'dotfiles', title: 'dotfiles', status: 'archived', category: '工具链',
+    description: '终端、编辑器和 shell 配置，用来在新机器上快速恢复开发环境。',
     stack: ['Shell', 'Lua'], repo: '#',
   },
   {
-    id: 'logpipe', title: 'logpipe', status: 'shipped', category: 'Backend',
-    description: 'A structured-logging shim that turns noisy service logs into queryable events without a vendor agent.',
+    id: 'logpipe', title: 'logpipe', status: 'shipped', category: '后端',
+    description: '一个结构化日志适配层，把嘈杂的服务日志转换成可查询事件，不依赖外部 agent。',
     stack: ['Go', 'ClickHouse'], repo: '#', demo: '#',
   },
 ];
 
 // Status → showcase pill (label + kind class). Mirrors Folio Home.jsx.
 export const SHOWCASE_STATUS: Record<ProjectStatus, [string, string]> = {
-  active: ['Active', 'live'],
-  building: ['Building', 'wip'],
-  shipped: ['Shipped', 'beta'],
-  archived: ['Archived', 'archived'],
+  active: ['活跃维护', 'live'],
+  building: ['开发中', 'wip'],
+  shipped: ['已发布', 'beta'],
+  archived: ['已归档', 'archived'],
 };
 
 export const NAV_LINKS = [
-  { label: 'Home', href: '/' },
-  { label: 'Projects', href: '/projects/' },
-  { label: 'Blog', href: '/blog/' },
-  { label: 'About', href: '/about/' },
+  { label: '首页', href: '/' },
+  { label: '项目', href: '/projects/' },
+  { label: '文章', href: '/blog/' },
+  { label: '关于', href: '/about/' },
 ];

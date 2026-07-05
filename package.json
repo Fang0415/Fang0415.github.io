@@ -4,15 +4,35 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro check && astro build",
-    "preview": "astro preview"
+    "dev": "next dev",
+    "build": "prisma generate && next build",
+    "start": "next start",
+    "preview": "next start",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:deploy": "prisma migrate deploy",
+    "studio": "prisma studio"
   },
   "dependencies": {
-    "@astrojs/check": "^0.9.4",
-    "@astrojs/mdx": "^4.0.8",
-    "astro": "^5.1.1",
+    "@aws-sdk/client-s3": "^3.1079.0",
+    "@aws-sdk/s3-request-presigner": "^3.1079.0",
+    "@prisma/adapter-pg": "^7.8.0",
+    "@prisma/client": "^7.8.0",
+    "dotenv": "^17.4.2",
+    "gray-matter": "^4.0.3",
+    "markdown-it": "^14.1.0",
+    "next": "^15.3.5",
+    "pg": "^8.22.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
     "typescript": "^5.7.2"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@types/markdown-it": "^14.1.2",
+    "@types/node": "^22.10.2",
+    "@types/pg": "^8.20.0",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "prisma": "^7.8.0"
+  }
 }

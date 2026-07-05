@@ -1,4 +1,7 @@
-import type { CollectionEntry } from 'astro:content';
+import fs from 'node:fs';
+import path from 'node:path';
+import matter from 'gray-matter';
+import MarkdownIt from 'markdown-it';
 
 /**
  * Editorial categories, each bound to one Folio Tag variant. Derived from
@@ -19,6 +22,23 @@ export interface PostMeta {
   href: string;
 }
 
+export interface BlogPost {
+  slug: string;
+  body: string;
+  html: string;
+  data: {
+    title: string;
+    description: string;
+    pubDate: Date;
+    updatedDate?: Date;
+    tags: string[];
+    draft?: boolean;
+  };
+}
+
+const blogDir = path.join(process.cwd(), 'src/content/blog');
+const md = new MarkdownIt({ html: false, linkify: true, typographer: true });
+
 // Ordered rules: first matching tag wins. Maps real tags onto the four
 // categories + a Folio Tag variant (gold / green / blue / coral).
 const CATEGORY_RULES: { match: string[]; category: string; color: TagVariant }[] = [
@@ -37,7 +57,7 @@ export const CATEGORY_COLORS: Record<string, TagVariant> = {
   '工程实践': 'amber',
 };
 
-function categoryFor(tags: string[]): { category: string; color: TagVariant } {
+export function categoryForTags(tags: string[]): { category: string; color: TagVariant } {
   for (const rule of CATEGORY_RULES) {
     if (tags.some((t) => rule.match.includes(t))) {
       return { category: rule.category, color: rule.color };
@@ -48,17 +68,66 @@ function categoryFor(tags: string[]): { category: string; color: TagVariant } {
 
 // Read time from raw markdown length. CJK reads ~400 chars/min; a rough but
 // honest estimate, the way the brand prefers real numbers.
-function readTimeFor(body: string): string {
+export function readTimeFor(body: string): string {
   const chars = body.replace(/\s+/g, '').length;
-  return `${Math.max(1, Math.round(chars / 400))} min read`;
+  return `约 ${Math.max(1, Math.round(chars / 400))} 分钟阅读`;
 }
 
-function isoDate(d: Date): string {
+export function isoDate(d: Date): string {
   return d.toISOString().slice(0, 10); // 2026-06-18
 }
 
-export function toMeta(post: CollectionEntry<'blog'>): PostMeta {
-  const { category, color } = categoryFor(post.data.tags);
+export function markdownToHtml(body: string): string {
+  return md.render(body);
+}
+
+function toDate(value: unknown): Date {
+  if (value instanceof Date) return value;
+  return new Date(String(value));
+}
+
+function readPost(filename: string): BlogPost {
+  const slug = filename.replace(/\.mdx?$/, '');
+  const raw = fs.readFileSync(path.join(blogDir, filename), 'utf8');
+  const parsed = matter(raw);
+  const data = parsed.data;
+  const pubDate = toDate(data.pubDate);
+  const updatedDate = data.updatedDate ? toDate(data.updatedDate) : undefined;
+
+  return {
+    slug,
+    body: parsed.content,
+    html: markdownToHtml(parsed.content),
+    data: {
+      title: String(data.title ?? slug),
+      description: String(data.description ?? ''),
+      pubDate,
+      updatedDate,
+      tags: Array.isArray(data.tags) ? data.tags.map(String) : [],
+      draft: Boolean(data.draft),
+    },
+  };
+}
+
+export function getAllPosts(): BlogPost[] {
+  return fs
+    .readdirSync(blogDir)
+    .filter((file) => /\.mdx?$/.test(file))
+    .map(readPost)
+    .filter((post) => !post.data.draft);
+}
+
+export function getPostBySlug(slug: string): BlogPost | undefined {
+  const filename = fs
+    .readdirSync(blogDir)
+    .find((file) => file.replace(/\.mdx?$/, '') === slug);
+  if (!filename) return undefined;
+  const post = readPost(filename);
+  return post.data.draft ? undefined : post;
+}
+
+export function toMeta(post: BlogPost): PostMeta {
+  const { category, color } = categoryForTags(post.data.tags);
   const iso = isoDate(post.data.pubDate);
   return {
     title: post.data.title,
@@ -72,6 +141,6 @@ export function toMeta(post: CollectionEntry<'blog'>): PostMeta {
   };
 }
 
-export function sortedPosts(posts: CollectionEntry<'blog'>[]): CollectionEntry<'blog'>[] {
+export function sortedPosts(posts: BlogPost[]): BlogPost[] {
   return [...posts].sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 }

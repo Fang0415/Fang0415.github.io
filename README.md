@@ -1,89 +1,112 @@
 # Fang Blog
 
-个人技术杂志 + 工程项目档案。这个站点使用 Astro、Tailwind CSS、Markdown/MDX 和 GitHub Pages 构建，用来记录 RAG、AI Agent、后端工程、开发工具链与网络基础设施笔记。
+个人技术博客与工程项目档案。当前项目已从 GitHub Pages 静态站点调整为自有服务器部署的 Next.js 全栈应用，支持文章、项目和资源的基础后台管理。
 
 ## 技术栈
 
-- Astro
-- Tailwind CSS
-- Astro Content Collections
-- Markdown / MDX
-- GitHub Actions
-- GitHub Pages
+- Next.js App Router
+- React
+- TypeScript
+- PostgreSQL + Prisma
+- MinIO（S3 兼容对象存储）
+- CSS design tokens in `src/styles/global.css`
 
-## 本地启动
+## 本地开发
 
 ```bash
 npm install
+cp .env.example .env
+docker compose up -d
+npm run prisma:migrate
 npm run dev
+```
+
+默认访问地址：
+
+- 站点：http://127.0.0.1:3000/
+- 管理后台：http://127.0.0.1:3000/admin/
+- MinIO 控制台：http://127.0.0.1:9001/
+
+`.env.example` 里的本地默认值可以直接配合 `docker-compose.yml` 使用。生产环境必须修改 `ADMIN_PASSWORD` 和 `ADMIN_SESSION_SECRET`。
+
+## 内容管理
+
+后台目前提供最基础的能力：
+
+- 文章：创建、编辑、发布、归档、删除
+- 项目：创建、编辑、排序、状态管理、删除
+- 资源：上传文件到 MinIO，数据库保存资源元数据和公开 URL
+
+公开页面读取策略：
+
+- 如果数据库里有已发布文章或可见项目，优先展示后台数据。
+- 如果数据库不可用或还没有后台数据，回退到现有 Markdown 文章和 `src/lib/site.ts` 中的静态项目数据。
+
+## 资源存储
+
+文件本体存放在 MinIO bucket，数据库只保存元数据：
+
+- `Asset.key`：对象存储 key
+- `Asset.bucket`：bucket 名称
+- `Asset.publicUrl`：公开访问 URL
+- `Post.coverAssetId` / `Project.coverAssetId`：封面资源关联
+
+本地 `minio-init` 容器会自动创建 `fang-blog` bucket，并设置匿名只读下载。生产环境可以继续用 MinIO，也可以迁移到其他 S3 兼容服务；只要保持环境变量一致，业务代码不用大改。
+
+## 常用命令
+
+```bash
+npm run dev              # 本地开发
+npm run build            # Prisma generate + Next build
+npm run start            # 生产模式启动 Next 服务
+npm run prisma:migrate   # 本地创建并应用迁移
+npm run prisma:deploy    # 生产环境应用已有迁移
+npm run studio           # 打开 Prisma Studio
+```
+
+## 自有服务器部署
+
+推荐结构：
+
+1. 服务器安装 Node.js、PostgreSQL、MinIO、Nginx。
+2. 拉取项目代码并安装依赖。
+3. 写入生产 `.env`。
+4. 执行数据库迁移和构建。
+5. 用 systemd、PM2 或 Docker 运行 `npm run start`。
+6. 用 Nginx 反向代理到 `127.0.0.1:3000`，参考 `deploy/nginx.conf`。
+
+示例流程：
+
+```bash
+npm ci
+npm run prisma:deploy
 npm run build
-npm run preview
+npm run start
 ```
 
-## 内容编辑
+生产环境还需要：
 
-- 新增文章：编辑 `src/content/blog/`
-- 修改首页：编辑 `src/pages/index.astro`
-- 修改文章列表：编辑 `src/pages/blog/index.astro`
-- 修改文章详情：编辑 `src/layouts/PostLayout.astro` 和 `src/styles/global.css`
-- 修改导航：编辑 `src/components/Header.astro`
-- 修改项目展示：编辑 `src/pages/projects/index.astro` 和 `src/components/ProjectCard.astro`
-- 修改整体视觉：优先编辑 `DESIGN.md`、`tailwind.config.mjs`、`src/styles/global.css`
+- 将域名 DNS 解析到服务器。
+- 配置 HTTPS 证书，例如 Certbot 或 Caddy。
+- 设置 MinIO bucket 的访问策略，或把 `NEXT_PUBLIC_ASSET_BASE_URL` 指向 CDN/对象存储公开域名。
+- 定期备份 PostgreSQL 和 MinIO 数据目录。
 
-## 新增文章
+## 主要文件
 
-在 `src/content/blog/` 下创建 `.md` 或 `.mdx` 文件，并添加 frontmatter：
-
-```yaml
----
-title: Article title
-description: Short summary
-pubDate: 2026-06-21
-tags: [RAG, Python]
----
-```
-
-文件名会成为文章 slug，例如 `rag-notes.md` 对应 `/blog/rag-notes/`。
-
-## 设计文件
-
-- `DESIGN.md`：最高优先级视觉规范，使用 WIRED 式技术杂志方向，强调白底、强黑白对比、编辑感排版和清晰阅读层级。
-- `docs/design-reference-linear.md`：局部工程感参考，只用于项目卡片、技术栈标签、代码块、hover 状态和少量紫色 accent。
-- `docs/layout-reference.md`：记录成熟技术博客、开发者主页和产品博客的信息结构参考。
-
-## GitHub Pages 部署
-
-`.github/workflows/deploy.yml` 会在 `main` 分支 push 后自动安装依赖、构建站点、上传 `dist` 并部署到 GitHub Pages。
-
-默认配置适用于 `Fang0415.github.io` 仓库：
-
-```js
-export default defineConfig({
-  site: 'https://Fang0415.github.io',
-});
-```
-
-如果仓库不是 `username.github.io`，而是普通项目仓库，例如 `fan-blog`，需要配置：
-
-```js
-export default defineConfig({
-  site: 'https://Fang0415.github.io',
-  base: '/fan-blog',
-});
-```
-
-## 自定义域名
-
-在 GitHub Pages 设置中绑定域名。如果需要随构建发布 `CNAME`，可在 `public/CNAME` 中写入域名，例如：
-
-```text
-blog.example.com
-```
+- `src/app/admin/`：后台页面
+- `src/app/api/admin/`：后台 API
+- `src/lib/storage.ts`：MinIO/S3 上传逻辑
+- `src/lib/db.ts`：Prisma Client
+- `src/lib/managed-content.ts`：公开页的数据读取与回退策略
+- `prisma/schema.prisma`：数据模型
+- `docker-compose.yml`：本地 PostgreSQL + MinIO
+- `deploy/nginx.conf`：Next 服务反向代理示例
+- `DESIGN.md`：视觉规范
 
 ## 不要提交
 
 - `node_modules`
+- `.next`
 - `dist`
-- `.astro`
 - `.env` 和 `.env.*`
 - API Key、Token、密码、Cookie、私人配置、手机号、住址等隐私文件

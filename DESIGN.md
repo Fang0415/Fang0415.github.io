@@ -1,497 +1,154 @@
----
-version: alpha
-name: Wired-design-analysis
-description: An inspired interpretation of Wired's design language — a flagship technology-magazine brand whose surface is a strict editorial duet of stark black wordmark on white canvas, anchored by a tall narrow custom display serif for hero headlines, a humanist serif body face for long-form reading, and a clean sans face for metadata; layout reads like a printed magazine ported to the web with very little marketing chrome.
+# Fang Blog Design System
 
-colors:
-  primary: "#000000"
-  on-primary: "#ffffff"
-  ink: "#000000"
-  ink-soft: "#1a1a1a"
-  body: "#757575"
-  hairline: "#e0e0e0"
-  canvas: "#ffffff"
-  canvas-soft: "#f5f5f5"
-  link: "#057dbc"
+## Direction
 
-typography:
-  display-hero:
-    fontFamily: WiredDisplay, "Times New Roman", Georgia, serif
-    fontSize: 64px
-    fontWeight: 400
-    lineHeight: 59.52px
-    letterSpacing: -0.5px
-  display-lg:
-    fontFamily: WiredDisplay, "Times New Roman", Georgia, serif
-    fontSize: 48px
-    fontWeight: 400
-    lineHeight: 50.4px
-    letterSpacing: -0.4px
-  display-md:
-    fontFamily: WiredDisplay, "Times New Roman", Georgia, serif
-    fontSize: 32px
-    fontWeight: 400
-    lineHeight: 35.2px
-    letterSpacing: -0.3px
-  display-sm:
-    fontFamily: WiredDisplay, "Times New Roman", Georgia, serif
-    fontSize: 26px
-    fontWeight: 400
-    lineHeight: 28.08px
-  display-xs:
-    fontFamily: Apercu, "Helvetica Neue", Helvetica, Arial, sans-serif
-    fontSize: 20px
-    fontWeight: 700
-    lineHeight: 24px
-    letterSpacing: -0.28px
-  body-serif-lg:
-    fontFamily: BreveText, Georgia, "Times New Roman", serif
-    fontSize: 19px
-    fontWeight: 400
-    lineHeight: 27.93px
-    letterSpacing: 0.108px
-  body-serif-md:
-    fontFamily: BreveText, Georgia, "Times New Roman", serif
-    fontSize: 16px
-    fontWeight: 400
-    lineHeight: 24px
-    letterSpacing: 0.09px
-  body-md:
-    fontFamily: Apercu, "Helvetica Neue", Helvetica, Arial, sans-serif
-    fontSize: 17px
-    fontWeight: 400
-    lineHeight: 20px
-  body-md-strong:
-    fontFamily: Apercu, "Helvetica Neue", Helvetica, Arial, sans-serif
-    fontSize: 17px
-    fontWeight: 700
-    lineHeight: 22px
-    letterSpacing: -0.144px
-  body-sm:
-    fontFamily: Apercu, "Helvetica Neue", Helvetica, Arial, sans-serif
-    fontSize: 14px
-    fontWeight: 400
-    lineHeight: 18px
-    letterSpacing: 0.4px
-  body-sm-strong:
-    fontFamily: Apercu, "Helvetica Neue", Helvetica, Arial, sans-serif
-    fontSize: 14px
-    fontWeight: 700
-    lineHeight: 18px
-    letterSpacing: 0.4px
-  byline:
-    fontFamily: BreveText, Georgia, "Times New Roman", serif
-    fontSize: 12.73px
-    fontWeight: 700
-    lineHeight: 28px
-    letterSpacing: 0.108px
-  caption:
-    fontFamily: Apercu, "Helvetica Neue", Helvetica, Arial, sans-serif
-    fontSize: 12px
-    fontWeight: 400
-    lineHeight: 16px
-  button-md:
-    fontFamily: Apercu, "Helvetica Neue", Helvetica, Arial, sans-serif
-    fontSize: 16px
-    fontWeight: 700
-    lineHeight: 20px
-    letterSpacing: 0.3px
+Fang Blog uses a Folio-style personal engineering journal system: warm paper surfaces, a sunflower-led brand color, readable rounded typography, restrained cards, and an image-led home hero. The site should feel like a working developer's notebook rather than a SaaS landing page.
 
-rounded:
-  none: 0px
-  full: 9999px
+The design favors clarity over decoration. Pages should prioritize writing, project context, and navigation. Visual richness comes from type, spacing, the hero photo, small status signals, and careful color accents.
 
-spacing:
-  xxs: 2px
-  xs: 4px
-  sm: 8px
-  md: 12px
-  lg: 16px
-  xl: 20px
-  2xl: 24px
-  3xl: 32px
-  4xl: 48px
+## Tokens
 
-components:
-  nav-bar:
-    backgroundColor: "{colors.canvas}"
-    textColor: "{colors.ink}"
-    typography: "{typography.body-sm-strong}"
-    padding: "{spacing.md} {spacing.xl}"
-  nav-link:
-    textColor: "{colors.ink}"
-    typography: "{typography.body-sm-strong}"
-  button-primary:
-    backgroundColor: "{colors.primary}"
-    textColor: "{colors.on-primary}"
-    typography: "{typography.button-md}"
-    rounded: "{rounded.none}"
-    padding: "{spacing.md} {spacing.xl}"
-  button-outline:
-    backgroundColor: "{colors.canvas}"
-    textColor: "{colors.ink}"
-    borderColor: "{colors.ink}"
-    typography: "{typography.button-md}"
-    rounded: "{rounded.none}"
-    padding: "{spacing.md} {spacing.xl}"
-  button-icon-circular:
-    backgroundColor: "{colors.canvas}"
-    textColor: "{colors.ink}"
-    rounded: "{rounded.full}"
-    padding: "{spacing.sm}"
-  text-input:
-    backgroundColor: "{colors.canvas}"
-    textColor: "{colors.ink}"
-    borderColor: "{colors.ink}"
-    typography: "{typography.body-md}"
-    rounded: "{rounded.none}"
-    padding: "{spacing.md} {spacing.lg}"
-  story-card-large:
-    backgroundColor: "{colors.canvas}"
-    textColor: "{colors.ink}"
-    typography: "{typography.display-md}"
-    padding: "{spacing.lg}"
-  story-card:
-    backgroundColor: "{colors.canvas}"
-    textColor: "{colors.ink}"
-    typography: "{typography.display-xs}"
-    padding: "{spacing.md}"
-  story-row:
-    backgroundColor: "{colors.canvas}"
-    textColor: "{colors.ink}"
-    borderColor: "{colors.hairline}"
-    typography: "{typography.body-md-strong}"
-    padding: "{spacing.lg} 0"
-  category-eyebrow:
-    textColor: "{colors.ink}"
-    typography: "{typography.body-sm-strong}"
-  byline-row:
-    backgroundColor: "{colors.canvas}"
-    textColor: "{colors.body}"
-    typography: "{typography.byline}"
-  hero-band:
-    backgroundColor: "{colors.canvas}"
-    textColor: "{colors.ink}"
-    typography: "{typography.display-hero}"
-    padding: "{spacing.4xl} {spacing.xl}"
-  masthead-band:
-    backgroundColor: "{colors.canvas}"
-    textColor: "{colors.ink}"
-    typography: "{typography.body-md-strong}"
-    padding: "{spacing.md} {spacing.xl}"
-  hairline-divider:
-    borderColor: "{colors.hairline}"
-  footer:
-    backgroundColor: "{colors.primary}"
-    textColor: "{colors.on-primary}"
-    typography: "{typography.body-sm}"
-    padding: "{spacing.4xl} {spacing.xl}"
+### Color
 
-  # ─── Examples (illustrative) — auto-derived; resolve any TO_FILL markers below ───
-  ex-pricing-tier:
-    description: "Default Pricing tier card. Re-uses feature-card chrome with brand canvas-soft surface."
-    backgroundColor: "{colors.canvas-soft}"
-    textColor: "{colors.ink}"
-    borderColor: "{colors.hairline}"
-    rounded: "{rounded.none}"
-    padding: "{spacing.lg}"
-  ex-pricing-tier-featured:
-    description: "Featured/highlighted tier — polarity-flipped surface (dark fill + light text in light mode, light fill + dark text in dark mode)."
-    backgroundColor: "{colors.ink}"
-    textColor: "{colors.on-primary}"
-    rounded: "{rounded.none}"
-    padding: "{spacing.lg}"
-  ex-product-selector:
-    description: "What's Included summary card — re-purposed for SaaS / B2B verticals (NOT a literal product gallery)."
-    backgroundColor: "{colors.canvas-soft}"
-    rounded: "{rounded.none}"
-    padding: "{spacing.lg}"
-  ex-cart-drawer:
-    description: "Subscription summary — re-purposed for SaaS / B2B (line items per add-on, not literal cart)."
-    backgroundColor: "{colors.canvas}"
-    rounded: "{rounded.none}"
-    padding: "{spacing.lg}"
-    item-divider: "{colors.hairline}"
-  ex-app-shell-row:
-    description: "Sidebar nav row inside the App Shell example. Active state uses brand primary as the indicator."
-    backgroundColor: "{colors.canvas}"
-    activeIndicator: "{colors.primary}"
-    rounded: "{rounded.none}"
-    padding: "{spacing.md} {spacing.lg}"
-  ex-data-table-cell:
-    description: "Default data-table th + td chrome. Header uses mono-caps eyebrow typography; body uses body-sm."
-    headerBackground: "{colors.canvas-soft}"
-    headerTypography: "{typography.caption}"
-    bodyTypography: "{typography.body-sm}"
-    cellPadding: "{spacing.md} {spacing.lg}"
-    rowBorder: "{colors.hairline}"
-  ex-auth-form-card:
-    description: "Sign-in / sign-up card. Re-uses feature-card chrome with text-input primitives inside."
-    backgroundColor: "{colors.canvas-soft}"
-    rounded: "{rounded.none}"
-    padding: "{spacing.lg}"
-  ex-modal-card:
-    description: "Modal dialog surface — same chrome as feature-card with elevated shadow."
-    backgroundColor: "{colors.canvas}"
-    rounded: "{rounded.none}"
-    padding: "{spacing.lg}"
-  ex-empty-state-card:
-    description: "Empty-state illustration frame."
-    backgroundColor: "{colors.canvas-soft}"
-    rounded: "{rounded.none}"
-    padding: "{spacing.3xl}"
-    captionTypography: "{typography.body-md}"
-  ex-toast:
-    description: "Toast notification surface — feature-card shape + medium shadow."
-    backgroundColor: "{colors.canvas}"
-    rounded: "{rounded.none}"
-    padding: "{spacing.md} {spacing.lg}"
-    typography: "{typography.body-sm}"
+Primary neutrals:
 
----
+- `--white: #ffffff`
+- `--paper: #faf7ef`
+- `--mist: #f2ede0`
+- `--ink-900: #221d13`
+- `--ink-700: #41382a`
+- `--ink-500: #6f6553`
+- `--ink-400: #9b8f78`
+- `--line: #e9e2d2`
+- `--line-strong: #ddd3bf`
 
+Brand and accents:
 
-## Overview
+- Sunflower gold: `--gold-500: #f6b417`, hover `--gold-600: #e29d09`
+- Sky blue links: `--sky-600: #2376c6`, hover `--sky-700: #1a5d9f`
+- Leaf green status: `--green-500: #5aa53f`, `--green-600: #41802c`
+- Rose accent: `--rose-500: #f0738b`, `--rose-600: #df526f`
 
-Wired is the flagship technology-magazine brand under Condé Nast — and the web surface refuses to dress itself as a SaaS marketing site. The page is unmistakably an editorial product: a white canvas, a strict black wordmark in the brand's proprietary `WiredDisplay` (a tall, narrow, high-contrast serif used at 64 px), and stacked story cards that read as a printed magazine grid ported to the screen. There is no atmospheric gradient, no decorative chrome, no chromatic accent — the brand's only colour beyond the black-and-white duet is the small `{colors.link}` (`#057dbc`) used for inline body links inside long-form articles.
+Usage:
 
-Type carries the entire identity. Three families ladder the system: `WiredDisplay` (the proprietary high-contrast serif) for hero / section headlines; `BreveText` (a humanist serif) for long-form body and bylines; and `Apercu` (a humanist sans) for metadata, captions, eyebrow tags, and buttons. The pairing is editorial-grade: serifs for narrative, sans for navigation and structural labels.
+- Use warm cream only for page bands, code wells, hover surfaces, and soft cards.
+- Use gold for primary CTAs, active step indicators, blockquote borders, and key emphasis.
+- Use blue only for links and secondary cool accents.
+- Use green for live/active state signals.
+- Avoid adding new dominant hue families unless the content type requires it.
 
-Buttons are square. The brand uses `{rounded.none}` 0 px corners across the entire UI — newsletter sign-ups, login forms, "Read more" CTAs all render as sharp rectangles. The only circular shape is the `button-icon-circular` used for social-share affordances. There are no soft drop-shadows; the brand uses hairline borders for elevation when needed.
+### Typography
 
-**Key Characteristics:**
-- A strict black-and-white duet with no chromatic accent except the inline link blue `{colors.link}`. The brand reads as a printed magazine.
-- Three-face typographic system — `WiredDisplay` serif for display, `BreveText` serif for body, `Apercu` sans for metadata and buttons.
-- Square buttons (`{rounded.none}`) — the brand never softens corners on interactive elements.
-- A magazine-style story grid: large feature card at top, two-up secondary, then a vertical stack of bylined story rows separated by `{colors.hairline}` 1 px dividers.
-- The brand's only signature decorative move is the **masthead band** — a thin black strip with the wordmark centred, no other decoration.
-- A near-black `{colors.ink}` (`#000000`) footer band, no graphics, just text columns and the wordmark repeating.
+Fonts are imported in `src/styles/global.css`:
 
-## Colors
+- Sans/body: `Nunito`, with `LXGW WenKai` for CJK fallback.
+- Mono/meta/code: `JetBrains Mono`, with `LXGW WenKai` fallback.
 
-### Brand & Accent
-- **Ink Black** (`{colors.primary}` — `#000000`): The brand's only "accent." Used for wordmark, headlines, CTAs, footer fill. Pure black, never softened.
+Scale:
 
-### Surface
-- **Canvas** (`{colors.canvas}` — `#ffffff`): The default page background.
-- **Canvas Soft** (`{colors.canvas-soft}` — `#f5f5f5`): Rare tint used for the comment-section background and search-result row hover states (not in the main page rhythm).
-- **Hairline** (`{colors.hairline}` — `#e0e0e0`): 1 px dividers between story rows. The brand's only "line."
+- Display 1: `56px`, weight `800`, line-height `1.08`
+- Display 2: `44px`, weight `800`, line-height `1.1`
+- H1: `34px`, weight `700`
+- H2: `26px`, weight `700`
+- H3: `20px`, weight `700`
+- Body: `16px`, line-height `1.6`
+- Body large: `18px`, line-height `1.6`
+- Eyebrow/meta: mono `12px-13px`
 
-### Text
-- **Ink** (`{colors.ink}` — `#000000`): Every headline, every body paragraph in BreveText.
-- **Ink Soft** (`{colors.ink-soft}` — `#1a1a1a`): A near-black variant used for caption-strong / footer link emphasis.
-- **Body** (`{colors.body}` — `#757575`): Secondary metadata — bylines, timestamps, supporting body lines.
+Keep letter spacing at `0` for normal text. Display and heading tokens may use the existing slight negative tracking from CSS, but do not introduce viewport-based font scaling.
 
-### Semantic
-The brand operates with one inline link colour and no separate error / success / warning palette in its marketing surface. Validation cues on form pages use the ink black + body grey hierarchy.
+### Shape
 
-- **Link** (`{colors.link}` — `#057dbc`): The inline body-link blue. Used only inside long-form article body copy, never on UI buttons or navigation.
+- Cards: `12px`
+- Inputs: `8px`
+- Tags and buttons: pill radius
+- Images: `12px`
+- Brand mark: `8px`
 
-## Typography
+Cards should stay simple: one surface, one border, one clear content grouping. Do not nest cards inside cards.
 
-### Font Family
-Three families ladder the system:
-1. **WiredDisplay** — the proprietary tall-narrow high-contrast serif used exclusively for display headlines (64 px hero, scaling down to 26 px sub-display). The brand's most-recognisable typographic signature.
-2. **BreveText** — the proprietary humanist serif used for long-form body, bylines, and editorial captions. Used at 16 – 19 px line-height 1.45 – 1.50 for comfortable reading density.
-3. **Apercu** — a humanist sans used for nav, button labels, category eyebrows, metadata, and captions. Weights 400 / 700.
+### Elevation
 
-Inter is loaded as a fourth fallback face for embedded utility surfaces (the comment section, account pages) but does not appear on the main marketing / article surface.
-
-### Hierarchy
-
-| Token | Size | Weight | Line Height | Letter Spacing | Use |
-|---|---|---|---|---|---|
-| `{typography.display-hero}` | 64px | 400 | 59.5px | -0.5px | Cover-story headline. |
-| `{typography.display-lg}` | 48px | 400 | 50.4px | -0.4px | Major section / feature headlines. |
-| `{typography.display-md}` | 32px | 400 | 35.2px | -0.3px | Story-card large variant. |
-| `{typography.display-sm}` | 26px | 400 | 28px | 0 | Sub-display headings inside long-form articles. |
-| `{typography.display-xs}` | 20px | 700 | 24px | -0.28px | Sans (Apercu) display micro-headings for category callouts. |
-| `{typography.body-serif-lg}` | 19px | 400 | 27.93px | 0.108px | Lead paragraph of an article (BreveText). |
-| `{typography.body-serif-md}` | 16px | 400 | 24px | 0.09px | Default article body (BreveText). |
-| `{typography.body-md}` | 17px | 400 | 20px | 0 | Sans body (Apercu) for nav / metadata. |
-| `{typography.body-md-strong}` | 17px | 700 | 22px | -0.144px | Bold sans body. |
-| `{typography.body-sm}` | 14px | 400 | 18px | 0.4px | Secondary sans body. |
-| `{typography.body-sm-strong}` | 14px | 700 | 18px | 0.4px | Bold caption / nav-link. |
-| `{typography.byline}` | 12.73px | 700 | 28px | 0.108px | Article byline (BreveText). |
-| `{typography.caption}` | 12px | 400 | 16px | 0 | Fine print, image captions. |
-| `{typography.button-md}` | 16px | 700 | 20px | 0.3px | Button label. |
-
-### Principles
-- **Serif for narrative, sans for structure.** The serif faces never carry button labels or nav text; the sans face never carries article body.
-- **Display weight 400** — the proprietary WiredDisplay reads as elegant by virtue of its thin-tall-narrow design at default weight, not via weight 700+.
-- **Bylines use BreveText weight 700 with relaxed line-height 2.2.** The vertical breathing is part of the editorial signature.
-
-### Note on Font Substitutes
-The three proprietary faces have no exact substitutes. Best open-source approximations:
-- **WiredDisplay** — *Playfair Display* weight 400 at large display sizes captures the high-contrast didone feel, though wider than the brand's tall-narrow proportions.
-- **BreveText** — *Lora* or *Source Serif Pro* at 16 – 19 px.
-- **Apercu** — *Inter* or *Manrope* weights 400 / 700.
+Use borders first. Shadows are subtle and reserved for interactive cards, the floating nav, and the featured showcase preview. Avoid heavy drop shadows.
 
 ## Layout
 
-### Spacing System
-- **Base unit**: 4 px.
-- **Tokens**: `{spacing.xxs}` 2 px · `{spacing.xs}` 4 px · `{spacing.sm}` 8 px · `{spacing.md}` 12 px · `{spacing.lg}` 16 px · `{spacing.xl}` 20 px · `{spacing.2xl}` 24 px · `{spacing.3xl}` 32 px · `{spacing.4xl}` 48 px.
-- **Section padding**: hero / story grid use `{spacing.4xl}` 48 px top/bottom on desktop.
-- **Story row padding**: `{spacing.lg}` 16 px vertical between bylined story rows.
+Global containers:
 
-### Grid & Container
-- Marketing content uses a wide container (~1400 px max).
-- Cover-story grid: 1 large hero + 2-up secondary stories + vertical stack.
-- Story-row stack: full-width single column with hairline dividers.
+- Standard: `--container-max: 1080px`
+- Wide: `--container-wide: 1200px`
+- Reading: `--container-read: 720px`
 
-### Responsive Strategy
+Spacing:
 
-#### Breakpoints
+- Normal section: `96px`
+- Tight section: `64px`
+- Mobile section: `64px`
 
-| Name | Width | Key Changes |
-|---|---|---|
-| Mobile | < 768px | Cover hero 64→40 px; all grids 1-up; hamburger nav. |
-| Tablet | 768–1023px | 2-up secondary story grid. |
-| Desktop | ≥ 1024px | Full magazine grid. |
+Patterns:
 
-#### Touch Targets
-Button-primary renders ~44 px tall (12 vertical padding + 20 line). WCAG AAA at all widths.
-
-#### Collapsing Strategy
-- Nav: full link row + Subscribe CTA at desktop. Hamburger at mobile.
-- Magazine grid: hero stays full-width; 2-up secondary drops to 1-up at mobile.
-- Story rows: stay single-column at all viewports.
-
-#### Image Behavior
-- Cover images: full-bleed 16:9 hero / 4:3 secondary.
-- Article body images: full-width inside the article column.
-- Author avatars: small inline circular crops next to bylines.
-
-## Elevation & Depth
-
-| Level | Treatment | Use |
-|---|---|---|
-| Level 0 — Flat | No shadow, no border. | Default — almost every surface lives at this level. |
-| Level 1 — Hairline | 1 px solid `{colors.hairline}` border. | Story-row dividers, input borders. |
-| Level 2 — Heavy Black Border | 2 px solid `{colors.ink}` border. | Subscribe CTA on certain campaign moments. |
-
-The brand uses no drop-shadows. Surface contrast and hairline borders carry all visual hierarchy.
-
-## Shapes
-
-### Border Radius Scale
-
-| Token | Value | Use |
-|---|---|---|
-| `{rounded.none}` | 0px | Every interactive shape — buttons, inputs, cards. The brand's signature square geometry. |
-| `{rounded.full}` | 9999px | Circular icon containers only (social-share, account avatar). |
-
-### Photography Geometry
-- Cover stories: 16:9 hero, edge-to-edge.
-- Secondary story cards: 4:3 thumbnails.
-- Article body images: native aspect, full column width.
-- Bylines / avatars: circular `{rounded.full}` 28 px crops.
+- The home page starts with a full-width image hero under a transparent nav.
+- Inner pages use a compact page header plus content sections.
+- Blog article pages use a narrow reading column and generous paragraph spacing.
+- Project grids use card density, not oversized marketing blocks.
 
 ## Components
 
-### Buttons
-
-**`button-primary`** — the square black CTA.
-- Background `{colors.primary}`, text `{colors.on-primary}`, label `{typography.button-md}` (Apercu 16 px / 700 / 0.3 px tracking), padding `{spacing.md} {spacing.xl}`, shape `{rounded.none}` 0 px.
-
-**`button-outline`** — the white outline CTA.
-- Background `{colors.canvas}`, text `{colors.ink}`, 1 px solid `{colors.ink}` border, same typography / padding / shape.
-
-**`button-icon-circular`** — the circular share-icon button.
-- Background `{colors.canvas}`, ink icon, shape `{rounded.full}`.
-
-### Cards & Containers
-
-**`story-card-large`** — the cover-story card with `{typography.display-md}` headline.
-- Background `{colors.canvas}`, text `{colors.ink}`, padding `{spacing.lg}`. No border — the card lives on the canvas with the photo doing the work.
-
-**`story-card`** — the secondary story card.
-- Background `{colors.canvas}`, text `{colors.ink}`, padding `{spacing.md}`. Photo at top, sans display heading + body lead below.
-
-**`story-row`** — the bylined story list row.
-- Background `{colors.canvas}`, text `{colors.ink}`, 1 px solid `{colors.hairline}` bottom border, body in `{typography.body-md-strong}`, padding `{spacing.lg}` 0.
-
-### Inputs & Forms
-
-**`text-input`** — the standard text input.
-- Background `{colors.canvas}`, text `{colors.ink}`, 1 px solid `{colors.ink}` border, body in `{typography.body-md}`, padding `{spacing.md} {spacing.lg}`, shape `{rounded.none}`.
-
 ### Navigation
 
-**`nav-bar`** — the top nav, light by default.
-- Background `{colors.canvas}`, text `{colors.ink}`, padding `{spacing.md} {spacing.xl}`. Layout: hamburger left, masthead centre, Subscribe right.
+The nav is fixed. On the home page it starts transparent over the hero image, then collapses into a glass pill after scroll. On inner pages it appears collapsed immediately.
 
-**`nav-link`** — link items inside nav.
-- Text `{colors.ink}`, set in `{typography.body-sm-strong}` (Apercu 14 / 700).
+Links use active state by path prefix. The mobile menu is a full-screen overlay with large navigation links.
 
-**`footer`** — the black footer band.
-- Background `{colors.primary}`, text `{colors.on-primary}`, padding `{spacing.4xl} {spacing.xl}`. Body in `{typography.body-sm}` (Apercu 14 / 400). Footer column eyebrows in `{typography.body-sm-strong}`.
+### Buttons
 
-### Signature Components
+Primary buttons use sunflower gold with dark text. Secondary buttons use white surfaces with warm borders. Ghost buttons are reserved for low-emphasis local actions.
 
-**`hero-band`** — the white hero band hosting the cover-story.
-- Background `{colors.canvas}`, text `{colors.ink}`, padding `{spacing.4xl} {spacing.xl}`. Cover headline in `{typography.display-hero}` (WiredDisplay 64 px).
+Buttons should remain compact and action-oriented. Avoid using large marketing CTAs for normal navigation.
 
-**`masthead-band`** — the thin top band with the wordmark.
-- Background `{colors.canvas}`, text `{colors.ink}`, padding `{spacing.md} {spacing.xl}`. The wordmark sits centred; flanked by section nav.
+### Cards
 
-**`category-eyebrow`** — the small uppercase category label above story headlines.
-- Text `{colors.ink}`, set in `{typography.body-sm-strong}` (Apercu 14 / 700 — though some campaigns use ALL CAPS via CSS).
+Cards use white or soft paper surfaces, a warm hairline border, `12px` radius, and optional hover lift for interactive cards.
 
-**`byline-row`** — the article byline strip.
-- Background `{colors.canvas}`, text `{colors.body}`, body in `{typography.byline}` (BreveText 12.73 / 700 / line-height 2.2). Includes an author avatar + name + date.
+Use cards for repeated project/post items and specific framed modules. Do not turn page sections into floating card stacks.
 
-**`hairline-divider`** — the 1 px line between story rows.
-- 1 px solid `{colors.hairline}`.
+### Tags and Badges
 
-### Examples (illustrative)
+Tags use mono typography for technical labels. Badges use small dots for status states.
 
-> Auto-derived kit-mirror demonstration surfaces (`scripts/derive-examples-block.mjs`). Each `ex-*` entry references brand-native primitives so downstream consumers (`/preview-design`, `/generate-kit`) re-skin the same 10 surfaces consistently. `TO_FILL` markers indicate missing primitives — resolve in the LLM judgment pass.
+Status mapping:
 
-**`ex-pricing-tier`** — Default Pricing tier card. Re-uses feature-card chrome with brand canvas-soft surface.
-- Properties: `backgroundColor`, `textColor`, `borderColor`, `rounded`, `padding`
+- Active/live: green
+- Building/WIP: gold
+- Shipped/beta: sky
+- Archived: neutral
 
-**`ex-pricing-tier-featured`** — Featured/highlighted tier — polarity-flipped surface (dark fill + light text in light mode, light fill + dark text in dark mode).
-- Properties: `backgroundColor`, `textColor`, `rounded`, `padding`
+### Hero
 
-**`ex-product-selector`** — What's Included summary card — re-purposed for SaaS / B2B verticals (NOT a literal product gallery).
-- Properties: `backgroundColor`, `rounded`, `padding`
+The home hero is image-led and full-width. Text sits directly on the image with a dark bottom gradient for contrast. The brand accent in the hero is gold.
 
-**`ex-cart-drawer`** — Subscription summary — re-purposed for SaaS / B2B (line items per add-on, not literal cart).
-- Properties: `backgroundColor`, `rounded`, `padding`, `item-divider`
+Do not replace the hero with a gradient-only or decorative SVG composition.
 
-**`ex-app-shell-row`** — Sidebar nav row inside the App Shell example. Active state uses brand primary as the indicator.
-- Properties: `backgroundColor`, `activeIndicator`, `rounded`, `padding`
+### Writing
 
-**`ex-data-table-cell`** — Default data-table th + td chrome. Header uses mono-caps eyebrow typography; body uses body-sm.
-- Properties: `headerBackground`, `headerTypography`, `bodyTypography`, `cellPadding`, `rowBorder`
+Article prose uses large body text, warm ink, and a narrow reading column. Code blocks are light warm wells with mono type. Inline code uses a small bordered pill.
 
-**`ex-auth-form-card`** — Sign-in / sign-up card. Re-uses feature-card chrome with text-input primitives inside.
-- Properties: `backgroundColor`, `rounded`, `padding`
+Headings should create scan anchors but not overpower the article body.
 
-**`ex-modal-card`** — Modal dialog surface — same chrome as feature-card with elevated shadow.
-- Properties: `backgroundColor`, `rounded`, `padding`
+## Motion
 
-**`ex-empty-state-card`** — Empty-state illustration frame.
-- Properties: `backgroundColor`, `rounded`, `padding`, `captionTypography`
+Motion is limited to:
 
-**`ex-toast`** — Toast notification surface — feature-card shape + medium shadow.
-- Properties: `backgroundColor`, `rounded`, `padding`, `typography`
+- Scroll reveal fade/rise
+- Hero entrance rise
+- Floating nav transition
+- Small status pulse
+- Card hover lift
 
+All motion must respect `prefers-reduced-motion`.
 
-## Do's and Don'ts
+## Implementation Notes
 
-### Do
-- Reserve `{colors.primary}` black for the wordmark, every CTA, and the footer fill. The brand IS the strict black-on-white duet.
-- Set hero headlines in `{typography.display-hero}` (WiredDisplay 64 px weight 400). The proprietary serif IS the brand's typographic signature.
-- Use `{rounded.none}` 0 px on every button and form input. The brand reads as a printed magazine — square corners are non-negotiable.
-- Pair WiredDisplay (serif display) with BreveText (serif body) and Apercu (sans labels). Three faces, three roles.
-- Render story rows with `{colors.hairline}` 1 px dividers — the brand's only elevation cue.
+The source of truth for runtime styling is `src/styles/global.css`. Pages are implemented with Next.js and React under `src/app/` and `src/components/`. When changing tokens, update both CSS and this document in the same change.
 
-### Don't
-- Don't introduce a chromatic brand accent. The link blue is reserved for inline body links inside articles only.
-- Don't round button corners. The brand never softens its rectangular geometry.
-- Don't drop a soft drop-shadow on cards. Surface contrast and hairlines carry elevation.
-- Don't substitute the proprietary serif faces with a generic sans for display. The serif voice is the brand.
-- Don't promote display weight beyond 400. The brand's elegance is in the typeface design, not bold weight.
+The design system intentionally avoids Tailwind configuration. Prefer CSS variables and local component classes already present in the React components.

@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum PublishStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum ProjectStatus {
+  ACTIVE
+  BUILDING
+  SHIPPED
+  ARCHIVED
+}
+
+model Post {
+  id           String        @id @default(cuid())
+  slug         String        @unique
+  title        String
+  description  String
+  content      String
+  tags         String[]      @default([])
+  coverAssetId String?
+  coverAsset   Asset?        @relation("PostCover", fields: [coverAssetId], references: [id], onDelete: SetNull)
+  status       PublishStatus @default(DRAFT)
+  publishedAt  DateTime?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@index([status, publishedAt])
+}
+
+model Project {
+  id           String        @id @default(cuid())
+  slug         String        @unique
+  title        String
+  summary      String
+  content      String?
+  category     String
+  stack        String[]      @default([])
+  repoUrl      String?
+  demoUrl      String?
+  coverAssetId String?
+  coverAsset   Asset?        @relation("ProjectCover", fields: [coverAssetId], references: [id], onDelete: SetNull)
+  status       ProjectStatus @default(BUILDING)
+  sortOrder    Int           @default(0)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@index([status, sortOrder])
+}
+
+model Asset {
+  id            String    @id @default(cuid())
+  key           String    @unique
+  filename      String
+  mimeType      String
+  size          Int
+  width         Int?
+  height        Int?
+  bucket        String
+  publicUrl     String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  postCovers    Post[]    @relation("PostCover")
+  projectCovers Project[] @relation("ProjectCover")
+}
