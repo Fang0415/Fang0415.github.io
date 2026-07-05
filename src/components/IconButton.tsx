@@ -23,5 +23,5 @@ export default function IconButton({
   if (href) {
     return <a className={cls} href={href} style={style} aria-label={label} title={label}>{children}</a>;
   }
-  return <button className={cls} style={style} aria-label={label} title={label}>{children}</button>;
+  return <button type="button" className={cls} style={style} aria-label={label} title={label}>{children}</button>;
 }

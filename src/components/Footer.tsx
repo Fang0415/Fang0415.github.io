@@ -23,7 +23,7 @@ export default function Footer() {
         <div className="footer-col">
           <h4>其他地方</h4>
           <a href={PROFILE.github}>GitHub</a>
-          <a href={PROFILE.x}>X / Twitter</a>
+          <span>微信</span>
           <a href="/rss.xml">RSS 订阅</a>
           <a href={`mailto:${PROFILE.email}`}>邮件</a>
         </div>

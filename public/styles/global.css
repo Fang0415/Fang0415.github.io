@@ -697,6 +697,7 @@ body.nav-scrolled nav.folio-nav .folio-nav__inner { padding: 0 10px 0 18px; }
   color: var(--text-muted); margin: 0 0 14px; }
 .footer-col a { display: block; font-size: var(--fs-body-sm); color: var(--text-secondary); text-decoration: none;
   padding: 4px 0; transition: color .15s ease; }
+.footer-col span { display: block; font-size: var(--fs-body-sm); color: var(--text-secondary); padding: 4px 0; }
 .footer-col a:hover { color: var(--link); }
 .footer-base { max-width: var(--container-max); margin: 0 auto; padding: 20px 24px;
   border-top: 1px solid var(--border-default); display: flex; justify-content: space-between; align-items: center;

@@ -5,7 +5,6 @@ import MobileMenu from '../components/MobileMenu';
 import Footer from '../components/Footer';
 import RevealManager from '../components/RevealManager';
 import { PROFILE } from '../lib/site';
-import '../styles/global.css';
 
 export const metadata: Metadata = {
   metadataBase: process.env.SITE_URL ? new URL(process.env.SITE_URL) : undefined,
@@ -19,6 +18,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="zh-CN">
+      <head>
+        <link rel="stylesheet" href="/styles/global.css" />
+      </head>
       <body>
         <Navbar />
         <MobileMenu />

@@ -11,8 +11,8 @@ export const PROFILE = {
   hero: '面向 AI 的后端系统和工具',
   lead: '我关注后端系统、RAG 和开发工具链，也会把实践中踩过的坑和形成的判断写下来，方便之后复用。',
   email: 'hi@lin.dev',
-  github: 'https://github.com/',
-  x: 'https://x.com/',
+  github: 'https://github.com/Fang0415',
+  wechat: '',
 };
 
 export type ProjectStatus = 'active' | 'building' | 'shipped' | 'archived';
