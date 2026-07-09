@@ -39,6 +39,9 @@ export default function ProjectGrid({ projects }: Props) {
               description={p.description}
               stack={p.stack}
               status={p.status}
+              role={p.role}
+              period={p.period}
+              highlights={p.highlights}
               href={`/projects/#${p.id}`}
               repo={p.repo}
               demo={p.demo}

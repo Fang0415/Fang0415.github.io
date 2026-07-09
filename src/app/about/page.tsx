@@ -5,6 +5,7 @@ import Tag from '../../components/Tag';
 import Button from '../../components/Button';
 import SocialRow from '../../components/SocialRow';
 import FolioIcon from '../../components/FolioIcon';
+import ExperienceSummary from '../../components/ExperienceSummary';
 import { PROFILE } from '../../lib/site';
 
 export const metadata: Metadata = {
@@ -91,6 +92,11 @@ export default function AboutPage() {
               <ul className="prose" style={{ fontSize: 'var(--fs-body)', paddingLeft: '1.1em' }}>
                 {now.map((n) => <li key={n}>{n}</li>)}
               </ul>
+            </div>
+
+            <div className="about-block">
+              <h2>实践经历</h2>
+              <ExperienceSummary showHeader={false} compact />
             </div>
 
             <div className="about-block">

@@ -9,6 +9,9 @@ interface Props {
   description?: string;
   stack?: string[];
   status?: ProjectStatus;
+  role?: string;
+  period?: string;
+  highlights?: string[];
   href?: string;
   repo?: string;
   demo?: string;
@@ -35,6 +38,9 @@ export default function ProjectCard({
   description,
   stack = [],
   status,
+  role,
+  period,
+  highlights = [],
   href,
   repo,
   demo,
@@ -52,7 +58,21 @@ export default function ProjectCard({
             <Badge variant={STATUS_VARIANT[status] || 'neutral'} dot>{STATUS_LABEL[status]}</Badge>
           )}
         </div>
+        {(role || period) && (
+          <div className="folio-project__meta">
+            {role && <span>{role}</span>}
+            {role && period && <span className="dot"></span>}
+            {period && <span>{period}</span>}
+          </div>
+        )}
         {description && <p className="folio-project__desc">{description}</p>}
+        {highlights.length > 0 && (
+          <ul className="folio-project__highlights">
+            {highlights.slice(0, 2).map((highlight) => (
+              <li key={highlight}>{highlight}</li>
+            ))}
+          </ul>
+        )}
         {stack.length > 0 && (
           <div className="folio-project__tags">
             {stack.map((s) => <Tag key={s}>{s}</Tag>)}

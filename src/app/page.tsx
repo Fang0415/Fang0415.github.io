@@ -6,6 +6,7 @@ import Avatar from '../components/Avatar';
 import Button from '../components/Button';
 import SocialRow from '../components/SocialRow';
 import FolioIcon from '../components/FolioIcon';
+import ExperienceSummary from '../components/ExperienceSummary';
 import { PROFILE } from '../lib/site';
 import { getPublishedPostMetas, getVisibleProjects } from '../lib/managed-content';
 
@@ -20,8 +21,8 @@ export default async function HomePage() {
   return (
     <>
       <section className="hero hero--feature">
-        <div className="hero-banner rise">
-          <img className="hero-banner-img" src="/assets/hero-sunflower.jpg" alt="夏日下午的向日葵田" />
+        <div className="hero-banner hero-banner--lineart rise">
+          <img className="hero-banner-img" src="/assets/hero-lineart.png" alt="夏日下午向日葵田的黑白线稿" />
           <div className="kit-container hero-banner-inner">
             <p className="hero-eyebrow hero-eyebrow--on-image">
               <span className="hero-dot"></span>
@@ -49,6 +50,12 @@ export default async function HomePage() {
       </section>
 
       <FeaturedShowcase projects={projects} />
+
+      <section className="kit-section kit-section--tight">
+        <div className="kit-container">
+          <ExperienceSummary />
+        </div>
+      </section>
 
       <section className="kit-section kit-section--tight" style={{ background: 'var(--bg-soft)' }}>
         <div className="kit-container">
