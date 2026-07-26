@@ -793,18 +793,42 @@ body.nav-scrolled .folio-nav__menu:hover{ background:rgba(255,255,255,0.5); }
 .page-head p { font-size: var(--fs-body-lg); line-height: var(--lh-body); color: var(--text-secondary);
   margin: 0; max-width: 38em; }
 
-/* ── Article reading surface ── */
-.article-head { padding: clamp(36px, 5vw, 64px) 0 clamp(20px, 3vw, 28px); }
-.article-head h1 { font-family: var(--font-wenkai-medium); font-size: var(--fs-display-2); font-weight: 700; letter-spacing: var(--tracking-display);
-  line-height: var(--lh-display); margin: 0 0 18px; }
-.article-meta { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; font-family: var(--font-mono);
-  font-size: 12.5px; color: var(--text-muted); margin-bottom: 16px; }
-.article-meta > span:not(.dot) { white-space: nowrap; }
-.article-meta .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--text-muted); flex:none; }
-.article-meta__tags { display: flex; align-items: center; gap: 6px; }
+/* ── Article reading surface ─────────────────────────────────────
+   Header + body share the same column width so the page reads as one
+   continuous lane instead of a wide header over a narrow column.
+   --------------------------------------------------------------- */
+.article-head {
+  padding: clamp(28px, 4vw, 48px) 0 clamp(20px, 3vw, 28px);
+}
+.article-head h1 {
+  font-family: var(--font-wenkai-medium);
+  font-size: var(--fs-display-2);
+  font-weight: 700;
+  letter-spacing: var(--tracking-display);
+  line-height: var(--lh-display);
+  margin: 0 0 18px;
+}
+.article-meta {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 10px;
+  font-family: var(--font-mono); font-size: 12.5px;
+  color: var(--text-muted); margin-bottom: 18px;
+}
+.article-meta__cat {
+  font-weight: 600; color: var(--brand-deep);
+  padding: 2px 8px; border-radius: var(--radius-full);
+  background: var(--brand-tint);
+}
+.article-meta > span:not(.dot):not(.article-meta__cat) { white-space: nowrap; }
+.article-meta .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--ink-300); flex:none; }
 .article-lead {
-  margin: 0; font-family: var(--font-wenkai); font-size: var(--fs-body-lg); line-height: var(--lh-body);
-  color: var(--text-secondary); max-width: 34em;
+  margin: 0; font-family: var(--font-wenkai);
+  font-size: var(--fs-body-lg); line-height: var(--lh-relaxed);
+  color: var(--text-secondary);
+}
+.article-tags {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  margin-top: 18px; padding-top: 18px;
+  border-top: 1px dashed var(--border-default);
 }
 
 /* Reading progress — kept in CSS for backwards compatibility, no longer mounted. */
@@ -812,48 +836,180 @@ body.nav-scrolled .folio-nav__menu:hover{ background:rgba(255,255,255,0.5); }
 .read-progress__bar { height: 100%; width: 0; background: linear-gradient(90deg, var(--sky-600), var(--sky-200));
   transform-origin: 0 50%; transition: width 120ms linear; }
 
-/* ── Prose (rendered markdown) ── */
-.prose, .article-body { font-family: var(--font-wenkai); font-size: var(--fs-body-lg); line-height: var(--lh-relaxed); color: var(--ink-700); }
+/* ── Prose (rendered markdown) ───────────────────────────────────
+   Reading column width is tuned for Chinese long-form: not so narrow
+   that paragraphs feel choppy, not so wide that the eye loses the line.
+   --------------------------------------------------------------- */
+.prose, .article-body {
+  font-family: var(--font-wenkai);
+  font-size: var(--fs-body-lg);
+  line-height: var(--lh-relaxed);
+  color: var(--ink-700);
+}
 .prose > * + *, .article-body > * + * { margin-top: var(--paragraph-gap); }
-.prose h2, .article-body h2 { font-family: var(--font-wenkai-medium); font-size: var(--fs-h2); font-weight: 700; letter-spacing: var(--tracking-heading);
-  line-height: var(--lh-heading); color: var(--text-primary); margin: 2em 0 0; }
-.prose h3, .article-body h3 { font-family: var(--font-wenkai-medium); font-size: var(--fs-h3); font-weight: 700; line-height: var(--lh-heading);
-  color: var(--text-primary); margin: 1.7em 0 0; }
-.prose h4, .article-body h4 { font-family: var(--font-wenkai-medium); font-size: var(--fs-h4); font-weight: 700; color: var(--text-primary); margin: 1.4em 0 0; }
+
+.prose h2, .article-body h2 {
+  font-family: var(--font-wenkai-medium);
+  font-size: var(--fs-h2); font-weight: 700;
+  letter-spacing: var(--tracking-heading);
+  line-height: var(--lh-heading);
+  color: var(--text-primary);
+  margin: 2.4em 0 0;
+  position: relative;
+  padding-top: 0;
+}
+/* A short decorative bar above the h2 — replaces a full-width hairline,
+   which felt too heavy next to the paragraph flow. */
+.prose h2::before, .article-body h2::before {
+  content: '';
+  position: absolute;
+  top: -1.2em;
+  left: 0;
+  width: 28px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--brand);
+}
+.article-body > h2:first-child::before { display: none; }
+.article-body > h2:first-child { margin-top: 0; }
+.prose h3, .article-body h3 {
+  font-family: var(--font-wenkai-medium);
+  font-size: var(--fs-h3); font-weight: 700;
+  line-height: var(--lh-heading);
+  color: var(--text-primary);
+  margin: 1.8em 0 0;
+}
+.prose h4, .article-body h4 {
+  font-family: var(--font-wenkai-medium);
+  font-size: var(--fs-h4); font-weight: 700;
+  color: var(--text-primary);
+  margin: 1.5em 0 0;
+}
+
 .prose p, .article-body p { margin: 0; }
-.prose a, .article-body a { color: var(--link); text-decoration: underline; text-underline-offset: 3px;
-  text-decoration-thickness: 1px; text-decoration-color: var(--sky-200);
-  transition: color var(--dur-1) ease, text-decoration-color var(--dur-1) ease; }
-.prose a:hover, .article-body a:hover { color: var(--link-hover); text-decoration-color: currentColor; }
+
+.prose a, .article-body a {
+  color: var(--link);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--sky-200);
+  transition: color var(--dur-1) ease, text-decoration-color var(--dur-1) ease;
+}
+.prose a:hover, .article-body a:hover {
+  color: var(--link-hover);
+  text-decoration-color: currentColor;
+}
+
 .prose strong, .article-body strong { color: var(--text-primary); font-weight: 700; }
-.prose ul, .prose ol, .article-body ul, .article-body ol { margin: 0; padding-left: 1.4em; }
+
+.prose ul, .prose ol, .article-body ul, .article-body ol {
+  margin: 0; padding-left: 1.5em;
+}
 .prose ul, .article-body ul { list-style: disc; }
 .prose ol, .article-body ol { list-style: decimal; }
-.prose li + li, .article-body li + li { margin-top: 0.45em; }
+/* List items get a slightly tighter line-height than paragraphs —
+   short bullets read as one visual unit at 1.85. */
+.prose li, .article-body li { line-height: var(--lh-body); }
+.prose li + li, .article-body li + li { margin-top: 0.35em; }
 .prose li::marker, .article-body li::marker { color: var(--ink-300); }
-.prose code, .article-body :not(pre) > code { font-family: var(--font-mono); font-size: 0.86em; background: var(--bg-sunken);
-  border: 1px solid var(--border-default); border-radius: var(--radius-sm); padding: 1px 5px; color: var(--brand-deep);
-  word-break: break-word; }
-.prose pre, .article-body pre { font-family: var(--font-mono); font-size: var(--fs-code); line-height: 1.75;
-  background: var(--bg-soft); color: var(--ink-700); border: 1px solid var(--border-default);
-  border-radius: var(--radius-lg); padding: clamp(16px, 2.4vw, 20px) clamp(16px, 2.6vw, 22px);
-  overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0; }
-.prose pre code, .article-body pre code { background: none; border: none; padding: 0; color: inherit; font-size: inherit; }
+
+/* Inline code — chip with a cool tint, distinct from brand color */
+.prose code, .article-body :not(pre) > code {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  background: var(--sky-50);
+  border: 1px solid var(--sky-100);
+  border-radius: var(--radius-sm);
+  padding: 1px 5px;
+  color: var(--sky-700);
+  word-break: break-word;
+}
+
+/* Code blocks — cool sunken well with a soft inset so it reads as a
+   distinct surface from the surrounding prose. */
+.prose pre, .article-body pre {
+  font-family: var(--font-mono);
+  font-size: var(--fs-code);
+  line-height: 1.7;
+  background: var(--bg-sunken);
+  color: var(--ink-700);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  padding: clamp(16px, 2.4vw, 20px) clamp(18px, 2.6vw, 24px);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 0;
+  box-shadow: inset 0 1px 2px rgba(17, 24, 39, 0.04);
+}
+.prose pre code, .article-body pre code {
+  background: none; border: none; padding: 0; color: inherit; font-size: inherit;
+}
 .prose pre .c { color: var(--ink-400); font-style: italic; }
 .prose pre .k { color: var(--sky-600); font-weight: 600; }
 .prose pre .s { color: var(--green-600); }
-.prose blockquote, .article-body blockquote { margin: 0; padding: 6px 0 6px 22px; border-left: 3px solid var(--brand);
-  color: var(--text-secondary); font-style: normal; }
+
+.prose blockquote, .article-body blockquote {
+  margin: 0;
+  padding: 4px 0 4px 20px;
+  border-left: 3px solid var(--brand);
+  color: var(--text-secondary);
+  font-style: normal;
+}
+.prose blockquote p + p, .article-body blockquote p + p { margin-top: 0.6em; }
+
 .prose figure, .article-body figure { margin: 0; }
-.prose figure img, .prose .img-well, .article-body img { display: block; width: 100%; border-radius: var(--radius-image);
-  border: 1px solid var(--border-default); }
-.prose figcaption, .article-body figcaption { font-size: var(--fs-body-sm); color: var(--text-muted); margin-top: 10px; text-align: center; }
-.article-body hr { border: 0; border-top: 1px solid var(--border-default); margin: 40px 0; }
-.article-body table { width: 100%; border-collapse: collapse; font-size: 15px; }
-.article-body th, .article-body td { border-bottom: 1px solid var(--border-default); padding: 10px 8px; text-align: left; vertical-align: top; }
-.article-body th { font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); }
-.img-well { background: var(--bg-soft); aspect-ratio: 16/9; display: flex; align-items: center;
-  justify-content: center; color: var(--text-muted); font-family: var(--font-mono); font-size: 12px; }
+.prose figure img, .prose .img-well, .article-body img {
+  display: block; width: 100%;
+  border-radius: var(--radius-image);
+  border: 1px solid var(--border-default);
+}
+.prose figcaption, .article-body figcaption {
+  font-size: var(--fs-body-sm);
+  color: var(--text-muted);
+  margin-top: 10px;
+  text-align: center;
+}
+
+.article-body hr {
+  border: 0;
+  border-top: 1px solid var(--border-default);
+  margin: clamp(36px, 5vw, 48px) 0;
+}
+
+/* Tables scroll horizontally on narrow screens instead of squashing cells */
+.article-body table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+  display: block;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.article-body table thead,
+.article-body table tbody { display: table; width: 100%; min-width: 480px; }
+.article-body th, .article-body td {
+  border-bottom: 1px solid var(--border-default);
+  padding: 10px 12px 10px 0;
+  text-align: left;
+  vertical-align: top;
+}
+.article-body th {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.img-well {
+  background: var(--bg-soft);
+  aspect-ratio: 16/9;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-muted);
+  font-family: var(--font-mono); font-size: 12px;
+}
 
 /* ── Callouts (Obsidian-style "> [!tip]") ── */
 .callout {
@@ -900,79 +1056,182 @@ body.nav-scrolled .folio-nav__menu:hover{ background:rgba(255,255,255,0.5); }
 .callout--important .callout__title { background: rgba(240, 115, 139, 0.10); border-bottom-color: rgba(240, 115, 139, 0.18); }
 .callout--caution .callout__title { background: rgba(240, 115, 139, 0.10); border-bottom-color: rgba(240, 115, 139, 0.18); }
 
-/* ── Article shell: 720px reading column + 220px outline rail ──
-   The rail sits to the left of the body, sticky while scrolling. */
+/* ── Article shell ───────────────────────────────────────────────
+   Single 720px lane centred in the viewport. The TOC is rendered
+   inside .article-rail but on wide screens it is position:fixed to
+   the viewport's left edge, so the body's measure never shifts when
+   the outline grows or shrinks.
+   --------------------------------------------------------------- */
 .article-shell {
-  width: min(100%, calc(var(--container-read) + 220px + 56px + 2 * var(--pad-x)));
-  margin: 0 auto; padding: 0 var(--pad-x);
+  width: min(100%, calc(var(--container-read) + 2 * var(--pad-x)));
+  margin: 0 auto;
+  padding: 0 var(--pad-x);
 }
-.article-lede { max-width: var(--container-read); }
-.article-cols { display: flex; align-items: flex-start; gap: 56px; }
-.article-main { flex: 1 1 auto; min-width: 0; max-width: var(--container-read); }
-.article-rail {
-  flex: none; width: 220px;
-  position: sticky; top: calc(var(--nav-clear) + 24px);
-}
+.article-layout { display: block; }
+.article-main { min-width: 0; }
+.article-rail { display: contents; }
 .article-rail:empty { display: none; }
-.article-cover {
-  margin: clamp(20px, 3vw, 28px) 0 clamp(28px, 4vw, 40px); border-radius: var(--radius-xl); overflow: hidden;
-  border: 1px solid var(--border-default); box-shadow: var(--shadow-sm);
-}
-.article-cover img { width: 100%; aspect-ratio: 20 / 9; object-fit: cover; display: block; }
 
-/* ── Table of contents ──
-   Minimal, system-native rail on desktop; collapsible summary on narrow screens. */
-.article-toc {}
+.article-cover {
+  margin: 0 0 clamp(28px, 4vw, 40px);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  border: 1px solid var(--border-default);
+  box-shadow: var(--shadow-sm);
+}
+.article-cover img {
+  width: 100%;
+  aspect-ratio: 20 / 9;
+  object-fit: cover;
+  display: block;
+}
+
+/* ── Table of contents — fixed left rail ─────────────────────────
+   On wide screens the rail lives at the viewport's left edge. On
+   narrow screens it collapses to a summary bar above the article.
+   --------------------------------------------------------------- */
+.article-toc {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* Toggle row — only interactive on narrow screens; on wide screens it
+   becomes the rail's static header. */
 .article-toc__toggle {
-  display: none;
-  align-items: center; justify-content: space-between; gap: 10px;
-  width: 100%; padding: 11px 14px; border: 1px solid var(--border-default); border-radius: var(--radius-lg);
-  background: var(--bg-soft); cursor: pointer;
-  font-family: var(--font-mono); font-size: 11.5px; letter-spacing: var(--tracking-eyebrow);
-  text-transform: uppercase; color: var(--text-muted); text-align: left;
+  display: flex;
+  align-items: center; gap: 8px;
+  width: 100%;
+  padding: 0 0 12px;
+  border: 0; background: transparent; cursor: pointer;
+  font-family: var(--font-mono); font-size: 11px;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--text-muted); text-align: left;
   transition: color var(--dur-1) ease;
+  border-bottom: 1px solid var(--border-default);
 }
 .article-toc__toggle:hover { color: var(--text-primary); }
-.article-toc__chev { font-family: var(--font-mono); font-size: 14px; line-height: 1; }
-.article-toc__list {
-  list-style: none; margin: 0; padding: 0;
-  max-height: min(70vh, 600px); overflow-y: auto;
+.article-toc__label {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-weight: 600;
 }
-.article-toc__item a {
-  display: block; padding: 5px 0 5px 10px; border-left: 1.5px solid var(--border-default);
-  font-size: 13px; line-height: 1.5; color: var(--text-muted); text-decoration: none;
-  transition: color var(--dur-1) ease, border-color var(--dur-2) var(--ease-out);
+.article-toc__icon { width: 14px; height: 14px; }
+.article-toc__count {
+  margin-left: auto;
+  font-family: var(--font-mono); font-size: 10px;
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
+  background: var(--bg-sunken); color: var(--text-muted);
+  font-weight: 600;
 }
-.article-toc__item a:hover { color: var(--text-primary); border-left-color: var(--brand); }
-.article-toc__item a.is-active {
-  color: var(--brand-deep); font-weight: 600; border-left-color: var(--brand);
+.article-toc__chev {
+  font-family: var(--font-mono); font-size: 14px; line-height: 1;
+  display: none;
 }
-.article-toc__item--h3 a { padding-left: 22px; font-size: 12.5px; }
 
-/* ── Prev / next ── */
+.article-toc__list {
+  list-style: none; margin: 0;
+  padding: 12px 0 0;
+  display: flex; flex-direction: column;
+}
+.article-toc__item { position: relative; }
+.article-toc__item a {
+  display: block;
+  position: relative;
+  padding: 6px 10px 6px calc(10px + var(--depth, 0) * 14px);
+  border-radius: var(--radius-md);
+  font-size: 13px; line-height: 1.5;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color var(--dur-1) ease, background-color var(--dur-1) ease;
+}
+/* Indented entries get a hairline guide on the left so depth reads
+   even without paying attention to offset. */
+.article-toc__item[style*="--depth: 1"] a::before,
+.article-toc__item[style*="--depth: 2"] a::before {
+  content: '';
+  position: absolute;
+  top: 8px; bottom: 8px;
+  left: calc(10px + (var(--depth, 0) - 1) * 14px + 5px);
+  width: 1px;
+  background: var(--border-default);
+}
+.article-toc__item a:hover { color: var(--text-primary); background: var(--bg-soft); }
+.article-toc__item a.is-active {
+  color: var(--brand-deep); font-weight: 600;
+  background: var(--brand-tint);
+}
+.article-toc__text { display: block; }
+
+/* Wide screens: pin the rail to the left of the viewport. The rail's
+   top edge aligns with the article's meta row — not with the nav —
+   so the outline reads as part of the article, not as a floating
+   toolbar. */
+@media (min-width: 1080px) {
+  .article-toc {
+    position: fixed;
+    top: calc(var(--nav-clear) + clamp(28px, 4vw, 48px) + 24px);
+    left: max(24px, calc(50vw - var(--container-read) / 2 - 260px - 24px));
+    width: 220px;
+    max-height: calc(100vh - var(--nav-clear) - 64px);
+    overflow-y: auto;
+    padding-right: 4px;
+    scrollbar-width: thin;
+  }
+  .article-toc__toggle { pointer-events: none; cursor: default; }
+  .article-toc__toggle:hover { color: var(--text-muted); }
+}
+
+/* Narrow screens: collapse into a tappable summary above the body. */
+@media (max-width: 1079px) {
+  .article-toc {
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    background: var(--bg-soft);
+    margin-bottom: clamp(24px, 4vw, 32px);
+    overflow: hidden;
+  }
+  .article-toc__toggle {
+    padding: 12px 16px;
+    border-bottom: 0;
+  }
+  .article-toc.is-open .article-toc__toggle {
+    border-bottom: 1px solid var(--border-default);
+  }
+  .article-toc__chev { display: block; }
+  .article-toc__list { padding: 8px 8px 12px; }
+}
+
+/* ── Prev / next ────────────────────────────────────────────────── */
 .article-nav {
   display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
-  margin-top: clamp(40px, 6vw, 56px); padding-top: 32px;
-  border-top: 1px solid var(--border-default);
+  margin-top: clamp(40px, 6vw, 56px);
 }
 .article-nav__item {
   display: flex; flex-direction: column; gap: 8px;
-  padding: 16px 18px; border: 1px solid var(--border-default); border-radius: var(--radius-lg);
-  background: var(--surface-card); text-decoration: none;
-  transition: border-color var(--dur-2) var(--ease-out), box-shadow var(--dur-2) var(--ease-out),
+  padding: 16px 18px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  background: var(--surface-card);
+  text-decoration: none;
+  transition: border-color var(--dur-2) var(--ease-out),
+              box-shadow var(--dur-2) var(--ease-out),
               transform var(--dur-2) var(--ease-out);
 }
 .article-nav__item:hover {
-  border-color: var(--border-strong); box-shadow: var(--shadow-hover); transform: translateY(-2px);
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-2px);
 }
 .article-nav__item--next { text-align: right; align-items: flex-end; }
 .article-nav__label {
   display: inline-flex; align-items: center; gap: 6px;
-  font-family: var(--font-mono); font-size: 11.5px; letter-spacing: 0.04em; color: var(--text-muted);
+  font-family: var(--font-mono); font-size: 11.5px;
+  letter-spacing: 0.04em; color: var(--text-muted);
 }
 .article-nav__label .icon { width: 14px; height: 14px; }
 .article-nav__title {
-  font-size: var(--fs-body-sm); font-weight: 600; line-height: var(--lh-snug); color: var(--text-primary);
+  font-size: var(--fs-body-sm); font-weight: 600;
+  line-height: var(--lh-snug); color: var(--text-primary);
   transition: color var(--dur-1) ease;
 }
 .article-nav__item:hover .article-nav__title { color: var(--link); }
@@ -980,25 +1239,12 @@ body.nav-scrolled .folio-nav__menu:hover{ background:rgba(255,255,255,0.5); }
   .article-nav__item:hover { transform: none; box-shadow: none; }
 }
 
-/* Below the rail breakpoint the reading column takes the full shell and the
-   outline collapses to a tappable summary directly above the body. */
-@media (max-width: 1079px) {
-  .article-shell { width: min(100%, calc(var(--container-read) + 2 * var(--pad-x))); }
-  .article-cols { flex-direction: column; gap: 0; }
-  .article-rail { width: 100%; position: static; margin-bottom: 26px; }
-  .article-main { max-width: none; width: 100%; }
-  .article-toc__toggle { display: flex; }
-  .article-toc__list { display: none; padding: 0 14px 14px; }
-  .article-toc.is-open .article-toc__list { display: block; }
+/* ── Article foot ─────────────────────────────────────────────── */
+.article-foot {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border-default);
 }
-@media (max-width: 620px) {
-  .article-nav { grid-template-columns: 1fr; }
-  .article-nav__item--next { text-align: left; align-items: flex-start; }
-}
-
-/* Article foot actions */
-.article-foot { margin-top: clamp(40px, 6vw, 56px); padding-top: 24px;
-  border-top: 1px solid var(--border-default); }
 .article-back {
   display: inline-flex; align-items: center; gap: 6px;
   color: var(--text-secondary); font-size: var(--fs-body-sm); font-weight: 600;
@@ -1006,7 +1252,12 @@ body.nav-scrolled .folio-nav__menu:hover{ background:rgba(255,255,255,0.5); }
 }
 .article-back:hover { color: var(--link); }
 .article-back .icon { width: 15px; height: 15px; }
-.article-nav + .article-foot { margin-top: 24px; padding-top: 24px; border-top: 0; }
+
+@media (max-width: 620px) {
+  .article-nav { grid-template-columns: 1fr; }
+  .article-nav__item--next { text-align: left; align-items: flex-start; }
+  .article-cover img { aspect-ratio: 16 / 9; }
+}
 
 /* ============================================================
    PROJECT DETAIL

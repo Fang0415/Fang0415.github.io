@@ -40,38 +40,35 @@ export default async function BlogPostPage({ params }: { params: Promise<Params>
 
   return (
     <div className="article-shell">
-      <div className="article-lede">
-        <header className="article-head rise">
-          <div className="article-meta">
-            <span>{meta.category}</span>
-            <span className="dot"></span>
-            <span>{meta.date}</span>
-            <span className="dot"></span>
-            <span>{meta.readTime}</span>
-            {post.data.tags.length > 0 && (
-              <>
-                <span className="dot"></span>
-                <span className="article-meta__tags">
-                  {post.data.tags.map((tag) => <Tag key={tag}>{tag}</Tag>)}
-                </span>
-              </>
-            )}
+      <header className="article-head rise">
+        <div className="article-meta">
+          <span className="article-meta__cat">{meta.category}</span>
+          <span className="dot" aria-hidden="true" />
+          <time dateTime={meta.isoDate}>{meta.date}</time>
+          <span className="dot" aria-hidden="true" />
+          <span>{meta.readTime}</span>
+        </div>
+        <h1>{post.data.title}</h1>
+        {post.data.description && <p className="article-lead">{post.data.description}</p>}
+        {post.data.tags.length > 0 && (
+          <div className="article-tags">
+            {post.data.tags.map((tag) => <Tag key={tag}>{tag}</Tag>)}
           </div>
-          <h1>{post.data.title}</h1>
-          {post.data.description && <p className="article-lead">{post.data.description}</p>}
-        </header>
-
-        {post.data.coverUrl && (
-          <figure className="article-cover rise rise-2">
-            <img src={post.data.coverUrl} alt={post.data.coverAlt || post.data.title} />
-          </figure>
         )}
-      </div>
+      </header>
 
-      <div className="article-cols">
-        <aside className="article-rail">
-          <ArticleToc entries={toc} />
-        </aside>
+      {post.data.coverUrl && (
+        <figure className="article-cover rise rise-2">
+          <img src={post.data.coverUrl} alt={post.data.coverAlt || post.data.title} />
+        </figure>
+      )}
+
+      <div className="article-layout">
+        {toc.length > 0 && (
+          <aside className="article-rail">
+            <ArticleToc entries={toc} />
+          </aside>
+        )}
 
         <article className="article-main">
           <div className="article-body" dangerouslySetInnerHTML={{ __html: post.html }} />

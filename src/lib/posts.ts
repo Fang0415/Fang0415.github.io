@@ -284,6 +284,11 @@ export function getPostBySlug(slug: string): BlogPost | undefined {
   return post.data.draft ? undefined : post;
 }
 
+/** Sort newest-first; used by every list view. */
+export function sortedPosts(posts: BlogPost[]): BlogPost[] {
+  return [...posts].sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+}
+
 export function toMeta(post: BlogPost): PostMeta {
   const { category, color } = categoryForTags(post.data.tags);
   const iso = isoDate(post.data.pubDate);
