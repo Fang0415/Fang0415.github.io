@@ -28,7 +28,7 @@ export default function Navbar({ profile = PROFILE }: { profile?: SiteProfileDat
   }, [isHome]);
 
   return (
-    <nav className="folio-nav" data-home={isHome ? 'true' : 'false'}>
+    <nav className="folio-nav" data-home="false">
       <div className="folio-nav__inner">
         <a className="folio-nav__brand" href="/">
           <span className="folio-nav__mark">{profile.mark}</span>{profile.wordmark}
