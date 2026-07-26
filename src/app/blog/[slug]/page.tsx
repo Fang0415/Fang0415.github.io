@@ -69,6 +69,10 @@ export default async function BlogPostPage({ params }: { params: Promise<Params>
       </div>
 
       <div className="article-cols">
+        <aside className="article-rail">
+          <ArticleToc entries={toc} />
+        </aside>
+
         <article className="article-main">
           <div className="article-body" dangerouslySetInnerHTML={{ __html: post.html }} />
 
@@ -99,10 +103,6 @@ export default async function BlogPostPage({ params }: { params: Promise<Params>
             </a>
           </div>
         </article>
-
-        <aside className="article-rail">
-          <ArticleToc entries={toc} />
-        </aside>
       </div>
     </div>
   );

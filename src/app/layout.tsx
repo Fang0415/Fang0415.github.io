@@ -65,6 +65,8 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Nunito:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
         />
+        <link rel="stylesheet" href="/katex/katex.min.css" />
+        <link rel="stylesheet" href="/highlight.js/styles/github.min.css" />
       </head>
       <body>
         <Navbar profile={profile} />

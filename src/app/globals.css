@@ -149,7 +149,7 @@
   --tracking-normal:  0;
   --tracking-eyebrow: 0.06em;
 
-  --paragraph-gap: 1.3em;
+  --paragraph-gap: 1.7em;
 
   /* ── Spacing & layout ── */
   --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-5:20px;
@@ -855,8 +855,53 @@ body.nav-scrolled .folio-nav__menu:hover{ background:rgba(255,255,255,0.5); }
 .img-well { background: var(--bg-soft); aspect-ratio: 16/9; display: flex; align-items: center;
   justify-content: center; color: var(--text-muted); font-family: var(--font-mono); font-size: 12px; }
 
+/* ── Callouts (Obsidian-style "> [!tip]") ── */
+.callout {
+  margin: var(--paragraph-gap) 0;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-default);
+  background: var(--bg-soft);
+  overflow: hidden;
+}
+.callout__title {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 16px;
+  font-family: var(--font-wenkai-medium); font-size: var(--fs-body); font-weight: 700;
+  color: var(--text-primary);
+  background: rgba(255, 210, 80, 0.12);
+  border-bottom: 1px solid rgba(255, 210, 80, 0.28);
+}
+.callout__icon {
+  display: inline-flex; width: 20px; height: 20px;
+  color: var(--sunflower-500); flex: none;
+}
+.callout__icon svg { width: 100%; height: 100%; }
+.callout__body {
+  padding: 14px 16px;
+  font-family: var(--font-wenkai); font-size: var(--fs-body-lg); line-height: var(--lh-body);
+  color: var(--ink-700);
+}
+.callout__body > *:first-child { margin-top: 0; }
+.callout__body > *:last-child { margin-bottom: 0; }
+.callout__body p { margin: 0; }
+.callout__body > * + * { margin-top: 0.8em; }
+
+/* Variants */
+.callout--tip    { background: rgba(255, 232, 170, 0.18); border-color: rgba(248, 197, 46, 0.35); }
+.callout--note   { background: rgba(233, 243, 254, 0.45); border-color: rgba(63, 147, 227, 0.25); }
+.callout--info   { background: rgba(233, 243, 254, 0.45); border-color: rgba(63, 147, 227, 0.25); }
+.callout--warning { background: rgba(255, 243, 212, 0.55); border-color: rgba(246, 180, 23, 0.40); }
+.callout--important { background: rgba(255, 238, 240, 0.50); border-color: rgba(240, 115, 139, 0.30); }
+.callout--caution { background: rgba(255, 238, 240, 0.50); border-color: rgba(240, 115, 139, 0.30); }
+
+.callout--note   .callout__title { background: rgba(63, 147, 227, 0.10); border-bottom-color: rgba(63, 147, 227, 0.18); }
+.callout--info   .callout__title { background: rgba(63, 147, 227, 0.10); border-bottom-color: rgba(63, 147, 227, 0.18); }
+.callout--warning .callout__title { background: rgba(246, 180, 23, 0.14); border-bottom-color: rgba(246, 180, 23, 0.22); }
+.callout--important .callout__title { background: rgba(240, 115, 139, 0.10); border-bottom-color: rgba(240, 115, 139, 0.18); }
+.callout--caution .callout__title { background: rgba(240, 115, 139, 0.10); border-bottom-color: rgba(240, 115, 139, 0.18); }
+
 /* ── Article shell: 720px reading column + 220px outline rail ──
-   The rail now sits to the right of the body, sticky while scrolling. */
+   The rail sits to the left of the body, sticky while scrolling. */
 .article-shell {
   width: min(100%, calc(var(--container-read) + 220px + 56px + 2 * var(--pad-x)));
   margin: 0 auto; padding: 0 var(--pad-x);
@@ -940,7 +985,7 @@ body.nav-scrolled .folio-nav__menu:hover{ background:rgba(255,255,255,0.5); }
 @media (max-width: 1079px) {
   .article-shell { width: min(100%, calc(var(--container-read) + 2 * var(--pad-x))); }
   .article-cols { flex-direction: column; gap: 0; }
-  .article-rail { order: -1; width: 100%; position: static; margin-bottom: 26px; }
+  .article-rail { width: 100%; position: static; margin-bottom: 26px; }
   .article-main { max-width: none; width: 100%; }
   .article-toc__toggle { display: flex; }
   .article-toc__list { display: none; padding: 0 14px 14px; }
