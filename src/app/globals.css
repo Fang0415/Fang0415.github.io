@@ -10,6 +10,10 @@
    never crushes a 375px phone.
    ============================================================ */
 
+/* 霞鹜文楷 — article reading face */
+@import "@chinese-fonts/lxgwwenkai/dist/LXGWWenKai-Regular/result.css";
+@import "@chinese-fonts/lxgwwenkai/dist/LXGWWenKai-Medium/result.css";
+
 :root {
   /* ── Base neutrals (clean gray-white ground; color stays in accents) ── */
   --white:        #ffffff;
@@ -110,6 +114,8 @@
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas,
                'PingFang SC', 'Microsoft YaHei', monospace;
   --font-hand: 'Caveat', 'Segoe Print', 'Bradley Hand', cursive;
+  --font-wenkai: 'LXGW WenKai', 'LXGW WenKai Medium', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-wenkai-medium: 'LXGW WenKai Medium', 'LXGW WenKai', 'PingFang SC', 'Microsoft YaHei', sans-serif;
 
   /* Fluid scale — min holds at 360px, max holds from ~1200px up. */
   --fs-display-1: clamp(31px, 1.30rem + 3.7vw, 56px);
@@ -788,32 +794,32 @@ body.nav-scrolled .folio-nav__menu:hover{ background:rgba(255,255,255,0.5); }
   margin: 0; max-width: 38em; }
 
 /* ── Article reading surface ── */
-.article-head { padding: clamp(32px, 5vw, 56px) 0 clamp(24px, 3vw, 36px);
-  border-bottom: 1px solid var(--border-default); margin-bottom: clamp(28px, 4vw, 40px); }
+.article-head { padding: clamp(36px, 5vw, 64px) 0 clamp(20px, 3vw, 28px); }
+.article-head h1 { font-family: var(--font-wenkai-medium); font-size: var(--fs-display-2); font-weight: 700; letter-spacing: var(--tracking-display);
+  line-height: var(--lh-display); margin: 0 0 18px; }
 .article-meta { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; font-family: var(--font-mono);
-  font-size: 13px; color: var(--text-muted); margin-bottom: 18px; }
+  font-size: 12.5px; color: var(--text-muted); margin-bottom: 16px; }
 .article-meta > span:not(.dot) { white-space: nowrap; }
 .article-meta .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--text-muted); flex:none; }
-.article-head h1 { font-size: var(--fs-display-2); font-weight: 800; letter-spacing: var(--tracking-display);
-  line-height: var(--lh-display); margin: 0 0 20px; }
-.article-tags { display: flex; gap: 8px; flex-wrap: wrap; }
-.article-byline { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
-.article-byline__who { display: flex; align-items: center; gap: 10px;
-  font-size: var(--fs-body-sm); color: var(--text-secondary); }
+.article-meta__tags { display: flex; align-items: center; gap: 6px; }
+.article-lead {
+  margin: 0; font-family: var(--font-wenkai); font-size: var(--fs-body-lg); line-height: var(--lh-body);
+  color: var(--text-secondary); max-width: 34em;
+}
 
-/* Reading progress — a 2px cool-blue hairline, driven by scroll. */
+/* Reading progress — kept in CSS for backwards compatibility, no longer mounted. */
 .read-progress { position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 60; pointer-events: none; }
 .read-progress__bar { height: 100%; width: 0; background: linear-gradient(90deg, var(--sky-600), var(--sky-200));
   transform-origin: 0 50%; transition: width 120ms linear; }
 
 /* ── Prose (rendered markdown) ── */
-.prose, .article-body { font-size: var(--fs-body-lg); line-height: var(--lh-relaxed); color: var(--ink-700); }
+.prose, .article-body { font-family: var(--font-wenkai); font-size: var(--fs-body-lg); line-height: var(--lh-relaxed); color: var(--ink-700); }
 .prose > * + *, .article-body > * + * { margin-top: var(--paragraph-gap); }
-.prose h2, .article-body h2 { font-size: var(--fs-h2); font-weight: 700; letter-spacing: var(--tracking-heading);
+.prose h2, .article-body h2 { font-family: var(--font-wenkai-medium); font-size: var(--fs-h2); font-weight: 700; letter-spacing: var(--tracking-heading);
   line-height: var(--lh-heading); color: var(--text-primary); margin: 2em 0 0; }
-.prose h3, .article-body h3 { font-size: var(--fs-h3); font-weight: 700; line-height: var(--lh-heading);
+.prose h3, .article-body h3 { font-family: var(--font-wenkai-medium); font-size: var(--fs-h3); font-weight: 700; line-height: var(--lh-heading);
   color: var(--text-primary); margin: 1.7em 0 0; }
-.prose h4, .article-body h4 { font-size: var(--fs-h4); font-weight: 700; color: var(--text-primary); margin: 1.4em 0 0; }
+.prose h4, .article-body h4 { font-family: var(--font-wenkai-medium); font-size: var(--fs-h4); font-weight: 700; color: var(--text-primary); margin: 1.4em 0 0; }
 .prose p, .article-body p { margin: 0; }
 .prose a, .article-body a { color: var(--link); text-decoration: underline; text-underline-offset: 3px;
   text-decoration-thickness: 1px; text-decoration-color: var(--sky-200);
@@ -850,42 +856,33 @@ body.nav-scrolled .folio-nav__menu:hover{ background:rgba(255,255,255,0.5); }
   justify-content: center; color: var(--text-muted); font-family: var(--font-mono); font-size: 12px; }
 
 /* ── Article shell: 720px reading column + 220px outline rail ──
-   The lede (back link, header, cover) sits in its own full-width block so it
-   aligns with the reading column's left edge rather than being centred against
-   the rail, which used to leave the title visibly off-axis from the body. */
+   The rail now sits to the right of the body, sticky while scrolling. */
 .article-shell {
   width: min(100%, calc(var(--container-read) + 220px + 56px + 2 * var(--pad-x)));
   margin: 0 auto; padding: 0 var(--pad-x);
 }
 .article-lede { max-width: var(--container-read); }
-.article-shell__back { padding-top: 28px; }
 .article-cols { display: flex; align-items: flex-start; gap: 56px; }
 .article-main { flex: 1 1 auto; min-width: 0; max-width: var(--container-read); }
 .article-rail {
-  order: 2; flex: none; width: 220px;
-  position: sticky; top: calc(var(--nav-clear) + 16px);
+  flex: none; width: 220px;
+  position: sticky; top: calc(var(--nav-clear) + 24px);
 }
-/* A post with fewer than two headings renders no outline; an empty 220px column
-   would push the reading text off-centre for nothing. */
 .article-rail:empty { display: none; }
-.article-lead {
-  margin: 0 0 22px; font-size: var(--fs-body-lg); line-height: var(--lh-body);
-  color: var(--text-secondary); max-width: 34em;
-}
 .article-cover {
-  margin: 0 0 clamp(28px, 4vw, 40px); border-radius: var(--radius-xl); overflow: hidden;
+  margin: clamp(20px, 3vw, 28px) 0 clamp(28px, 4vw, 40px); border-radius: var(--radius-xl); overflow: hidden;
   border: 1px solid var(--border-default); box-shadow: var(--shadow-sm);
 }
 .article-cover img { width: 100%; aspect-ratio: 20 / 9; object-fit: cover; display: block; }
 
-/* ── Table of contents ── */
-.article-toc {
-  border: 1px solid var(--border-default); border-radius: var(--radius-lg);
-  background: var(--bg-soft); overflow: hidden;
-}
+/* ── Table of contents ──
+   Minimal, system-native rail on desktop; collapsible summary on narrow screens. */
+.article-toc {}
 .article-toc__toggle {
-  display: flex; align-items: center; justify-content: space-between; gap: 10px;
-  width: 100%; padding: 11px 14px; border: 0; background: transparent; cursor: pointer;
+  display: none;
+  align-items: center; justify-content: space-between; gap: 10px;
+  width: 100%; padding: 11px 14px; border: 1px solid var(--border-default); border-radius: var(--radius-lg);
+  background: var(--bg-soft); cursor: pointer;
   font-family: var(--font-mono); font-size: 11.5px; letter-spacing: var(--tracking-eyebrow);
   text-transform: uppercase; color: var(--text-muted); text-align: left;
   transition: color var(--dur-1) ease;
@@ -893,22 +890,19 @@ body.nav-scrolled .folio-nav__menu:hover{ background:rgba(255,255,255,0.5); }
 .article-toc__toggle:hover { color: var(--text-primary); }
 .article-toc__chev { font-family: var(--font-mono); font-size: 14px; line-height: 1; }
 .article-toc__list {
-  list-style: none; margin: 0; padding: 0 10px 12px;
-  max-height: min(56vh, 520px); overflow-y: auto;
+  list-style: none; margin: 0; padding: 0;
+  max-height: min(70vh, 600px); overflow-y: auto;
 }
 .article-toc__item a {
-  display: block; padding: 6px 10px; border-radius: var(--radius-sm);
-  font-size: 13px; line-height: 1.5; color: var(--text-secondary); text-decoration: none;
-  border-left: 2px solid transparent;
-  transition: color var(--dur-1) ease, background-color var(--dur-1) ease,
-              border-color var(--dur-2) var(--ease-out);
+  display: block; padding: 5px 0 5px 10px; border-left: 1.5px solid var(--border-default);
+  font-size: 13px; line-height: 1.5; color: var(--text-muted); text-decoration: none;
+  transition: color var(--dur-1) ease, border-color var(--dur-2) var(--ease-out);
 }
-.article-toc__item a:hover { color: var(--text-primary); background: var(--surface-card); }
+.article-toc__item a:hover { color: var(--text-primary); border-left-color: var(--brand); }
 .article-toc__item a.is-active {
   color: var(--brand-deep); font-weight: 600; border-left-color: var(--brand);
-  background: var(--surface-card);
 }
-.article-toc__item--h3 a { padding-left: 22px; font-size: 12.5px; color: var(--text-muted); }
+.article-toc__item--h3 a { padding-left: 22px; font-size: 12.5px; }
 
 /* ── Prev / next ── */
 .article-nav {
@@ -948,6 +942,9 @@ body.nav-scrolled .folio-nav__menu:hover{ background:rgba(255,255,255,0.5); }
   .article-cols { flex-direction: column; gap: 0; }
   .article-rail { order: -1; width: 100%; position: static; margin-bottom: 26px; }
   .article-main { max-width: none; width: 100%; }
+  .article-toc__toggle { display: flex; }
+  .article-toc__list { display: none; padding: 0 14px 14px; }
+  .article-toc.is-open .article-toc__list { display: block; }
 }
 @media (max-width: 620px) {
   .article-nav { grid-template-columns: 1fr; }
@@ -955,8 +952,15 @@ body.nav-scrolled .folio-nav__menu:hover{ background:rgba(255,255,255,0.5); }
 }
 
 /* Article foot actions */
-.article-foot { margin-top: clamp(40px, 6vw, 56px); padding-top: 32px;
-  border-top: 1px solid var(--border-default); display: flex; gap: 12px; flex-wrap: wrap; }
+.article-foot { margin-top: clamp(40px, 6vw, 56px); padding-top: 24px;
+  border-top: 1px solid var(--border-default); }
+.article-back {
+  display: inline-flex; align-items: center; gap: 6px;
+  color: var(--text-secondary); font-size: var(--fs-body-sm); font-weight: 600;
+  text-decoration: none; transition: color var(--dur-1) ease;
+}
+.article-back:hover { color: var(--link); }
+.article-back .icon { width: 15px; height: 15px; }
 .article-nav + .article-foot { margin-top: 24px; padding-top: 24px; border-top: 0; }
 
 /* ============================================================
