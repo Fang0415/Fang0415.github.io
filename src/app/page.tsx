@@ -11,6 +11,14 @@ import { getPublishedPostMetas, getSiteProfile, getVisibleExperiences, getVisibl
 
 export const dynamic = 'force-dynamic';
 
+function renderHeroQuote(text: string) {
+  return text.split(/\b(don't know|looking)\b/gi).map((part, index) =>
+    /^(don't know|looking)$/i.test(part)
+      ? <em key={`${part}-${index}`}>{part}</em>
+      : part
+  );
+}
+
 export default async function HomePage() {
   const [latest, projects, experiences, profile] = await Promise.all([
     getPublishedPostMetas(),
@@ -25,27 +33,25 @@ export default async function HomePage() {
         <div className="hero-banner hero-banner--color rise">
           <img className="hero-banner-img" src="/assets/hero-sunflower.jpg" alt="夏日下午的向日葵田" />
           <div className="kit-container hero-banner-inner">
-            <p className="hero-eyebrow hero-eyebrow--on-image">
-              <span className="hero-dot"></span>
-              {profile.role} <span className="loc">· {profile.location}</span>
-            </p>
-            <h1>我在构建<em>{profile.hero}</em>。</h1>
+            <h1 className="hero-quote">{renderHeroQuote(profile.hero)}</h1>
           </div>
         </div>
         <div className="kit-container hero-sub rise rise-2">
           <p className="hero-lead">{profile.lead}</p>
           <div className="hero-actions">
             <Button variant="primary" href="/projects/" iconRight={<FolioIcon name="arrow-right" className="icon" />}>
-              看看项目
+              看项目
             </Button>
-            <Button variant="secondary" href="/blog/">阅读文章</Button>
+            <Button variant="secondary" href="/blog/">读文章</Button>
           </div>
           <div className="hero-foot">
             <SocialRow profile={profile} />
-            <p className="hero-now">
-              <span className="hero-now-dot"></span>
-              近况 · 正在打磨 <strong>ragkit</strong> · 整理后端工程笔记
-            </p>
+            {profile.now[0] && (
+              <p className="hero-now">
+                <span className="hero-now-dot"></span>
+                最近 · {profile.now[0]}
+              </p>
+            )}
           </div>
         </div>
       </section>
@@ -62,8 +68,8 @@ export default async function HomePage() {
         <div className="kit-container">
           <div className="sec-head">
             <div>
-              <p className="sec-eyebrow">笔记</p>
-              <h2 className="sec-title">最新文章</h2>
+              <p className="sec-eyebrow">写作</p>
+              <h2 className="sec-title">最近写的文章</h2>
             </div>
             <a className="sec-link" href="/blog/">全部文章 <FolioIcon name="arrow-right" className="icon" /></a>
           </div>
@@ -93,8 +99,8 @@ export default async function HomePage() {
             <div>
               <p className="sec-eyebrow" style={{ marginBottom: 10 }}>关于</p>
               <p className="about-preview__line">
-                我是 {profile.name}，关注后端工程、RAG 和开发工具链。
-                最近主要在做检索系统、评估流程，以及那些让 AI 功能真正可靠的基础设施。
+                我是 {profile.name}，一名学生和全栈开发者。最近主要在学后端和 AI 应用开发，
+                RAG 是其中投入比较多的一块。这里放项目，也放我一路写下来的笔记。
               </p>
             </div>
             <Button variant="ghost" href="/about/" iconRight={<FolioIcon name="arrow-right" className="icon" />}>

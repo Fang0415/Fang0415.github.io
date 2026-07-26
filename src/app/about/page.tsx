@@ -12,7 +12,7 @@ import { markdownToHtml } from '../../lib/posts';
 
 export const metadata: Metadata = {
   title: '关于',
-  description: '关于我：关注 RAG、后端工程和 AI 基础设施。',
+  description: '关于 Fang：一名关注后端、AI 应用开发和 RAG 的学生与全栈开发者。',
 };
 
 export const dynamic = 'force-dynamic';
@@ -33,7 +33,7 @@ export default async function AboutPage() {
             <Avatar name={profile.name} size={96} />
             <div className="about-intro__text">
               <h1>关于我</h1>
-              <p>{profile.role} · 常驻 {profile.location}</p>
+              <p>{profile.role}{profile.location ? ` · ${profile.location}` : ''}</p>
             </div>
           </div>
         </div>
@@ -44,9 +44,11 @@ export default async function AboutPage() {
           <aside className="about-aside">
             <div className="sec-eyebrow">联系我</div>
             <SocialRow size="md" profile={profile} />
-            <Button variant="secondary" size="sm" href={`mailto:${profile.email}`} iconLeft={<FolioIcon name="mail" className="icon" />}>
-              发邮件
-            </Button>
+            {profile.email && (
+              <Button variant="secondary" size="sm" href={`mailto:${profile.email}`} iconLeft={<FolioIcon name="mail" className="icon" />}>
+                发邮件
+              </Button>
+            )}
           </aside>
 
           <div>
@@ -83,7 +85,7 @@ export default async function AboutPage() {
             )}
 
             <div className="about-block">
-              <h2>实践经历</h2>
+                <h2>学习与实践</h2>
               <ExperienceSummary items={experiences} showHeader={false} compact />
             </div>
 

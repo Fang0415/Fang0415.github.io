@@ -3,41 +3,40 @@
 // content collection (see posts.ts); these are the static persona bits.
 
 export const PROFILE = {
-  name: 'Lin Wei',
-  wordmark: 'lin.dev',
-  mark: 'L',
-  role: '后端开发 · RAG 实践者',
-  location: '深圳',
-  hero: '面向 AI 的后端系统和工具',
-  lead: '我关注后端系统、RAG 和开发工具链，也会把实践中踩过的坑和形成的判断写下来，方便之后复用。',
-  email: 'hi@lin.dev',
+  name: 'Fang',
+  wordmark: 'Fang',
+  mark: 'F',
+  role: '学生 · 全栈开发者',
+  location: '',
+  hero: "There's still so much I don't know, so I keep looking.",
+  lead: '这里放我做过的项目，也记录学习和开发时遇到的问题。比起只展示结果，我更想把过程和取舍写清楚。',
+  email: '',
   github: 'https://github.com/Fang0415',
   wechat: '',
   // About-page blocks. The three list fields use "左 | 右" per line where the
   // page renders two columns, so the console can edit them in a plain textarea
   // instead of needing a nested form.
   aboutIntro: [
-    '我是 Lin Wei，一个长期关注后端系统的开发者，后来逐渐把注意力放到了 AI 基础设施上。'
-      + '很多工作发生在技术栈中间那些不显眼的位置：检索管线、队列、评估流程，以及决定 AI 功能到底可靠还是只适合演示的基础设施。',
-    '我喜欢**小而锋利的工具**，也习惯把问题写下来。'
-      + '这个站点用来保存实践中的判断和笔记，首先方便我自己复用，也希望对遇到类似问题的人有帮助。',
+    '你好，我是 Fang，一名学生，也是一名全栈开发者。现在主要学习后端、AI 应用开发和 RAG，也会做一些完整的小项目，把想法从页面一路做到服务端。',
+    '我建这个网站，不只是为了摆作品。项目为什么这样设计、途中踩过什么坑、最后怎么解决，我都会尽量写下来。'
+      + '如果这些记录刚好能帮你少绕一点路，那就更好了。',
   ].join('\n\n'),
   focus: [
-    'RAG 与检索 | 切分、混合检索、评估',
-    '后端系统 | Postgres、队列、可观测性',
-    '开发工具链 | 小而明确的命令行工具',
+    '后端开发 | 接口、数据库与服务部署',
+    'AI 应用 | 从想法到可以使用的产品',
+    'RAG | 检索、上下文与效果评估',
   ],
   tools: ['Python', 'Go', 'Rust', 'Postgres', 'pgvector', 'FastAPI', 'DuckDB', 'Neovim', 'Linux'],
   now: [
-    '围绕更清晰的评估流程重构 ragkit。',
-    '在读向量索引内部实现相关内容，包括 HNSW 和 IVF。',
-    '尽量保持每周写一篇技术笔记的节奏。',
+    '做一个完整的 AI 应用，顺手把工程结构理清楚。',
+    '继续学习 RAG，重点看检索和效果评估。',
+    '把开发中真正遇到的问题写成文章。',
   ],
   background: [
-    '现在 | 后端 / AI 基础设施，构建检索系统',
-    '之前 | 平台工程与数据工程相关工作',
-    '写作 | RAG、Postgres、评估和开发工作流',
-    '屏幕外 | 机械键盘、长跑和不太稳定的咖啡品味',
+    '身份 | 学生 / 全栈开发者',
+    '关注 | 后端、AI 应用开发、RAG',
+    '这个网站 | 项目展示、学习记录和技术文章',
+    '写作原则 | 先把问题说明白，再谈解决方案',
   ],
 };
 
@@ -96,7 +95,7 @@ export const PROJECTS: Project[] = [
     id: 'ragkit', title: 'ragkit', status: 'active', category: 'AI / RAG',
     role: '系统设计 / 后端实现',
     period: '2026',
-    description: '一个面向 LLM 应用的本地优先检索层，支持可插拔切分、混合检索和轻量评估工具。',
+    description: '把文档处理、混合检索和简单评估放在一起的本地 RAG 工具，方便快速比较不同方案。',
     highlights: ['可插拔切分与检索策略', '面向实验复现的评估流程'],
     stack: ['Python', 'Postgres', 'pgvector', 'FastAPI'], repo: '#', demo: '#',
   },
@@ -104,7 +103,7 @@ export const PROJECTS: Project[] = [
     id: 'notes-cli', title: 'notes-cli', status: 'building', category: '工具链',
     role: 'CLI 设计 / 本地索引',
     period: '2026',
-    description: '一个小型命令行工具，用来把工程笔记直接沉淀成可搜索的纯文本档案。',
+    description: '在终端里记笔记、加标签和搜索的小工具，数据保存为普通文件，换设备也不难搬。',
     highlights: ['Markdown 笔记归档', '轻量搜索与标签整理'],
     stack: ['Go', 'SQLite'], repo: '#',
   },
@@ -112,7 +111,7 @@ export const PROJECTS: Project[] = [
     id: 'streamq', title: 'streamq', status: 'shipped', category: '后端',
     role: '队列模型 / 可靠投递',
     period: '2025',
-    description: '基于 Postgres LISTEN/NOTIFY 的轻量持久队列，适合暂时不想引入 Kafka 的小服务。',
+    description: '用 Postgres 做的小型持久任务队列，给暂时不需要 Kafka 的服务一个更轻的选择。',
     highlights: ['持久化任务状态', '失败重试与可观测事件'],
     stack: ['Rust', 'Postgres'], repo: '#', demo: '#',
   },
@@ -120,7 +119,7 @@ export const PROJECTS: Project[] = [
     id: 'embed-bench', title: 'embed-bench', status: 'active', category: 'AI / RAG',
     role: '评估框架 / 数据集整理',
     period: '2025',
-    description: '一个可复现实验框架，用来评估 embedding 模型在垂直领域检索任务上的表现。',
+    description: '用同一套数据和指标比较 embedding 模型，看看它们在具体检索任务里的差别。',
     highlights: ['多模型对比', '检索指标与样本回放'],
     stack: ['Python', 'DuckDB'], repo: '#',
   },
@@ -136,7 +135,7 @@ export const PROJECTS: Project[] = [
     id: 'logpipe', title: 'logpipe', status: 'shipped', category: '后端',
     role: '日志建模 / 查询链路',
     period: '2025',
-    description: '一个结构化日志适配层，把嘈杂的服务日志转换成可查询事件，不依赖外部 agent。',
+    description: '把格式混乱的服务日志整理成结构化事件，再写入 ClickHouse，方便之后查询和排错。',
     highlights: ['结构化事件提取', 'ClickHouse 写入与查询'],
     stack: ['Go', 'ClickHouse'], repo: '#', demo: '#',
   },
@@ -145,39 +144,39 @@ export const PROJECTS: Project[] = [
 export const EXPERIENCES: Experience[] = [
   {
     id: 'ai-infra',
-    company: '个人项目 / AI 工程实践',
-    role: '后端与检索系统构建',
-    period: '现在',
-    summary: '围绕 RAG 应用的检索、评估、数据流转和服务化，把原型能力整理成可以复用的工程模块。',
-    highlights: ['整理检索管线与评估基线', '沉淀 Postgres、pgvector、FastAPI 实践'],
+    company: '个人项目',
+    role: 'AI 应用与 RAG',
+    period: '最近',
+    summary: '最近把更多时间放在 AI 应用和 RAG 上，试着从数据处理、检索到接口和页面，完整做完一条链路。',
+    highlights: ['比较不同的切分与检索方案', '给实验补上可以重复的评估过程'],
     stack: ['Python', 'Postgres', 'pgvector', 'FastAPI'],
   },
   {
     id: 'backend-systems',
-    company: '后端工程实践',
-    role: '服务设计与基础设施',
-    period: '之前',
-    summary: '关注接口边界、任务队列、日志与部署，把复杂度控制在项目当前规模能够承受的范围内。',
-    highlights: ['设计轻量任务队列和日志链路', '维护部署、反代和对象存储流程'],
+    company: '课程与练习',
+    role: '后端基础',
+    period: '持续',
+    summary: '用项目练习接口设计、数据库、任务队列和部署。重点不是堆技术，而是把每一层为什么存在想清楚。',
+    highlights: ['从接口到数据库完成一条业务链路', '练习部署、日志和问题排查'],
     stack: ['Go', 'Rust', 'Postgres', 'Nginx'],
   },
   {
     id: 'writing-tools',
-    company: '写作与工具链',
-    role: '知识沉淀与自动化',
-    period: '持续',
-    summary: '把项目复盘、工程笔记和命令行工具串起来，让经验可以被搜索、复用和继续迭代。',
-    highlights: ['维护技术博客与 Markdown 内容', '构建本地优先的小工具'],
+    company: '这个网站',
+    role: '全栈开发与写作',
+    period: '现在',
+    summary: '自己设计、开发并维护这个网站，用它整理项目和笔记，也顺便练习一套完整的内容管理流程。',
+    highlights: ['完成前台页面和内容后台', '把开发过程整理成可以回看的记录'],
     stack: ['Next.js', 'TypeScript', 'Markdown', 'SQLite'],
   },
 ];
 
 // Status → showcase pill (label + kind class). Mirrors Folio Home.jsx.
 export const SHOWCASE_STATUS: Record<ProjectStatus, [string, string]> = {
-  active: ['活跃维护', 'live'],
-  building: ['开发中', 'wip'],
-  shipped: ['已发布', 'beta'],
-  archived: ['已归档', 'archived'],
+  active: ['持续更新', 'live'],
+  building: ['正在做', 'wip'],
+  shipped: ['已完成', 'beta'],
+  archived: ['暂停更新', 'archived'],
 };
 
 export const NAV_LINKS = [

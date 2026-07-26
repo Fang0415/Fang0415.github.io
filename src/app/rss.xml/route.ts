@@ -36,7 +36,7 @@ export async function GET() {
   <channel>
     <title>${escapeXml(profile.wordmark)}</title>
     <link>${escapeXml(SITE_URL)}</link>
-    <description>${escapeXml('后端系统、RAG 和开发工具链的实践笔记。')}</description>
+    <description>${escapeXml('Fang 关于后端、AI 应用开发和 RAG 的项目与笔记。')}</description>
     <language>zh-CN</language>
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
     <atom:link href="${escapeXml(`${SITE_URL}/rss.xml`)}" rel="self" type="application/rss+xml" />

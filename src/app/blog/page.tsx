@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: '文章',
-  description: '关于后端系统、RAG 和开发工具链的实践笔记。',
+  description: 'Fang 关于后端、AI 应用开发和 RAG 的学习与开发笔记。',
 };
 
 export default async function BlogPage() {
@@ -18,8 +18,8 @@ export default async function BlogPage() {
         <div className="kit-container">
           <h1 className="rise">文章</h1>
           <p className="rise rise-2">
-            这里记录后端系统、RAG 和开发工具链相关的实践笔记。
-            写作是为了把问题想清楚，也让学到的东西之后还能复用。
+            开发时遇到的问题、读源码时记下的细节，还有一些没有标准答案的取舍，
+            都会写在这里。希望这些记录不只对未来的我有用。
           </p>
         </div>
       </section>

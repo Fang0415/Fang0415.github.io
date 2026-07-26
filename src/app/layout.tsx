@@ -9,7 +9,7 @@ import { getSiteProfile } from '../lib/managed-content';
 import { SITE_URL } from '../lib/site-url';
 import './globals.css';
 
-const DESCRIPTION = '一个记录后端系统、RAG 和 AI 工程基础设施实践的中文技术博客。';
+const DESCRIPTION = 'Fang 的项目与技术笔记，主要关于后端、AI 应用开发和 RAG。';
 
 export const metadata: Metadata = {
   // metadataBase is what turns the relative image paths below into absolute
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   description: DESCRIPTION,
   applicationName: PROFILE.wordmark,
   authors: [{ name: PROFILE.name }],
-  keywords: ['后端开发', 'RAG', '检索增强生成', 'AI 基础设施', '技术博客', PROFILE.name],
+  keywords: ['全栈开发', '后端开发', 'AI 应用开发', 'RAG', '技术博客', PROFILE.name],
   alternates: {
     canonical: '/',
     types: { 'application/rss+xml': '/rss.xml' },
@@ -50,7 +50,7 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   viewportFit: 'cover',
-  themeColor: '#faf7ef',
+  themeColor: '#ffffff',
 };
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
@@ -63,7 +63,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
           rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Nunito:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
         />
       </head>
       <body>

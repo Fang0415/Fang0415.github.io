@@ -34,8 +34,8 @@ export default function FeaturedShowcase({ projects }: Props) {
       <div className="kit-container">
         <div className="sec-head">
           <div>
-            <p className="sec-eyebrow">精选项目</p>
-            <h2 className="sec-title" id="showcase-title">一些正在打磨的东西</h2>
+            <p className="sec-eyebrow">项目</p>
+            <h2 className="sec-title" id="showcase-title">最近做的几个项目</h2>
           </div>
           <a className="sec-link" href="/projects/">
             全部项目 <FolioIcon name="arrow-right" className="icon" />

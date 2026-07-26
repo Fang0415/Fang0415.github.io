@@ -30,10 +30,10 @@ const STATUS_VARIANT: Record<ProjectStatus, 'success' | 'warning' | 'brand' | 'n
 };
 
 const STATUS_LABEL: Record<ProjectStatus, string> = {
-  active: '活跃维护',
-  building: '开发中',
-  shipped: '已发布',
-  archived: '已归档',
+  active: '持续更新',
+  building: '正在做',
+  shipped: '已完成',
+  archived: '暂停更新',
 };
 
 export default function ProjectCard({

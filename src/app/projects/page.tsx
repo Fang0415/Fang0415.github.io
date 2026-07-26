@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: '项目',
-  description: '一些侧项目、工具和实验，主要围绕后端系统与检索基础设施。',
+  description: 'Fang 做过和正在做的项目，包括后端、AI 应用与 RAG。',
 };
 
 export default async function ProjectsPage() {
@@ -16,10 +16,10 @@ export default async function ProjectsPage() {
     <>
       <section className="page-head">
         <div className="kit-container">
-          <h1 className="rise">我做过的一些项目</h1>
+          <h1 className="rise">做过和正在做的项目</h1>
           <p className="rise rise-2">
-            这里记录一些侧项目、工具和实验，主要围绕后端系统与检索基础设施。
-            有些还在维护，有些已经暂停，但仍然保留它们当时解决问题的思路。
+            这里会放我的项目和小实验。比起只列技术栈，我更想说清楚它解决了什么、
+            为什么这样设计，以及下一步还能怎么改。
           </p>
         </div>
       </section>

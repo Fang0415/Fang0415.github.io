@@ -92,25 +92,25 @@ export default function ProfilePanel({ profile, assets, onReload, notify }: Prop
         <div className="admin-subhead">身份与导航</div>
         <FieldRow>
           <Field label="姓名" hint="署名与头像字母">
-            <input value={form.name} onChange={(e) => set('name', e.target.value)} placeholder="Lin Wei" />
+            <input value={form.name} onChange={(e) => set('name', e.target.value)} placeholder="Fang" />
           </Field>
           <Field label="站点字标" hint="导航与浏览器标题">
-            <input value={form.wordmark} onChange={(e) => set('wordmark', e.target.value)} placeholder="lin.dev" />
+            <input value={form.wordmark} onChange={(e) => set('wordmark', e.target.value)} placeholder="Fang" />
           </Field>
         </FieldRow>
         <FieldRow>
           <Field label="标记字母" hint="导航左上方块，1 个字符">
-            <input value={form.mark} maxLength={2} onChange={(e) => set('mark', e.target.value)} placeholder="L" />
+            <input value={form.mark} maxLength={2} onChange={(e) => set('mark', e.target.value)} placeholder="F" />
           </Field>
           <Field label="所在地">
-            <input value={form.location} onChange={(e) => set('location', e.target.value)} placeholder="深圳" />
+            <input value={form.location} onChange={(e) => set('location', e.target.value)} placeholder="留空则不显示" />
           </Field>
         </FieldRow>
-        <Field label="身份描述" hint="Hero 眉标，如「后端开发 · RAG 实践者」">
-          <input value={form.role} onChange={(e) => set('role', e.target.value)} placeholder="后端开发 · RAG 实践者" />
+        <Field label="身份描述" hint="Hero 眉标，如「学生 · 全栈开发者」">
+          <input value={form.role} onChange={(e) => set('role', e.target.value)} placeholder="学生 · 全栈开发者" />
         </Field>
-        <Field label="Hero 强调短语" hint="会拼成「我在构建 ___ 。」">
-          <input value={form.hero} onChange={(e) => set('hero', e.target.value)} placeholder="面向 AI 的后端系统和工具" />
+        <Field label="Hero 标题" hint="首页会直接显示这句话，适合使用简短的英文题词">
+          <input value={form.hero} onChange={(e) => set('hero', e.target.value)} placeholder="There's still so much I don't know, so I keep looking." />
         </Field>
         <Field label="首页导语">
           <textarea
@@ -122,7 +122,7 @@ export default function ProfilePanel({ profile, assets, onReload, notify }: Prop
         </Field>
         <FieldRow>
           <Field label="邮箱">
-            <input value={form.email} onChange={(e) => set('email', e.target.value)} placeholder="hi@lin.dev" />
+            <input value={form.email} onChange={(e) => set('email', e.target.value)} placeholder="留空则不显示" />
           </Field>
           <Field label="GitHub 主页">
             <input value={form.github} onChange={(e) => set('github', e.target.value)} placeholder="https://github.com/…" />
@@ -154,7 +154,7 @@ export default function ProfilePanel({ profile, assets, onReload, notify }: Prop
               rows={4}
               value={form.background}
               onChange={(e) => set('background', e.target.value)}
-              placeholder={'现在 | 后端 / AI 基础设施'}
+              placeholder={'身份 | 学生 / 全栈开发者'}
             />
           </Field>
         </FieldRow>
@@ -164,7 +164,7 @@ export default function ProfilePanel({ profile, assets, onReload, notify }: Prop
               rows={4}
               value={form.now}
               onChange={(e) => set('now', e.target.value)}
-              placeholder={'围绕更清晰的评估流程重构 ragkit。'}
+              placeholder={'继续学习 RAG，重点看检索和效果评估。'}
             />
           </Field>
           <Field label="常用工具" hint="每行一个，或用逗号分隔">

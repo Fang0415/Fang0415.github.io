@@ -131,7 +131,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<Pa
               ? <div className="article-body" dangerouslySetInnerHTML={{ __html: body.html }} />
               : (
                 <p className="project-body__blank">
-                  这个项目还没有写详细记录。上面的摘要是目前能说清的全部，等实现稳定一些会补上设计取舍和踩过的坑。
+                  详细记录还没写完。先留下项目简介，等内容整理好后，我会补上实现过程和踩过的坑。
                 </p>
               )}
           </div>

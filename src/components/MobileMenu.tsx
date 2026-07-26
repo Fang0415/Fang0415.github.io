@@ -56,8 +56,8 @@ export default function MobileMenu({ profile = PROFILE }: { profile?: SiteProfil
         {NAV_LINKS.map((l) => <a key={l.href} className="cb-menu-link" href={l.href}>{l.label}</a>)}
       </div>
       <div className="folio-mobilemenu__foot">
-        <a href={profile.github}>GitHub</a>
-        <a href={`mailto:${profile.email}`}>邮件</a>
+        {profile.github && <a href={profile.github}>GitHub</a>}
+        {profile.email && <a href={`mailto:${profile.email}`}>邮件</a>}
         <a href="/rss.xml">RSS</a>
       </div>
     </div>

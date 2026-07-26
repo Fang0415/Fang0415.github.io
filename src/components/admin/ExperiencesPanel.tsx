@@ -108,7 +108,7 @@ export default function ExperiencesPanel({ experiences, onReload, notify }: Prop
     <div className="admin-workspace">
       <section className="admin-card admin-card--list">
         <PanelHeader title="经历" count={experiences.length} />
-        <p className="admin-note">首页「实践历程」与关于页时间线读的是这份列表。</p>
+        <p className="admin-note">首页「学习与实践」和关于页时间线读的是这份列表。</p>
         {experiences.length === 0 && <EmptyState>还没有经历条目。</EmptyState>}
         <div className="admin-rows">
           {experiences.map((experience, index) => (
@@ -148,10 +148,10 @@ export default function ExperiencesPanel({ experiences, onReload, notify }: Prop
 
         <FieldRow>
           <Field label="机构 / 项目">
-            <input value={form.company} onChange={(e) => set('company', e.target.value)} placeholder="个人项目 / AI 工程实践" />
+            <input value={form.company} onChange={(e) => set('company', e.target.value)} placeholder="个人项目" />
           </Field>
           <Field label="角色">
-            <input value={form.role} onChange={(e) => set('role', e.target.value)} placeholder="后端与检索系统构建" />
+            <input value={form.role} onChange={(e) => set('role', e.target.value)} placeholder="AI 应用与 RAG" />
           </Field>
         </FieldRow>
         <Field label="时间" hint="自由文本，如「现在」「2024–2025」">
@@ -170,7 +170,7 @@ export default function ExperiencesPanel({ experiences, onReload, notify }: Prop
             rows={4}
             value={form.highlights}
             onChange={(e) => set('highlights', e.target.value)}
-            placeholder={'整理检索管线与评估基线\n沉淀 Postgres、pgvector、FastAPI 实践'}
+            placeholder={'比较不同的切分与检索方案\n给实验补上可以重复的评估过程'}
           />
         </Field>
         <Field label="技术栈" hint="逗号分隔">
