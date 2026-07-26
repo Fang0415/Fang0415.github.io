@@ -9,6 +9,7 @@ interface Props {
   readingTime?: string;
   category?: string;
   tags?: string[];
+  coverUrl?: string;
   href?: string;
   layout?: 'card' | 'row';
   className?: string;
@@ -22,6 +23,7 @@ export default function PostCard({
   readingTime,
   category,
   tags = [],
+  coverUrl,
   href,
   layout = 'card',
   className = '',
@@ -35,10 +37,22 @@ export default function PostCard({
           <div className="folio-post__body">
             <h3 className="folio-post__title">{title}</h3>
             {excerpt && <p className="folio-post__excerpt">{excerpt}</p>}
-            {tags.length > 0 && (
-              <div className="folio-post__tags">{tags.map((t) => <Tag key={t} mono={false}>{t}</Tag>)}</div>
+            {(tags.length > 0 || readingTime) && (
+              <div className="folio-post__tags">
+                {tags.map((t) => <Tag key={t} mono={false}>{t}</Tag>)}
+                {readingTime && (
+                  <span style={{ alignSelf: 'center', fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--text-muted)' }}>
+                    {readingTime}
+                  </span>
+                )}
+              </div>
             )}
           </div>
+          {coverUrl && (
+            <span className="folio-post__thumb">
+              <img src={coverUrl} alt="" loading="lazy" />
+            </span>
+          )}
         </div>
       </Card>
     );
@@ -47,6 +61,11 @@ export default function PostCard({
   return (
     <Card interactive href={href} className={className} style={style}>
       <div className="folio-post">
+        {coverUrl && (
+          <span className="folio-post__cover">
+            <img src={coverUrl} alt="" loading="lazy" />
+          </span>
+        )}
         <div className="folio-post__meta">
           {category && <span style={{ color: 'var(--link)', fontWeight: 600 }}>{category}</span>}
           {category && <span className="dot" />}

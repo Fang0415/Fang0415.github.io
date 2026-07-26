@@ -67,8 +67,10 @@ export default function WritingList({ posts, search = true }: Props) {
               title={p.title}
               excerpt={p.excerpt}
               date={p.date}
+              readingTime={p.readTime}
               href={p.href}
               tags={[p.category]}
+              coverUrl={p.coverUrl}
             />
           </div>
         ))}
@@ -77,12 +79,17 @@ export default function WritingList({ posts, search = true }: Props) {
 
       <style jsx>{`
         .wl-search {
-          display: flex; align-items: center; gap: 8px; width: 240px;
-          padding: 7px 14px; border-radius: var(--radius-full);
+          display: flex; align-items: center; gap: 8px; width: min(240px, 100%);
+          padding: 8px 14px; border-radius: var(--radius-full);
           background: var(--bg-soft); border: 1px solid var(--border-default);
-          color: var(--text-muted); transition: border-color .15s ease, background .15s ease;
+          color: var(--text-muted);
+          transition: border-color var(--dur-1) var(--ease-out), background-color var(--dur-1) var(--ease-out);
         }
         .wl-search:focus-within { border-color: var(--border-strong); background: var(--surface-card); }
+        /* Below 620px the chips already wrap, so the search takes its own full row. */
+        @media (max-width: 620px) {
+          .wl-search { width: 100%; }
+        }
         .wl-search .icon { width: 16px; height: 16px; flex: none; }
         .wl-search input {
           border: none; outline: none; background: none; width: 100%;

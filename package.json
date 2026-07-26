@@ -11,6 +11,7 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:deploy": "prisma migrate deploy",
+    "seed": "node --experimental-strip-types --no-warnings prisma/seed.ts",
     "studio": "prisma studio"
   },
   "dependencies": {

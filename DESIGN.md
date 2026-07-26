@@ -2,7 +2,7 @@
 
 ## Direction
 
-Fang Blog uses a Folio-style personal engineering journal system: warm paper surfaces, a sunflower-led brand color, readable rounded typography, restrained cards, and an image-led home hero. The site should feel like a working developer's notebook rather than a SaaS landing page.
+Fang Blog uses a Folio-style personal engineering journal system: clean gray-white surfaces, cool blue interface accents, readable rounded typography, restrained cards, and an image-led home hero. The sunflower image supplies the home page's warmth without tinting the interface itself. The site should feel like a working developer's notebook rather than a SaaS landing page.
 
 The design favors clarity over decoration. Pages should prioritize writing, project context, and navigation. Visual richness comes from type, spacing, the hero photo, small status signals, and careful color accents.
 
@@ -13,33 +13,33 @@ The design favors clarity over decoration. Pages should prioritize writing, proj
 Primary neutrals:
 
 - `--white: #ffffff`
-- `--paper: #faf7ef`
-- `--mist: #f2ede0`
-- `--ink-900: #221d13`
-- `--ink-700: #41382a`
-- `--ink-500: #6f6553`
-- `--ink-400: #9b8f78`
-- `--line: #e9e2d2`
-- `--line-strong: #ddd3bf`
+- `--paper: #f7f8fa`
+- `--mist: #eef0f3`
+- `--ink-900: #17181b`
+- `--ink-700: #34373d`
+- `--ink-500: #626770`
+- `--ink-400: #8d939d`
+- `--line: #e5e7eb`
+- `--line-strong: #d5d8de`
 
 Brand and accents:
 
-- Sunflower gold: `--gold-500: #f6b417`, hover `--gold-600: #e29d09`
+- Sunflower gold: `--gold-500: #f6b417`, reserved for semantic WIP/draft states
 - Sky blue links: `--sky-600: #2376c6`, hover `--sky-700: #1a5d9f`
 - Leaf green status: `--green-500: #5aa53f`, `--green-600: #41802c`
 - Rose accent: `--rose-500: #f0738b`, `--rose-600: #df526f`
 
 Usage:
 
-- Use warm cream only for page bands, code wells, hover surfaces, and soft cards.
-- Use gold for primary CTAs, active step indicators, blockquote borders, and key emphasis.
-- Use blue only for links and secondary cool accents.
+- Use neutral gray for page bands, code wells, hover surfaces, and soft cards.
+- Use dark neutral for primary CTAs and blue for links, focus states, and interface accents.
+- Keep gold out of general surfaces; reserve it for WIP/draft semantics and the sunflower artwork.
 - Use green for live/active state signals.
 - Avoid adding new dominant hue families unless the content type requires it.
 
 ### Typography
 
-Fonts are imported in `src/styles/global.css`:
+Fonts are imported in `src/app/globals.css`:
 
 - Sans/body: `Nunito`, with `LXGW WenKai` for CJK fallback.
 - Mono/meta/code: `JetBrains Mono`, with `LXGW WenKai` fallback.
@@ -102,13 +102,13 @@ Links use active state by path prefix. The mobile menu is a full-screen overlay 
 
 ### Buttons
 
-Primary buttons use sunflower gold with dark text. Secondary buttons use white surfaces with warm borders. Ghost buttons are reserved for low-emphasis local actions.
+Primary buttons use a dark neutral surface with white text. Secondary buttons use white surfaces with neutral borders. Ghost buttons are reserved for low-emphasis local actions.
 
 Buttons should remain compact and action-oriented. Avoid using large marketing CTAs for normal navigation.
 
 ### Cards
 
-Cards use white or soft paper surfaces, a warm hairline border, `12px` radius, and optional hover lift for interactive cards.
+Cards use white or soft gray surfaces, a neutral hairline border, `12px` radius, and optional hover lift for interactive cards.
 
 Use cards for repeated project/post items and specific framed modules. Do not turn page sections into floating card stacks.
 
@@ -125,13 +125,13 @@ Status mapping:
 
 ### Hero
 
-The home hero is image-led and full-width. Text sits directly on the image with a dark bottom gradient for contrast. The brand accent in the hero is gold.
+The home hero is image-led and full-width. Text sits directly on the image with a dark neutral bottom gradient for contrast. The photograph supplies the color; interface text stays white.
 
 Do not replace the hero with a gradient-only or decorative SVG composition.
 
 ### Writing
 
-Article prose uses large body text, warm ink, and a narrow reading column. Code blocks are light warm wells with mono type. Inline code uses a small bordered pill.
+Article prose uses large body text, neutral ink, and a narrow reading column. Code blocks are light gray wells with mono type. Inline code uses a small bordered pill.
 
 Headings should create scan anchors but not overpower the article body.
 
@@ -149,6 +149,6 @@ All motion must respect `prefers-reduced-motion`.
 
 ## Implementation Notes
 
-The source of truth for runtime styling is `src/styles/global.css`. Pages are implemented with Next.js and React under `src/app/` and `src/components/`. When changing tokens, update both CSS and this document in the same change.
+The source of truth for runtime styling is `src/app/globals.css`. Pages are implemented with Next.js and React under `src/app/` and `src/components/`. When changing tokens, update both CSS and this document in the same change.
 
 The design system intentionally avoids Tailwind configuration. Prefer CSS variables and local component classes already present in the React components.

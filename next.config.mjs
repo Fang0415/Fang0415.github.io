@@ -7,6 +7,7 @@ const basePath = rawBasePath && rawBasePath !== '/'
 const nextConfig = {
   trailingSlash: true,
   basePath,
+  devIndicators: false,
   images: {
     remotePatterns: process.env.NEXT_PUBLIC_ASSET_BASE_URL
       ? [new URL(`${process.env.NEXT_PUBLIC_ASSET_BASE_URL.replace(/\/+$/, '')}/**`)]

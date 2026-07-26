@@ -13,11 +13,56 @@ export const PROFILE = {
   email: 'hi@lin.dev',
   github: 'https://github.com/Fang0415',
   wechat: '',
+  // About-page blocks. The three list fields use "左 | 右" per line where the
+  // page renders two columns, so the console can edit them in a plain textarea
+  // instead of needing a nested form.
+  aboutIntro: [
+    '我是 Lin Wei，一个长期关注后端系统的开发者，后来逐渐把注意力放到了 AI 基础设施上。'
+      + '很多工作发生在技术栈中间那些不显眼的位置：检索管线、队列、评估流程，以及决定 AI 功能到底可靠还是只适合演示的基础设施。',
+    '我喜欢**小而锋利的工具**，也习惯把问题写下来。'
+      + '这个站点用来保存实践中的判断和笔记，首先方便我自己复用，也希望对遇到类似问题的人有帮助。',
+  ].join('\n\n'),
+  focus: [
+    'RAG 与检索 | 切分、混合检索、评估',
+    '后端系统 | Postgres、队列、可观测性',
+    '开发工具链 | 小而明确的命令行工具',
+  ],
+  tools: ['Python', 'Go', 'Rust', 'Postgres', 'pgvector', 'FastAPI', 'DuckDB', 'Neovim', 'Linux'],
+  now: [
+    '围绕更清晰的评估流程重构 ragkit。',
+    '在读向量索引内部实现相关内容，包括 HNSW 和 IVF。',
+    '尽量保持每周写一篇技术笔记的节奏。',
+  ],
+  background: [
+    '现在 | 后端 / AI 基础设施，构建检索系统',
+    '之前 | 平台工程与数据工程相关工作',
+    '写作 | RAG、Postgres、评估和开发工作流',
+    '屏幕外 | 机械键盘、长跑和不太稳定的咖啡品味',
+  ],
 };
+
+/**
+ * Splits a `"左 | 右"` line into its two halves. Only the first separator
+ * counts, so the right-hand side may itself contain a pipe. A line without a
+ * separator becomes a label with no note.
+ */
+export function splitPair(line: string): [string, string] {
+  const index = line.indexOf('|');
+  if (index === -1) return [line.trim(), ''];
+  return [line.slice(0, index).trim(), line.slice(index + 1).trim()];
+}
+
+/**
+ * The shape every component takes as a prop. PROFILE above is only the
+ * fallback: at runtime the values come from the SiteProfile table via
+ * getSiteProfile(), so the admin console can edit them without a deploy.
+ */
+export type SiteProfileData = typeof PROFILE;
 
 export type ProjectStatus = 'active' | 'building' | 'shipped' | 'archived';
 
 export interface Project {
+  /** Also the URL slug: /projects/<id>/. */
   id: string;
   title: string;
   status: ProjectStatus;
@@ -29,6 +74,11 @@ export interface Project {
   stack: string[];
   repo?: string;
   demo?: string;
+  /** Raw Markdown detail body. Absent means the detail page shows only the summary. */
+  content?: string;
+  coverUrl?: string;
+  coverAlt?: string;
+  updatedAt?: string;
 }
 
 export interface Experience {

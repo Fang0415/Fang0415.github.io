@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { PROJECTS, SHOWCASE_STATUS, type Project } from '../lib/site';
 import FolioIcon from './FolioIcon';
 
@@ -8,142 +8,127 @@ interface Props {
   projects?: Project[];
 }
 
+/**
+ * Featured projects, selected with a tab row.
+ *
+ * The earlier version pinned a 4×100vh track and drove the selection from
+ * scroll position. It looked good on a desktop mouse wheel and nowhere else:
+ * the steps were hidden under 880px, which left phones stuck on project one,
+ * and four screens of hijacked scrolling is the opposite of a calm page.
+ * Tabs give the same "one project at a time" reading with a short crossfade
+ * and no scroll ownership.
+ */
 export default function FeaturedShowcase({ projects }: Props) {
   const items = useMemo(() => (projects?.length ? projects : PROJECTS).slice(0, 4), [projects]);
-  const data = items.map((p) => {
-    const [label, kind] = SHOWCASE_STATUS[p.status];
-    return { ...p, statusLabel: label, statusKind: kind };
-  });
-  const n = data.length;
-  const trackRef = useRef<HTMLElement>(null);
   const [selected, setSelected] = useState(0);
-  const [pos, setPos] = useState(0);
 
-  useEffect(() => {
-    const track = trackRef.current;
-    if (!track) return;
-    const mq = window.matchMedia('(max-width: 880px)');
-    let raf = 0;
+  if (!items.length) return null;
 
-    const update = () => {
-      raf = 0;
-      if (mq.matches) {
-        setPos(selected);
-        return;
-      }
-      const vh = window.innerHeight;
-      const total = track.offsetHeight - vh;
-      const scrolled = Math.min(Math.max(-track.getBoundingClientRect().top, 0), Math.max(total, 1));
-      const progress = total > 0 ? scrolled / total : 0;
-      const nextPos = Math.max(0, Math.min(progress * (n - 1), n - 1));
-      setPos(nextPos);
-      setSelected(Math.round(nextPos));
-    };
-
-    const onScroll = () => {
-      if (!raf) raf = requestAnimationFrame(update);
-    };
-
-    update();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
-    return () => {
-      if (raf) cancelAnimationFrame(raf);
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onScroll);
-    };
-  }, [n, selected]);
-
-  const scrollToStep = (i: number) => {
-    const track = trackRef.current;
-    if (!track) return;
-    const mq = window.matchMedia('(max-width: 880px)');
-    if (mq.matches) {
-      setSelected(i);
-      setPos(i);
-      return;
-    }
-    const vh = window.innerHeight;
-    const total = track.offsetHeight - vh;
-    const trackTop = track.getBoundingClientRect().top + window.scrollY;
-    window.scrollTo({ top: Math.round(trackTop + (i / Math.max(n - 1, 1)) * total), behavior: 'smooth' });
-  };
-
-  const baseIdx = Math.min(Math.floor(pos), n - 1);
-  const frac = pos - baseIdx;
-  const nextIdx = baseIdx + 1 < n ? baseIdx + 1 : null;
+  const index = Math.min(selected, items.length - 1);
+  const active = items[index];
+  const [statusLabel, statusKind] = SHOWCASE_STATUS[active.status];
+  const highlights = active.highlights?.length ? active.highlights : [active.description];
 
   return (
-    <section ref={trackRef} className="fs-track" data-fs-track style={{ height: `calc(${n} * 100vh)` }}>
-      <div className="fs-pin">
-        <div className="kit-container">
-          <div className="sec-head">
-            <div>
-              <p className="sec-eyebrow">精选项目</p>
-              <h2 className="sec-title">一些正在打磨的东西</h2>
-            </div>
-            <a className="sec-link" href="/projects/">全部项目 <FolioIcon name="arrow-right" className="icon" /></a>
+    <section className="kit-section kit-section--tight" aria-labelledby="showcase-title">
+      <div className="kit-container">
+        <div className="sec-head">
+          <div>
+            <p className="sec-eyebrow">精选项目</p>
+            <h2 className="sec-title" id="showcase-title">一些正在打磨的东西</h2>
           </div>
+          <a className="sec-link" href="/projects/">
+            全部项目 <FolioIcon name="arrow-right" className="icon" />
+          </a>
+        </div>
 
-          <div className="fs">
-            <div className="fs-intro-wrap">
-              {data.map((p, i) => (
-                <div key={p.id} className={`fs-intro ${i === selected ? 'fs-anim' : ''}`} data-fs-intro={i} hidden={i !== selected}>
-                  <div className="fs-count">{String(i + 1).padStart(2, '0')} <span>/ {String(n).padStart(2, '0')}</span></div>
-                  <div className="fs-meta">
-                    <span className={`fs-status fs-status--${p.statusKind}`}>{p.statusLabel}</span>
-                    <span className="fs-eyebrow">{p.category}</span>
-                  </div>
-                  <h3 className="fs-title">{p.title}</h3>
-                  <p className="fs-desc">{p.description}</p>
-                  <div className="fs-tech">{p.stack.map((t) => <span key={t} className="fs-chip">{t}</span>)}</div>
-                  <div className="fs-links">
-                    {p.demo && <a className="fs-link" href={p.demo}>查看演示 ↗</a>}
-                    {p.repo && <a className="fs-link fs-link--muted" href={p.repo}>GitHub ↗</a>}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="fs-win-stack" data-fs-stack>
-              {data.map((p, i) => {
-                const isBase = i === baseIdx;
-                const isNext = i === nextIdx && frac > 0.0005;
-                const hidden = !isBase && !isNext;
-                const transform = isNext ? `translateY(${(1 - frac) * 100}%)` : 'translateY(0%)';
-                return (
-                  <div
-                    key={p.id}
-                    className={`fs-win-layer ${isNext ? 'fs-win-layer--over' : ''}`}
-                    data-fs-layer={i}
-                    style={{ zIndex: isNext ? 2 : 1, transform }}
-                    hidden={hidden}
-                  >
-                    <div className="fs-win">
-                      <div className="fs-win__bar">
-                        <span className="fs-win__dot" style={{ background: '#f0738b' }}></span>
-                        <span className="fs-win__dot" style={{ background: '#f6b417' }}></span>
-                        <span className="fs-win__dot" style={{ background: '#5aa53f' }}></span>
-                        <span className="fs-win__title">{p.id}</span>
-                      </div>
-                      <div className="fs-win__body"><span className="fs-win__tag">{p.title} — 预览</span></div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          <div className="fs-steps" data-fs-steps>
-            {data.map((p, i) => (
+        <div className="sc">
+          <div className="sc-tabs" role="tablist" aria-label="精选项目">
+            {items.map((p, i) => (
               <button
                 key={p.id}
-                className={`fs-step ${i === selected ? 'is-active' : ''}`}
-                data-fs-step={i}
-                aria-label={`查看 ${p.title}`}
-                onClick={() => scrollToStep(i)}
-              />
+                type="button"
+                role="tab"
+                id={`sc-tab-${p.id}`}
+                aria-selected={i === index}
+                aria-controls={`sc-panel-${p.id}`}
+                className={`sc-tab ${i === index ? 'is-active' : ''}`.trim()}
+                onClick={() => setSelected(i)}
+              >
+                <span className="sc-tab__num">{String(i + 1).padStart(2, '0')}</span>
+                {p.title}
+              </button>
             ))}
+          </div>
+
+          <div
+            className="sc-panel sc-anim"
+            key={active.id}
+            role="tabpanel"
+            id={`sc-panel-${active.id}`}
+            aria-labelledby={`sc-tab-${active.id}`}
+          >
+            <div className="sc-intro">
+              <div className="sc-meta">
+                <span className={`sc-status sc-status--${statusKind}`}>{statusLabel}</span>
+                <span className="sc-eyebrow">{active.category}</span>
+              </div>
+              <h3 className="sc-title">
+                <a className="sc-titlelink" href={`/projects/${active.id}/`}>{active.title}</a>
+              </h3>
+              <p className="sc-desc">{active.description}</p>
+              <div className="sc-tech">
+                {active.stack.map((t) => <span key={t} className="sc-chip">{t}</span>)}
+              </div>
+              <div className="sc-links">
+                <a className="sc-link" href={`/projects/${active.id}/`}>
+                  查看详情 <FolioIcon name="arrow-right" className="icon" />
+                </a>
+                {active.demo && (
+                  <a className="sc-link" href={active.demo}>
+                    查看演示 <FolioIcon name="arrow-up-right" className="icon" />
+                  </a>
+                )}
+                {active.repo && (
+                  <a className="sc-link sc-link--muted" href={active.repo}>
+                    <FolioIcon name="github" className="icon" /> 源码
+                  </a>
+                )}
+              </div>
+            </div>
+
+            <div className="sc-preview">
+              <div className="sc-win">
+                <div className="sc-win__bar" aria-hidden="true">
+                  <span className="sc-win__dot" style={{ background: 'var(--rose-500)' }} />
+                  <span className="sc-win__dot" style={{ background: 'var(--gold-500)' }} />
+                  <span className="sc-win__dot" style={{ background: 'var(--green-500)' }} />
+                  <span className="sc-win__title">{active.id} — {active.category}</span>
+                </div>
+                {/* A real screenshot always beats the stylised terminal, so the
+                    cover wins whenever the project has one. */}
+                {active.coverUrl ? (
+                  <a className="sc-win__shot" href={`/projects/${active.id}/`}>
+                    <img src={active.coverUrl} alt={active.coverAlt || `${active.title} 预览`} />
+                  </a>
+                ) : (
+                  <div className="sc-win__body">
+                    <div className="sc-cmd"><span className="p">$</span>{active.id} --what-it-does</div>
+                    <ul className="sc-out">
+                      {highlights.map((h) => (
+                        <li key={h}><span className="b">▸</span><span>{h}</span></li>
+                      ))}
+                    </ul>
+                    {(active.period || active.role) && (
+                      <div className="sc-foot">
+                        {active.period && <span>{active.period}</span>}
+                        {active.role && <span>· {active.role}</span>}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -8,6 +8,7 @@ dist
 !.env.example
 .DS_Store
 npm-debug.log*
+*.tsbuildinfo
 
 # Local-only design-system handoff bundles — never publish
 cream-blog-design-system/

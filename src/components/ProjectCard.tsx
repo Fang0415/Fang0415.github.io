@@ -2,6 +2,7 @@ import type { CSSProperties } from 'react';
 import Card from './Card';
 import Tag from './Tag';
 import Badge from './Badge';
+import FolioIcon from './FolioIcon';
 import type { ProjectStatus } from '../lib/site';
 
 interface Props {
@@ -12,6 +13,8 @@ interface Props {
   role?: string;
   period?: string;
   highlights?: string[];
+  coverUrl?: string;
+  coverAlt?: string;
   href?: string;
   repo?: string;
   demo?: string;
@@ -41,6 +44,8 @@ export default function ProjectCard({
   role,
   period,
   highlights = [],
+  coverUrl,
+  coverAlt,
   href,
   repo,
   demo,
@@ -50,6 +55,11 @@ export default function ProjectCard({
   return (
     <Card interactive={!!href} className={className} style={style}>
       <div className="folio-project">
+        {coverUrl && (
+          <span className="folio-project__cover">
+            <img src={coverUrl} alt={coverAlt || `${title} 封面`} loading="lazy" />
+          </span>
+        )}
         <div className="folio-project__head">
           <h3 className="folio-project__title">
             {href ? <a className="folio-project__titlelink" href={href}>{title}</a> : title}
@@ -80,8 +90,16 @@ export default function ProjectCard({
         )}
         {(repo || demo) && (
           <div className="folio-project__foot">
-            {repo && <a href={repo}>⌥ 代码</a>}
-            {demo && <a href={demo}>↗ 演示</a>}
+            {repo && (
+              <a href={repo}>
+                <FolioIcon name="github" className="icon" /> 代码
+              </a>
+            )}
+            {demo && (
+              <a href={demo}>
+                <FolioIcon name="arrow-up-right" className="icon" /> 演示
+              </a>
+            )}
           </div>
         )}
       </div>

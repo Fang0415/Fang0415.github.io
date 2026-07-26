@@ -7,32 +7,33 @@ import Button from '../components/Button';
 import SocialRow from '../components/SocialRow';
 import FolioIcon from '../components/FolioIcon';
 import ExperienceSummary from '../components/ExperienceSummary';
-import { PROFILE } from '../lib/site';
-import { getPublishedPostMetas, getVisibleProjects } from '../lib/managed-content';
+import { getPublishedPostMetas, getSiteProfile, getVisibleExperiences, getVisibleProjects } from '../lib/managed-content';
 
 export const dynamic = 'force-dynamic';
 
 export default async function HomePage() {
-  const [latest, projects] = await Promise.all([
+  const [latest, projects, experiences, profile] = await Promise.all([
     getPublishedPostMetas(),
     getVisibleProjects(),
+    getVisibleExperiences(),
+    getSiteProfile(),
   ]);
 
   return (
     <>
       <section className="hero hero--feature">
-        <div className="hero-banner hero-banner--lineart rise">
-          <img className="hero-banner-img" src="/assets/hero-lineart.png" alt="夏日下午向日葵田的黑白线稿" />
+        <div className="hero-banner hero-banner--color rise">
+          <img className="hero-banner-img" src="/assets/hero-sunflower.jpg" alt="夏日下午的向日葵田" />
           <div className="kit-container hero-banner-inner">
             <p className="hero-eyebrow hero-eyebrow--on-image">
               <span className="hero-dot"></span>
-              {PROFILE.role} <span className="loc">· {PROFILE.location}</span>
+              {profile.role} <span className="loc">· {profile.location}</span>
             </p>
-            <h1>我在构建<em>{PROFILE.hero}</em>。</h1>
+            <h1>我在构建<em>{profile.hero}</em>。</h1>
           </div>
         </div>
         <div className="kit-container hero-sub rise rise-2">
-          <p className="hero-lead">{PROFILE.lead}</p>
+          <p className="hero-lead">{profile.lead}</p>
           <div className="hero-actions">
             <Button variant="primary" href="/projects/" iconRight={<FolioIcon name="arrow-right" className="icon" />}>
               看看项目
@@ -40,7 +41,7 @@ export default async function HomePage() {
             <Button variant="secondary" href="/blog/">阅读文章</Button>
           </div>
           <div className="hero-foot">
-            <SocialRow />
+            <SocialRow profile={profile} />
             <p className="hero-now">
               <span className="hero-now-dot"></span>
               近况 · 正在打磨 <strong>ragkit</strong> · 整理后端工程笔记
@@ -53,7 +54,7 @@ export default async function HomePage() {
 
       <section className="kit-section kit-section--tight">
         <div className="kit-container">
-          <ExperienceSummary />
+          <ExperienceSummary items={experiences} />
         </div>
       </section>
 
@@ -77,6 +78,7 @@ export default async function HomePage() {
                   readingTime={post.readTime}
                   category={post.category}
                   href={post.href}
+                  coverUrl={post.coverUrl}
                 />
               </div>
             ))}
@@ -86,12 +88,12 @@ export default async function HomePage() {
 
       <section className="kit-section">
         <div className="kit-container">
-          <Card padLg className="cb-reveal about-preview">
-            <Avatar name={PROFILE.name} size="xl" />
+          <Card padLg soft className="cb-reveal about-preview">
+            <Avatar name={profile.name} size="xl" />
             <div>
-              <p className="sec-eyebrow" style={{ marginBottom: 8 }}>关于</p>
-              <p style={{ fontSize: 'var(--fs-h3)', fontWeight: 600, lineHeight: 1.5, margin: 0, letterSpacing: '-0.01em', maxWidth: '32em' }}>
-                我是 {PROFILE.name}，关注后端工程、RAG 和开发工具链。
+              <p className="sec-eyebrow" style={{ marginBottom: 10 }}>关于</p>
+              <p className="about-preview__line">
+                我是 {profile.name}，关注后端工程、RAG 和开发工具链。
                 最近主要在做检索系统、评估流程，以及那些让 AI 功能真正可靠的基础设施。
               </p>
             </div>

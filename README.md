@@ -9,7 +9,7 @@
 - TypeScript
 - PostgreSQL + Prisma
 - MinIO（S3 兼容对象存储）
-- CSS design tokens in `src/styles/global.css`
+- CSS design tokens in `src/app/globals.css`
 
 ## 本地开发
 

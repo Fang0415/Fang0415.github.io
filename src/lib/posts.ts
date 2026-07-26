@@ -20,12 +20,16 @@ export interface PostMeta {
   categoryColor: TagVariant;
   readTime: string;      // 8 min read
   href: string;
+  /** Set only for posts whose cover asset resolved; Markdown posts have none. */
+  coverUrl?: string;
 }
 
 export interface BlogPost {
   slug: string;
   body: string;
   html: string;
+  /** Headings lifted out of `html` for the article sidebar. */
+  toc?: TocEntry[];
   data: {
     title: string;
     description: string;
@@ -33,7 +37,15 @@ export interface BlogPost {
     updatedDate?: Date;
     tags: string[];
     draft?: boolean;
+    coverUrl?: string;
+    coverAlt?: string;
   };
+}
+
+export interface TocEntry {
+  id: string;
+  text: string;
+  level: 2 | 3;
 }
 
 const blogDir = path.join(process.cwd(), 'src/content/blog');
@@ -77,8 +89,52 @@ export function isoDate(d: Date): string {
   return d.toISOString().slice(0, 10); // 2026-06-18
 }
 
+/**
+ * Turns a heading's text into a stable anchor. CJK is kept verbatim — browsers
+ * handle percent-encoded fragments fine, and transliterating "为什么" to
+ * something Latin would make the anchor unrecognisable in a shared link.
+ */
+function headingId(text: string, used: Set<string>): string {
+  const base = text
+    .trim()
+    .toLowerCase()
+    .replace(/[^\w一-龥]+/g, '-')
+    .replace(/^-+|-+$/g, '') || 'section';
+  let candidate = base;
+  let n = 2;
+  while (used.has(candidate)) {
+    candidate = `${base}-${n}`;
+    n += 1;
+  }
+  used.add(candidate);
+  return candidate;
+}
+
+/**
+ * Renders Markdown and collects the h2/h3 outline in the same pass, so the
+ * anchors in the table of contents are guaranteed to exist in the HTML.
+ */
+export function renderMarkdown(body: string): { html: string; toc: TocEntry[] } {
+  const tokens = md.parse(body ?? '', {});
+  const toc: TocEntry[] = [];
+  const used = new Set<string>();
+
+  tokens.forEach((token, index) => {
+    if (token.type !== 'heading_open') return;
+    const level = Number(token.tag.slice(1));
+    if (level !== 2 && level !== 3) return;
+    const text = tokens[index + 1]?.content ?? '';
+    if (!text) return;
+    const id = headingId(text, used);
+    token.attrSet('id', id);
+    toc.push({ id, text, level: level as 2 | 3 });
+  });
+
+  return { html: md.renderer.render(tokens, md.options, {}), toc };
+}
+
 export function markdownToHtml(body: string): string {
-  return md.render(body);
+  return renderMarkdown(body).html;
 }
 
 function toDate(value: unknown): Date {
@@ -94,10 +150,13 @@ function readPost(filename: string): BlogPost {
   const pubDate = toDate(data.pubDate);
   const updatedDate = data.updatedDate ? toDate(data.updatedDate) : undefined;
 
+  const { html, toc } = renderMarkdown(parsed.content);
+
   return {
     slug,
     body: parsed.content,
-    html: markdownToHtml(parsed.content),
+    html,
+    toc,
     data: {
       title: String(data.title ?? slug),
       description: String(data.description ?? ''),
@@ -138,6 +197,7 @@ export function toMeta(post: BlogPost): PostMeta {
     categoryColor: color,
     readTime: readTimeFor(post.body ?? ''),
     href: `/blog/${post.slug}/`,
+    coverUrl: post.data.coverUrl,
   };
 }
 

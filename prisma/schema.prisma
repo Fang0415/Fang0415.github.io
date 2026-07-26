@@ -30,6 +30,7 @@ model Post {
   coverAsset   Asset?        @relation("PostCover", fields: [coverAssetId], references: [id], onDelete: SetNull)
   status       PublishStatus @default(DRAFT)
   publishedAt  DateTime?
+  featured     Boolean       @default(false)
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
 
@@ -56,18 +57,67 @@ model Project {
   @@index([status, sortOrder])
 }
 
+/// The About-page timeline. Previously hardcoded in src/lib/site.ts, which
+/// meant editing a job entry required a deploy.
+model Experience {
+  id         String   @id @default(cuid())
+  slug       String   @unique
+  company    String
+  role       String
+  period     String
+  summary    String
+  highlights String[] @default([])
+  stack      String[] @default([])
+  visible    Boolean  @default(true)
+  sortOrder  Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([visible, sortOrder])
+}
+
+/// Single-row table (id is pinned to "default") holding the persona strings
+/// the header, hero, footer and About page all read.
+model SiteProfile {
+  id             String   @id @default("default")
+  name           String
+  wordmark       String
+  mark           String
+  role           String
+  location       String
+  hero           String
+  lead           String
+  email          String
+  github         String
+  wechat         String   @default("")
+  /// About page, first block: Markdown, blank line = new paragraph.
+  aboutIntro     String   @default("")
+  /// "标题 | 说明" per entry — the three cards under 关注方向.
+  focus          String[] @default([])
+  /// Plain labels for the 常用工具 tag cloud.
+  tools          String[] @default([])
+  /// One bullet per entry under 最近在做.
+  now            String[] @default([])
+  /// "左栏 | 右栏" per entry — the 一些背景 key/value list.
+  background     String[] @default([])
+  avatarAssetId  String?
+  avatarAsset    Asset?   @relation("ProfileAvatar", fields: [avatarAssetId], references: [id], onDelete: SetNull)
+  updatedAt      DateTime @updatedAt
+}
+
 model Asset {
-  id            String    @id @default(cuid())
-  key           String    @unique
-  filename      String
-  mimeType      String
-  size          Int
-  width         Int?
-  height        Int?
-  bucket        String
-  publicUrl     String
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  postCovers    Post[]    @relation("PostCover")
-  projectCovers Project[] @relation("ProjectCover")
+  id             String        @id @default(cuid())
+  key            String        @unique
+  filename       String
+  mimeType       String
+  size           Int
+  width          Int?
+  height         Int?
+  bucket         String
+  publicUrl      String
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  postCovers     Post[]        @relation("PostCover")
+  projectCovers  Project[]     @relation("ProjectCover")
+  profileAvatars SiteProfile[] @relation("ProfileAvatar")
 }

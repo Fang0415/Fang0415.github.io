@@ -4,17 +4,23 @@ import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import Button from './Button';
 import FolioIcon from './FolioIcon';
-import { PROFILE, NAV_LINKS } from '../lib/site';
+import { PROFILE, NAV_LINKS, type SiteProfileData } from '../lib/site';
 
-export default function Navbar() {
+export default function Navbar({ profile = PROFILE }: { profile?: SiteProfileData }) {
   const path = usePathname() || '/';
   const isHome = path === '/';
   const isActive = (href: string) => href === '/' ? isHome : path.startsWith(href);
 
+  // Only the home page has a state to track: elsewhere the nav is always the
+  // solid pill, and the CSS keys that off data-home so it is right on the first
+  // paint instead of waiting for this effect.
   useEffect(() => {
+    if (!isHome) {
+      document.body.classList.remove('nav-scrolled');
+      return;
+    }
     const onScroll = () => {
-      const collapsed = !isHome || window.scrollY > 16;
-      document.body.classList.toggle('nav-scrolled', collapsed);
+      document.body.classList.toggle('nav-scrolled', window.scrollY > 16);
     };
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
@@ -25,13 +31,14 @@ export default function Navbar() {
     <nav className="folio-nav" data-home={isHome ? 'true' : 'false'}>
       <div className="folio-nav__inner">
         <a className="folio-nav__brand" href="/">
-          <span className="folio-nav__mark">{PROFILE.mark}</span>{PROFILE.wordmark}
+          <span className="folio-nav__mark">{profile.mark}</span>{profile.wordmark}
         </a>
         <div className="folio-nav__links">
           {NAV_LINKS.map((l) => (
             <a
               key={l.href}
               href={l.href}
+              aria-current={isActive(l.href) ? 'page' : undefined}
               className={`folio-nav__link ${isActive(l.href) ? 'folio-nav__link--active' : ''}`.trim()}
             >
               {l.label}

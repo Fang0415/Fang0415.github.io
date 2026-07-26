@@ -42,13 +42,16 @@ export default function ProjectGrid({ projects }: Props) {
               role={p.role}
               period={p.period}
               highlights={p.highlights}
-              href={`/projects/#${p.id}`}
+              coverUrl={p.coverUrl}
+              coverAlt={p.coverAlt}
+              href={`/projects/${p.id}/`}
               repo={p.repo}
               demo={p.demo}
             />
           </div>
         ))}
       </div>
+      {shown.length === 0 && <p className="grid-empty">这个分类下还没有项目。</p>}
     </>
   );
 }

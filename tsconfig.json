@@ -13,6 +13,9 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+    // prisma/seed.ts runs under `node --experimental-strip-types`, which
+    // resolves the literal on-disk path and so needs the `.ts` suffix.
+    "allowImportingTsExtensions": true,
     "plugins": [{ "name": "next" }],
     "paths": {
       "@/*": ["./src/*"]

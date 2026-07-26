@@ -9,6 +9,10 @@ interface Props {
   children: ReactNode;
   iconLeft?: ReactNode;
   iconRight?: ReactNode;
+  /** Only meaningful without `href`; renders a real <button>. */
+  onClick?: () => void;
+  type?: 'button' | 'submit';
+  disabled?: boolean;
 }
 
 export default function Button({
@@ -20,6 +24,9 @@ export default function Button({
   children,
   iconLeft,
   iconRight,
+  onClick,
+  type = 'button',
+  disabled,
 }: Props) {
   const cls = `folio-btn folio-btn--${variant} folio-btn--${size} ${className}`.trim();
   const content = (
@@ -34,5 +41,9 @@ export default function Button({
     return <a className={cls} href={href} style={style}>{content}</a>;
   }
 
-  return <button className={cls} style={style}>{content}</button>;
+  return (
+    <button className={cls} style={style} type={type} onClick={onClick} disabled={disabled}>
+      {content}
+    </button>
+  );
 }

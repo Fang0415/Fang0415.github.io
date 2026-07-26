@@ -1,51 +1,62 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { ProjectStatus } from '@prisma/client';
-import { ensureAdminResponse, parseStringArray, slugify } from '../../../../../lib/admin-api';
+import {
+  HttpError,
+  adminRoute,
+  optionalInt,
+  optionalNullableString,
+  optionalString,
+  optionalStringArray,
+  optionalUrl,
+  readJson,
+  toProjectStatus,
+  uniqueSlug,
+} from '../../../../../lib/admin-api';
 import { prisma } from '../../../../../lib/db';
 
 interface Params {
   id: string;
 }
 
-function toProjectStatus(value: unknown) {
-  if (value === 'ACTIVE') return ProjectStatus.ACTIVE;
-  if (value === 'SHIPPED') return ProjectStatus.SHIPPED;
-  if (value === 'ARCHIVED') return ProjectStatus.ARCHIVED;
-  return ProjectStatus.BUILDING;
-}
+type Ctx = { params: Promise<Params> };
 
-export async function PATCH(request: NextRequest, { params }: { params: Promise<Params> }) {
-  const unauthorized = await ensureAdminResponse();
-  if (unauthorized) return unauthorized;
-
+export const GET = adminRoute(async (_request: NextRequest, { params }: Ctx) => {
   const { id } = await params;
-  const body = await request.json();
+  const project = await prisma.project.findUnique({ where: { id }, include: { coverAsset: true } });
+  if (!project) throw new HttpError(404, '项目不存在');
+  return NextResponse.json({ project });
+});
+
+export const PATCH = adminRoute(async (request: NextRequest, { params }: Ctx) => {
+  const { id } = await params;
+  const body = await readJson(request);
+
+  const title = optionalString(body, 'title');
+  if (title !== undefined && !title) throw new HttpError(400, '项目名称不能为空');
+  const slugSource = optionalString(body, 'slug') || title;
+
   const project = await prisma.project.update({
     where: { id },
     data: {
-      title: body.title === undefined ? undefined : String(body.title),
-      slug: body.slug === undefined ? undefined : slugify(String(body.slug)),
-      summary: body.summary === undefined ? undefined : String(body.summary),
-      content: body.content === undefined ? undefined : (body.content ? String(body.content) : null),
-      category: body.category === undefined ? undefined : String(body.category),
-      stack: body.stack === undefined ? undefined : parseStringArray(body.stack),
-      repoUrl: body.repoUrl === undefined ? undefined : (body.repoUrl ? String(body.repoUrl) : null),
-      demoUrl: body.demoUrl === undefined ? undefined : (body.demoUrl ? String(body.demoUrl) : null),
-      coverAssetId: body.coverAssetId === undefined ? undefined : (body.coverAssetId || null),
+      title,
+      slug: slugSource === undefined ? undefined : await uniqueSlug('project', slugSource, id),
+      summary: optionalString(body, 'summary'),
+      content: optionalNullableString(body, 'content'),
+      category: optionalString(body, 'category'),
+      stack: optionalStringArray(body, 'stack'),
+      repoUrl: optionalUrl(body, 'repoUrl', '仓库地址'),
+      demoUrl: optionalUrl(body, 'demoUrl', '演示地址'),
+      coverAssetId: body.coverAssetId === undefined ? undefined : (String(body.coverAssetId) || null),
       status: body.status === undefined ? undefined : toProjectStatus(body.status),
-      sortOrder: body.sortOrder === undefined ? undefined : Number(body.sortOrder || 0),
+      sortOrder: optionalInt(body, 'sortOrder'),
     },
     include: { coverAsset: true },
   });
 
   return NextResponse.json({ project });
-}
+});
 
-export async function DELETE(_request: NextRequest, { params }: { params: Promise<Params> }) {
-  const unauthorized = await ensureAdminResponse();
-  if (unauthorized) return unauthorized;
-
+export const DELETE = adminRoute(async (_request: NextRequest, { params }: Ctx) => {
   const { id } = await params;
   await prisma.project.delete({ where: { id } });
   return NextResponse.json({ ok: true });
-}
+});
