@@ -151,7 +151,7 @@
   --space-20:80px; --space-24:96px;
   --space-section:        clamp(64px, 8vw, 96px);
   --space-section-tight:  clamp(48px, 6vw, 64px);
-  --container-max:    1080px;
+  --container-max:    1240px;
   --container-wide:   1200px;
   --container-read:   720px;
   --pad-x:      clamp(20px, 4vw, 24px);
@@ -558,10 +558,12 @@ body.nav-scrolled .folio-nav__menu:hover{ background:rgba(255,255,255,0.5); }
     linear-gradient(90deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0) 14%, rgba(255,255,255,0) 86%, rgba(255,255,255,0.18) 100%);
 }
 /* The lower scrim carries the headline: deep enough for white text at AAA,
-   and it fades into the page ground so the banner has no hard bottom edge. */
+   and it fades into the page ground so the banner has no hard bottom edge.
+   The white base-fade is stretched into a long feather (0 → ~30%) so the
+   full-bleed photo dissolves into the page ground instead of being cut off. */
 .hero-banner::after { z-index: 2;
   background:
-    linear-gradient(to top, rgba(255,255,255,0.72) 0%, rgba(255,255,255,0) 8%),
+    linear-gradient(to top, rgba(255,255,255,1) 0%, rgba(255,255,255,0.9) 6%, rgba(255,255,255,0.45) 16%, rgba(255,255,255,0) 30%),
     linear-gradient(to top, rgba(12,14,18,0.88) 0%, rgba(12,14,18,0.66) 20%, rgba(12,14,18,0.28) 42%, rgba(12,14,18,0) 66%); }
 /* The line art is pale where the character's face is, and that is exactly where
    the second line of the headline lands — so the lineart variant adds a
