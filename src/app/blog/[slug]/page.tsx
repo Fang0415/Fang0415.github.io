@@ -60,7 +60,7 @@ export default async function BlogPostPage({ params }: { params: Promise<Params>
 
       {post.data.coverUrl && (
         <figure className="article-cover rise rise-2">
-          <img src={post.data.coverUrl} alt={post.data.coverAlt || post.data.title} />
+          <img src={post.data.coverUrl} alt={post.data.coverAlt || post.data.title} className="img-fade" />
         </figure>
       )}
 

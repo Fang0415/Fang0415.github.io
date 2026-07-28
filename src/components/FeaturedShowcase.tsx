@@ -4,7 +4,6 @@ import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { PROJECTS, SHOWCASE_STATUS, type Project } from '../lib/site';
 import FolioIcon from './FolioIcon';
-
 interface Props {
   projects?: Project[];
 }
@@ -110,7 +109,7 @@ export default function FeaturedShowcase({ projects }: Props) {
                     cover wins whenever the project has one. */}
                 {active.coverUrl ? (
                   <a className="sc-win__shot" href={`/projects/${active.id}/`}>
-                    <img src={active.coverUrl} alt={active.coverAlt || `${active.title} 预览`} />
+                    <img src={active.coverUrl} alt={active.coverAlt || `${active.title} 预览`} className="img-fade" />
                   </a>
                 ) : (
                   <div className="sc-win__body">

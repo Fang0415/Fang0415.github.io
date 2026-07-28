@@ -1858,6 +1858,31 @@ html.js-reveal .cb-onload:not(.is-in) {
 .rise-3 { animation-delay: .18s; }
 @keyframes kitRise { to { opacity: 1; transform: none; } }
 
+/* ── Image fade-in ─────────────────────────────────────────────
+   Content images ease in over 480ms on first paint instead of
+   snapping into place the moment the bytes finish decoding. The
+   layout box is already reserved by width/aspect-ratio, so the fade
+   never shifts surrounding content — it just turns a jarring pop
+   into an intentional entrance.
+
+   .img-fade       — any content image (hero, covers, screenshots,
+                     avatars). Pure CSS, no JS needed, so it works the
+                     same in server and client components.
+
+   .article-body img — images inside rendered Markdown get it
+                     automatically. */
+.img-fade,
+.article-body img {
+  animation: imgFadeIn 480ms var(--ease-out) both;
+}
+@keyframes imgFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .img-fade, .article-body img { animation: none; }
+}
+
 .cb-arrow { display: inline-block; transition: transform var(--dur-2) var(--ease-out); }
 a:hover .cb-arrow, button:hover .cb-arrow { transform: translateX(3px); }
 .sec-link:hover .icon, .folio-btn:hover .folio-btn__icon { transform: translateX(2px); }

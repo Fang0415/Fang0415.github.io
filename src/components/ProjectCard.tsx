@@ -57,7 +57,7 @@ export default function ProjectCard({
       <div className="folio-project">
         {coverUrl && (
           <span className="folio-project__cover">
-            <img src={coverUrl} alt={coverAlt || `${title} 封面`} loading="lazy" />
+            <img src={coverUrl} alt={coverAlt || `${title} 封面`} loading="lazy" className="img-fade" />
           </span>
         )}
         <div className="folio-project__head">

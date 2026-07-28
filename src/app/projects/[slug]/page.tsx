@@ -91,7 +91,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<Pa
       {project.coverUrl && (
         <div className="kit-container project-shell">
           <figure className="project-cover rise rise-2">
-            <img src={project.coverUrl} alt={project.coverAlt || `${project.title} 封面`} />
+            <img src={project.coverUrl} alt={project.coverAlt || `${project.title} 封面`} className="img-fade" />
           </figure>
         </div>
       )}

@@ -33,7 +33,7 @@ export default async function HomePage() {
       <section className="hero hero--feature">
         <div className="hero-banner hero-banner--color rise">
           <div className="hero-banner__frame">
-            <img className="hero-banner-img" src="/assets/hero-sunflower.jpg" alt="夏日下午的向日葵田" />
+            <img className="hero-banner-img img-fade" src="/assets/hero-sunflower.jpg" alt="夏日下午的向日葵田" />
             <div className="hero-banner-inner">
               <h1 className="hero-quote">{renderHeroQuote(profile.hero)}</h1>
             </div>

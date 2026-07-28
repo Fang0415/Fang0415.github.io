@@ -27,7 +27,7 @@ export default async function AboutPage() {
       <section style={{ paddingTop: 28 }}>
         <div className="kit-container">
           <div className="about-cover rise">
-            <img src="/assets/hero-sunflower.jpg" alt="夏日下午的向日葵田" />
+            <img src="/assets/hero-sunflower.jpg" alt="夏日下午的向日葵田" className="img-fade" />
           </div>
           <div className="about-intro rise rise-2">
             <Avatar name={profile.name} size={96} />
