@@ -148,6 +148,23 @@ export default function ViewTransitions() {
     let swapped = false;
     let cleanup: (() => void) | undefined;
 
+    // Pin the freshly-mounted page's entrance elements IMMEDIATELY,
+    // before the swap is even scheduled. The new route just committed,
+    // which means its .rise / .cb-reveal / .cb-onload elements are back
+    // to their CSS initial state (opacity 0, translated). If we wait
+    // for the swap to pin them, the browser can paint a frame where the
+    // hero image is invisible — the flash the user keeps seeing. Do it
+    // now, while main is still at opacity 0 from the leave fade, so the
+    // pin is invisible to the user.
+    document.querySelectorAll<HTMLElement>('.rise').forEach((el) => {
+      el.style.animation = 'none';
+      el.style.opacity = '1';
+      el.style.transform = 'none';
+    });
+    document.querySelectorAll('.cb-reveal, .cb-onload').forEach((el) => {
+      el.classList.add('is-in');
+    });
+
     const runSwap = () => {
       if (swapped) return;
       swapped = true;
@@ -156,34 +173,10 @@ export default function ViewTransitions() {
       root.classList.remove('page-leave');
       root.classList.add('page-enter');
 
-      // .rise elements on the freshly-mounted page get pinned to their
-      // final state with inline styles. Their keyframe animation
-      // (kitRise: opacity 0 → 1 over 620ms) is meant for first paint; on
-      // an SPA navigation it would restart the moment the page-enter
-      // suppression lifts — the hero image visibly vanishing and rising
-      // again. Inline styles override the animation's fill, so the
-      // element stays put. The settle pass below does the same for
-      // .cb-reveal / .cb-onload.
-      document.querySelectorAll<HTMLElement>('.rise').forEach((el) => {
-        el.style.animation = 'none';
-        el.style.opacity = '1';
-        el.style.transform = 'none';
-      });
-
-      // RevealManager runs on the same pathname change and sets up its
-      // IntersectionObserver. Let it observe first, then mark everything
-      // as already in place so no element-level entrance replays.
-      document.querySelectorAll('.cb-reveal, .cb-onload').forEach((el) => {
-        el.classList.add('is-in');
-      });
-
       // Remove page-enter only when the fade-in has actually finished
-      // painting. A fixed timer (an earlier approach) fired on React's
-      // commit schedule, but the browser's style recalc can swallow the
-      // animation's early frames — the class came off before the fade
-      // had visibly played, which read as a hard cut. animationend is
-      // driven by the compositor, so the class stays until the fade is
-      // real.
+      // painting. animationend is driven by the compositor, so the
+      // class stays until the fade is real — a fixed timer fired on
+      // React's schedule and came off too early, which read as a cut.
       const main = document.querySelector('main');
       let done = false;
       const finish = () => {
@@ -195,9 +188,6 @@ export default function ViewTransitions() {
         if (event.target === main && event.animationName === 'pageIn') finish();
       };
       main?.addEventListener('animationend', onAnimationEnd);
-      // Fallback in case the animation is suppressed (reduced motion) or
-      // the event is swallowed: still clean up, just later. The listener
-      // lives only until either path fires.
       const timer = window.setTimeout(() => {
         main?.removeEventListener('animationend', onAnimationEnd);
         finish();
@@ -209,15 +199,17 @@ export default function ViewTransitions() {
     //   A. New content painted — double-rAF after commit. rAF fires
     //      before the browser paints, so waiting for the second one
     //      means "the frame after this one is the first real paint".
+    //      In a hidden tab rAF never fires, so after a short grace
+    //      period we stop waiting for it: the fade-out has already
+    //      covered the commit, and holding the page invisible any
+    //      longer just reads as a hang.
     //   B. Leave fade finished — leaveEnded, set by phase 1 when the
     //      opacity transition completes.
     //
     // The swap runs on whichever of A/B completes LAST. In the common
-    // case the fade is still running when the paint is ready, so B is
-    // the trigger; on a slow network the paint arrives first and the
-    // user simply waits at a blank screen for content, which is the
-    // honest thing to show. In a hidden tab rAF never fires, so arm a
-    // visibilitychange listener and a backstop timer as well.
+    // foreground case the fade is still running when the paint is
+    // ready, so B is the trigger; on a slow network the paint arrives
+    // first and the user waits at a blank screen for content.
     let painted = false;
     const maybeSwap = () => {
       if (painted && leaveEnded.current) runSwap();
@@ -229,6 +221,13 @@ export default function ViewTransitions() {
         maybeSwap();
       });
     });
+    // Grace period for the first paint. Beyond this we assume the tab
+    // is hidden (rAF suspended) and proceed anyway — the leave fade has
+    // already finished, so the page is ready to come back.
+    const paintTimeout = window.setTimeout(() => {
+      painted = true;
+      maybeSwap();
+    }, 600);
 
     // Re-check when the leave fade ends (phase 1 flips the ref).
     const leaveWatcher = new MutationObserver(() => {
@@ -250,7 +249,8 @@ export default function ViewTransitions() {
     document.addEventListener('visibilitychange', onVisible);
 
     // Poll leaveEnded on a slow interval as a final trigger for the
-    // normal case where rAF already ran but the fade was still going.
+    // normal case where paint already happened but the fade was still
+    // going.
     const poll = window.setInterval(maybeSwap, 50);
 
     // Backstop: never leave the page invisible, whatever goes wrong.
@@ -258,6 +258,7 @@ export default function ViewTransitions() {
 
     cleanup = () => {
       cancelAnimationFrame(raf1);
+      window.clearTimeout(paintTimeout);
       leaveWatcher.disconnect();
       document.removeEventListener('visibilitychange', onVisible);
       window.clearInterval(poll);
