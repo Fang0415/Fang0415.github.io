@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import Link from 'next/link';
 import { PROJECTS, SHOWCASE_STATUS, type Project } from '../lib/site';
 import FolioIcon from './FolioIcon';
 
@@ -37,9 +38,9 @@ export default function FeaturedShowcase({ projects }: Props) {
             <p className="sec-eyebrow">项目</p>
             <h2 className="sec-title" id="showcase-title">最近做的几个项目</h2>
           </div>
-          <a className="sec-link" href="/projects/">
+          <Link className="sec-link" href="/projects/">
             全部项目 <FolioIcon name="arrow-right" className="icon" />
-          </a>
+          </Link>
         </div>
 
         <div className="sc">

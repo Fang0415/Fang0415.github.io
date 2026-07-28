@@ -1,8 +1,11 @@
 'use client';
 
 import { useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 
 export default function RevealManager() {
+  const pathname = usePathname();
+
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     document.documentElement.classList.add('js-reveal');
@@ -33,7 +36,9 @@ export default function RevealManager() {
       window.clearTimeout(fallback);
       io.disconnect();
     };
-  }, []);
+    // Re-run whenever the route changes: each page mounts its own
+    // .cb-reveal elements, and they all need the IO + is-in lifecycle.
+  }, [pathname]);
 
   return null;
 }

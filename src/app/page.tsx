@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react';
+import Link from 'next/link';
 import FeaturedShowcase from '../components/FeaturedShowcase';
 import PostCard from '../components/PostCard';
 import Card from '../components/Card';
@@ -73,7 +74,7 @@ export default async function HomePage() {
               <p className="sec-eyebrow">写作</p>
               <h2 className="sec-title">最近写的文章</h2>
             </div>
-            <a className="sec-link" href="/blog/">全部文章 <FolioIcon name="arrow-right" className="icon" /></a>
+            <Link className="sec-link" href="/blog/">全部文章 <FolioIcon name="arrow-right" className="icon" /></Link>
           </div>
           <div className="grid-3">
             {latest.slice(0, 3).map((post, i) => (

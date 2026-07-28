@@ -4,6 +4,7 @@ import Navbar from '../components/Navbar';
 import MobileMenu from '../components/MobileMenu';
 import Footer from '../components/Footer';
 import RevealManager from '../components/RevealManager';
+import ViewTransitions from '../components/ViewTransitions';
 import { PROFILE } from '../lib/site';
 import { getSiteProfile } from '../lib/managed-content';
 import { SITE_URL } from '../lib/site-url';
@@ -74,6 +75,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         <main>{children}</main>
         <Footer profile={profile} />
         <RevealManager />
+        <ViewTransitions />
       </body>
     </html>
   );

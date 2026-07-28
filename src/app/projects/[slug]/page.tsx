@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import Button from '../../../components/Button';
 import FolioIcon from '../../../components/FolioIcon';
@@ -146,9 +147,9 @@ export default async function ProjectDetailPage({ params }: { params: Promise<Pa
                 <p className="sec-eyebrow">继续看</p>
                 <h2 className="sec-title">其他项目</h2>
               </div>
-              <a className="sec-link" href="/projects/">
+              <Link className="sec-link" href="/projects/">
                 全部项目 <FolioIcon name="arrow-right" className="icon" />
-              </a>
+              </Link>
             </div>
             <div className="grid-2">
               {related.map((item) => (

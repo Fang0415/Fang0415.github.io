@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import Link from 'next/link';
 import FolioIcon from './FolioIcon';
 import { PROFILE, NAV_LINKS, type SiteProfileData } from '../lib/site';
 
@@ -53,7 +54,7 @@ export default function MobileMenu({ profile = PROFILE }: { profile?: SiteProfil
         </button>
       </div>
       <div className="folio-mobilemenu__links">
-        {NAV_LINKS.map((l) => <a key={l.href} className="cb-menu-link" href={l.href}>{l.label}</a>)}
+        {NAV_LINKS.map((l) => <Link key={l.href} className="cb-menu-link" href={l.href}>{l.label}</Link>)}
       </div>
       <div className="folio-mobilemenu__foot">
         {profile.github && <a href={profile.github}>GitHub</a>}
