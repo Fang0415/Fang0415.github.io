@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import Button from './Button';
 import FolioIcon from './FolioIcon';
@@ -8,41 +8,24 @@ import { PROFILE, NAV_LINKS, type SiteProfileData } from '../lib/site';
 
 export default function Navbar({ profile = PROFILE }: { profile?: SiteProfileData }) {
   const path = usePathname() || '/';
-  const isHome = path === '/';
-  const isActive = (href: string) => href === '/' ? isHome : path.startsWith(href);
-
-  // Only the home page has a state to track: elsewhere the nav is always the
-  // solid pill, and the CSS keys that off data-home so it is right on the first
-  // paint instead of waiting for this effect.
-  useEffect(() => {
-    if (!isHome) {
-      document.body.classList.remove('nav-scrolled');
-      return;
-    }
-    const onScroll = () => {
-      document.body.classList.toggle('nav-scrolled', window.scrollY > 16);
-    };
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, [isHome]);
+  const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
 
   return (
-    <nav className="folio-nav" data-home="false">
+    <nav className="folio-nav">
       <div className="folio-nav__inner">
-        <a className="folio-nav__brand" href="/">
+        <Link className="folio-nav__brand" href="/">
           <span className="folio-nav__mark">{profile.mark}</span>{profile.wordmark}
-        </a>
+        </Link>
         <div className="folio-nav__links">
           {NAV_LINKS.map((l) => (
-            <a
+            <Link
               key={l.href}
               href={l.href}
               aria-current={isActive(l.href) ? 'page' : undefined}
               className={`folio-nav__link ${isActive(l.href) ? 'folio-nav__link--active' : ''}`.trim()}
             >
               {l.label}
-            </a>
+            </Link>
           ))}
         </div>
         <div className="folio-nav__right">
