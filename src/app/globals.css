@@ -1791,16 +1791,16 @@ a.admin-form-foot__note:hover { color: var(--link); }
    at the top of that file — change both sides together.
 
    page-leave (added on link click, before the RSC fetch):
-     <main> eases to 0.55 opacity over 150ms. Instant feedback that
-     the click registered, and the fetch latency is covered by motion
-     instead of a frozen page.
+     <main> fades fully out to opacity 0 over 220ms. Instant feedback
+     that the click registered, and the fetch latency is covered by
+     motion instead of a frozen page.
 
-   page-enter (added when the new route commits):
-     The leave class comes off and this goes on in the same frame, so
-     the fade-in starts at exactly the opacity the fade-out ended at.
-     No translate, no per-element choreography: the whole page reads
-     as one continuous dip-and-return, never as "old page vanishes,
-     white gap, new page appears".
+   page-enter (added once the fade-out has finished AND the new
+   route has painted its first frame):
+     The leave class comes off and this goes on, so the fade-in starts
+     from 0. The page reads as one continuous dip-and-return: old page
+     dissolves away, new page dissolves in — never "old page vanishes,
+     white gap, new page appears", and never a brightness step.
 
    Element-level entrance animations (.rise, .cb-reveal, .cb-onload)
    are suppressed for the whole window — they exist for first paint
@@ -1809,22 +1809,20 @@ main {
   opacity: 1;
 }
 html.page-leave main {
-  /* Short and gentle: the page acknowledges the click by dimming, not
-     by starting an exit. 120ms is enough to register without feeling
-     like the page is being taken away. */
-  transition: opacity 120ms cubic-bezier(.4, 0, .2, 1);
-  opacity: 0.55;
+  /* A gentle exit: long enough to read as a fade, short enough that
+     the click still feels answered immediately. */
+  transition: opacity 220ms cubic-bezier(.4, 0, .2, 1);
+  opacity: 0;
 }
 html.page-enter main {
-  /* Both phases use animation (not transition) so the compositor can
-     start the fade without waiting for a style change on <main>
-     itself. The enter phase starts at the leave phase's resting
-     opacity, so the two join without a visible seam. */
-  animation: pageIn 300ms cubic-bezier(.2, .6, .3, 1) both;
+  /* Animation (not transition) so the compositor owns the timeline
+     from the moment the class lands; starting at 0 makes the two
+     phases join at the same invisible point. */
+  animation: pageIn 340ms cubic-bezier(.2, .6, .3, 1) both;
 }
 @keyframes pageIn {
   /* Starts where page-leave ended so the two phases join seamlessly. */
-  from { opacity: 0.55; }
+  from { opacity: 0; }
   to   { opacity: 1; }
 }
 html.page-leave .rise,
@@ -1843,7 +1841,6 @@ html.page-enter .cb-onload {
   html.page-leave main { transition: none; opacity: 1; }
   html.page-enter main { animation: none; }
 }
-
 
 .cb-reveal, .cb-onload {
   transition: opacity var(--dur-4) var(--ease-out), transform var(--dur-4) var(--ease-out);

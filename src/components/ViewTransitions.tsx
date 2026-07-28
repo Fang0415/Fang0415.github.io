@@ -4,25 +4,27 @@ import { useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 
 /**
- * Two-phase page transition on route change.
+ * Two-phase fade transition on route change: the old page dissolves
+ * away, the new page dissolves in.
  *
  * Phase 1 — page-leave: as soon as the user clicks an internal link,
- * <main> eases to 55% opacity over 120ms. This gives instant feedback
- * that the click registered, and it covers the RSC round-trip with
- * motion instead of a frozen page.
+ * <main> fades fully out to opacity 0 over 220ms. This gives instant
+ * feedback that the click registered, and it covers the RSC round-trip
+ * with motion instead of a frozen page.
  *
- * Phase 2 — page-enter: on the first painted frame after React commits
- * the new route, the leave class comes off and the enter class goes on
- * atomically, so the fade-in animation starts from exactly the opacity
- * the fade-out ended at. The swap is gated behind requestAnimationFrame
- * rather than done synchronously at commit time: the animation timeline
- * starts when the class is applied, and the commit's style recalc and
- * hydration work can push the first real paint hundreds of milliseconds
- * out — frames the animation would silently burn through, leaving only
- * its tail visible, which reads as a hard cut. Holding page-leave until
- * the swap also means the new content's first paint lands exactly on the
- * 0.55 floor of the pageIn keyframes, so there is never a brightness
- * step on already-visible content.
+ * Phase 2 — page-enter: the new route fades in from 0 over 340ms. The
+ * swap from "leave" to "enter" is gated on BOTH of these being true:
+ *
+ *   1. The leave fade has actually finished (transitionend on <main>,
+ *      not a fixed timer — the compositor owns the truth).
+ *   2. The new route has painted its first frame (double-rAF after the
+ *      React commit, so we know the fresh content is really on screen
+ *      underneath the still-invisible main).
+ *
+ * Holding page-leave until both are true is what makes the join
+ * seamless: main stays at opacity 0 while the new content assembles
+ * underneath, so there is never a white gap and never a brightness
+ * step — just old page gone, new page arriving.
  *
  * Phase 2 is skipped on the initial mount (nothing to transition from),
  * so the first-paint entrance choreography (.rise, .cb-onload) plays as
@@ -34,28 +36,15 @@ import { usePathname } from 'next/navigation';
  * "Page transitions"). If you change one side, change the other.
  */
 
-// How long the leave phase runs. Keep it very short: it's only the
-// "click registered" cue, not an exit animation. Production RSC
-// responses arrive in ~50ms, so anything longer gets truncated anyway.
-// CSS copy: html.page-leave main { transition-duration: 120ms }
-const LEAVE_MS = 120;
-// How far the page dims during the leave phase. Stopping well short
-// of 0 avoids a true blank frame even if the server is slow.
-// CSS copy: the `from` keyframe of the pageIn animation.
-const LEAVE_OPACITY = 0.55;
+// How long the leave fade runs. CSS copy: html.page-leave main {
+// transition-duration: 220ms }.
+const LEAVE_MS = 220;
 // How long the enter fade runs. CSS copy: html.page-enter main {
-// animation-duration: 300ms }. Used only as a fallback if the
+// animation-duration: 340ms }. Used only as a fallback if the
 // animationend listener below somehow doesn't fire.
-const ENTER_MS = 300;
-// Safety net: if the RSC fetch hangs, don't leave the page dimmed.
+const ENTER_MS = 340;
+// Safety net: if the RSC fetch hangs, don't leave the page invisible.
 const LEAVE_TIMEOUT_MS = 5000;
-
-// The rAF-gated class swap (see the header comment) assumes the browser
-// paints between route commit and the callback. When the tab is in the
-// background it never does — rAF is suspended entirely — so schedule the
-// swap for the next visibilitychange, and use the leave safety net as a
-// shared deadline so a permanently hidden tab still ends up cleaned up.
-const ENTER_SWAP_TIMEOUT_MS = LEAVE_TIMEOUT_MS;
 
 export default function ViewTransitions() {
   const pathname = usePathname();
@@ -63,6 +52,9 @@ export default function ViewTransitions() {
   // satisfy the type. The ref is initialized on the very first render,
   // so the phase-2 effect can distinguish initial mount from navigations.
   const previousPath = useRef<string>(pathname || '');
+  // Set by phase 1 when a fade-out completes; read by phase 2. A plain
+  // ref (not state) because it coordinates two effects, not rendering.
+  const leaveEnded = useRef(false);
 
   // Phase 1 fires on link click, before Next.js even starts fetching.
   // The listener is attached to <body> rather than document: Next's
@@ -80,6 +72,7 @@ export default function ViewTransitions() {
     const body = document.body;
     let leaveTimer: number | undefined;
     let restoreTimer: number | undefined;
+    let endListener: ((event: TransitionEvent) => void) | undefined;
 
     const onMouseDown = (event: MouseEvent) => {
       if (event.button !== 0) return;
@@ -95,11 +88,25 @@ export default function ViewTransitions() {
       // remount anything, so there's nothing to transition.
       if (url.pathname === window.location.pathname) return;
 
+      leaveEnded.current = false;
       root.classList.add('page-leave');
+
+      // The leave fade is a CSS transition, and transitions can be
+      // interrupted (e.g. the route commits and re-styles main) before
+      // they finish. So instead of trusting transitionend alone, arm a
+      // timer for the same duration and treat whichever fires first as
+      // "the fade is done". Either path flips leaveEnded so phase 2 can
+      // proceed as soon as its own readiness condition is met.
+      const main = document.querySelector('main');
+      const markLeaveEnded = () => { leaveEnded.current = true; };
+      endListener = (event: TransitionEvent) => {
+        if (event.target === main && event.propertyName === 'opacity') markLeaveEnded();
+      };
+      main?.addEventListener('transitionend', endListener);
+      leaveTimer = window.setTimeout(markLeaveEnded, LEAVE_MS + 80);
+
       // If navigation somehow never completes, bring the page back.
-      // Phase 2 listens for this class's removal: if it fires before the
-      // route commits, the swap and its cleanup timers are cancelled.
-      leaveTimer = window.setTimeout(() => {
+      restoreTimer = window.setTimeout(() => {
         root.classList.remove('page-leave');
       }, LEAVE_TIMEOUT_MS);
     };
@@ -121,6 +128,7 @@ export default function ViewTransitions() {
     return () => {
       body.removeEventListener('mousedown', onMouseDown, true);
       body.removeEventListener('click', onClickCapture, true);
+      document.querySelector('main')?.removeEventListener('transitionend', endListener as EventListener);
       window.clearTimeout(leaveTimer);
       window.clearTimeout(restoreTimer);
       root.classList.remove('page-leave');
@@ -137,17 +145,9 @@ export default function ViewTransitions() {
     if (pathname === previousPath.current) return;
     previousPath.current = pathname || '';
 
-    // Wait until the browser is about to actually paint before swapping
-    // the classes (see the header comment). While page-leave is still
-    // on, the fresh content paints at the same 0.55 the leave transition
-    // ended at, so the user never sees a brightness step. In a hidden
-    // tab rAF is suspended, so arm two more triggers for the same swap:
-    // the next visibilitychange (user comes back) and a backstop timer,
-    // so a permanently backgrounded navigation still cleans up after
-    // itself — hidden tabs never fire animation events, so the fallback
-    // inside the swap can't run until the swap itself has.
     let swapped = false;
     let cleanup: (() => void) | undefined;
+
     const runSwap = () => {
       if (swapped) return;
       swapped = true;
@@ -204,27 +204,63 @@ export default function ViewTransitions() {
       }, ENTER_MS + 400);
     };
 
-    const raf = requestAnimationFrame(runSwap);
+    // Gate the swap on BOTH conditions (see the header comment):
+    //
+    //   A. New content painted — double-rAF after commit. rAF fires
+    //      before the browser paints, so waiting for the second one
+    //      means "the frame after this one is the first real paint".
+    //   B. Leave fade finished — leaveEnded, set by phase 1 when the
+    //      opacity transition completes.
+    //
+    // The swap runs on whichever of A/B completes LAST. In the common
+    // case the fade is still running when the paint is ready, so B is
+    // the trigger; on a slow network the paint arrives first and the
+    // user simply waits at a blank screen for content, which is the
+    // honest thing to show. In a hidden tab rAF never fires, so arm a
+    // visibilitychange listener and a backstop timer as well.
+    let painted = false;
+    const maybeSwap = () => {
+      if (painted && leaveEnded.current) runSwap();
+    };
+
+    const raf1 = requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        painted = true;
+        maybeSwap();
+      });
+    });
+
+    // Re-check when the leave fade ends (phase 1 flips the ref).
+    const leaveWatcher = new MutationObserver(() => {
+      // page-leave being removed by the safety net means the fade is
+      // over however it happened; proceed if paint is ready.
+      if (!root.classList.contains('page-leave')) {
+        leaveEnded.current = true;
+        maybeSwap();
+      }
+    });
+    leaveWatcher.observe(root, { attributes: true, attributeFilter: ['class'] });
+
     const onVisible = () => {
-      if (document.visibilityState === 'visible') runSwap();
+      if (document.visibilityState === 'visible') {
+        painted = true;
+        maybeSwap();
+      }
     };
     document.addEventListener('visibilitychange', onVisible);
-    // The leave safety net and the no-op-click restorer both express
-    // "the leave phase is over" by removing the class; whatever the
-    // reason, the page must not stay in a half-transition state.
-    const classWatcher = new MutationObserver(() => {
-      if (!root.classList.contains('page-leave')) runSwap();
-    });
-    classWatcher.observe(root, { attributes: true, attributeFilter: ['class'] });
-    // Backstop for a swap that would otherwise never run: a hidden tab
-    // never fires animation events, so without this the fallback timer
-    // inside runSwap couldn't do its job either.
-    const swapTimer = window.setTimeout(runSwap, ENTER_SWAP_TIMEOUT_MS);
+
+    // Poll leaveEnded on a slow interval as a final trigger for the
+    // normal case where rAF already ran but the fade was still going.
+    const poll = window.setInterval(maybeSwap, 50);
+
+    // Backstop: never leave the page invisible, whatever goes wrong.
+    const swapTimer = window.setTimeout(runSwap, LEAVE_TIMEOUT_MS);
 
     cleanup = () => {
-      cancelAnimationFrame(raf);
+      cancelAnimationFrame(raf1);
+      leaveWatcher.disconnect();
       document.removeEventListener('visibilitychange', onVisible);
-      classWatcher.disconnect();
+      window.clearInterval(poll);
       window.clearTimeout(swapTimer);
     };
 
@@ -235,3 +271,4 @@ export default function ViewTransitions() {
 
   return null;
 }
+
