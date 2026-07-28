@@ -106,10 +106,12 @@
   --surface-dark-2:   #292c31;
 
   /* ── Typography ──
-     CJK falls through to the platform's own screen face: it renders
-     better than any webfont we could ship, and saves a multi-MB
-     download on mobile. Nunito only has to carry Latin + numerals. */
-  --font-sans: 'Nunito', system-ui, -apple-system, 'PingFang SC', 'HarmonyOS Sans SC',
+     Nunito carries Latin + numerals; LXGW WenKai (霞鹜文楷) carries
+     every CJK glyph across the whole site — nav, buttons, headings,
+     cards, body copy. It sits between Nunito and the platform fallbacks
+     so any Chinese character Nunito doesn't cover is rendered in the
+     reading face instead of the system default. Code stays monospace. */
+  --font-sans: 'Nunito', 'LXGW WenKai', system-ui, -apple-system, 'PingFang SC', 'HarmonyOS Sans SC',
                'Hiragino Sans GB', 'Microsoft YaHei', 'Segoe UI', sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas,
                'PingFang SC', 'Microsoft YaHei', monospace;
