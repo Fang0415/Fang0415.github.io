@@ -1,6 +1,6 @@
 ---
 title: "把 Next.js 静态博客部署到自有服务器"
-description: "一个简短的部署清单：本地构建 Next.js，把 out 同步到服务器，并用 Nginx 托管静态站点。"
+description: "本地构建，rsync 同步，Nginx 托管。一份能照着做的部署清单。"
 pubDate: 2026-06-15
 tags: ["Next.js", "Nginx", "部署"]
 ---

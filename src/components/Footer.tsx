@@ -8,7 +8,7 @@ export default function Footer({ profile = PROFILE }: { profile?: SiteProfileDat
         <div className="footer-brand">
           <div className="mark">{profile.mark}</div>
           <div className="footer-tag">
-            {profile.name} 的项目和技术笔记。边学边做，也尽量把每个问题讲明白。
+            {profile.name} 的项目和技术笔记。
           </div>
           <div style={{ marginTop: 18 }}><SocialRow size="sm" profile={profile} /></div>
         </div>
@@ -26,7 +26,7 @@ export default function Footer({ profile = PROFILE }: { profile?: SiteProfileDat
       </div>
       <div className="footer-base">
         <span>© {new Date().getFullYear()} {profile.name}</span>
-        <span>慢慢更新 · 不放追踪脚本</span>
+        <span>慢慢更新，不放追踪脚本</span>
       </div>
     </footer>
   );

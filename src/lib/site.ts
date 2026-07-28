@@ -8,8 +8,8 @@ export const PROFILE = {
   mark: 'F',
   role: '学生 · 全栈开发者',
   location: '',
-  hero: "There's still so much I don't know, so I keep looking.",
-  lead: '这里放我做过的项目，也记录学习和开发时遇到的问题。比起只展示结果，我更想把过程和取舍写清楚。',
+  hero: "There's still so much I don't know, so I keep digging.",
+  lead: '这里放我做过的项目，和一路写下来的笔记。',
   email: '',
   github: 'https://github.com/Fang0415',
   wechat: '',
@@ -17,26 +17,25 @@ export const PROFILE = {
   // page renders two columns, so the console can edit them in a plain textarea
   // instead of needing a nested form.
   aboutIntro: [
-    '你好，我是 Fang，一名学生，也是一名全栈开发者。现在主要学习后端、AI 应用开发和 RAG，也会做一些完整的小项目，把想法从页面一路做到服务端。',
-    '我建这个网站，不只是为了摆作品。项目为什么这样设计、途中踩过什么坑、最后怎么解决，我都会尽量写下来。'
-      + '如果这些记录刚好能帮你少绕一点路，那就更好了。',
+    '你好，我是 Fang，一名学生，也是一名全栈开发者。主要学后端和 AI 应用开发，偶尔做完整的小项目。',
+    '这个网站放项目，也记踩过的坑。如果能帮你少绕一点路，那就更好了。',
   ].join('\n\n'),
   focus: [
-    '后端开发 | 接口、数据库与服务部署',
-    'AI 应用 | 从想法到可以使用的产品',
-    'RAG | 检索、上下文与效果评估',
+    '后端开发 | 接口、数据库、部署',
+    'AI 应用 | 从想法到能用的产品',
+    'RAG | 检索与评估',
   ],
   tools: ['Python', 'Go', 'Rust', 'Postgres', 'pgvector', 'FastAPI', 'DuckDB', 'Neovim', 'Linux'],
   now: [
     '做一个完整的 AI 应用，顺手把工程结构理清楚。',
-    '继续学习 RAG，重点看检索和效果评估。',
-    '把开发中真正遇到的问题写成文章。',
+    '学 RAG，重点看检索和评估。',
+    '把踩过的坑写成文章。',
   ],
   background: [
     '身份 | 学生 / 全栈开发者',
-    '关注 | 后端、AI 应用开发、RAG',
-    '这个网站 | 项目展示、学习记录和技术文章',
-    '写作原则 | 先把问题说明白，再谈解决方案',
+    '方向 | 后端、AI 应用、RAG',
+    '这个网站 | 项目、笔记、技术文章',
+    '联系方式 | GitHub',
   ],
 };
 
@@ -93,51 +92,45 @@ export interface Experience {
 export const PROJECTS: Project[] = [
   {
     id: 'ragkit', title: 'ragkit', status: 'active', category: 'AI / RAG',
-    role: '系统设计 / 后端实现',
     period: '2026',
-    description: '把文档处理、混合检索和简单评估放在一起的本地 RAG 工具，方便快速比较不同方案。',
-    highlights: ['可插拔切分与检索策略', '面向实验复现的评估流程'],
-    stack: ['Python', 'Postgres', 'pgvector', 'FastAPI'], repo: '#', demo: '#',
+    description: '本地 RAG 实验工具：切分、检索、评估都在一处，方便对比方案。',
+    highlights: ['可插拔的切分与检索策略', '可复现的评估流程'],
+    stack: ['Python', 'Postgres', 'pgvector', 'FastAPI'],
   },
   {
-    id: 'notes-cli', title: 'notes-cli', status: 'building', category: '工具链',
-    role: 'CLI 设计 / 本地索引',
+    id: 'notes-cli', title: 'notes-cli', status: 'building', category: '工具',
     period: '2026',
-    description: '在终端里记笔记、加标签和搜索的小工具，数据保存为普通文件，换设备也不难搬。',
-    highlights: ['Markdown 笔记归档', '轻量搜索与标签整理'],
-    stack: ['Go', 'SQLite'], repo: '#',
+    description: '终端笔记工具，数据是普通 Markdown 文件，换机器直接带走。',
+    highlights: ['Markdown 笔记归档', '轻量搜索与标签'],
+    stack: ['Go', 'SQLite'],
   },
   {
     id: 'streamq', title: 'streamq', status: 'shipped', category: '后端',
-    role: '队列模型 / 可靠投递',
     period: '2025',
-    description: '用 Postgres 做的小型持久任务队列，给暂时不需要 Kafka 的服务一个更轻的选择。',
+    description: '用 Postgres 做的小型持久任务队列，给不需要 Kafka 的服务用。',
     highlights: ['持久化任务状态', '失败重试与可观测事件'],
-    stack: ['Rust', 'Postgres'], repo: '#', demo: '#',
+    stack: ['Rust', 'Postgres'],
   },
   {
     id: 'embed-bench', title: 'embed-bench', status: 'active', category: 'AI / RAG',
-    role: '评估框架 / 数据集整理',
     period: '2025',
-    description: '用同一套数据和指标比较 embedding 模型，看看它们在具体检索任务里的差别。',
+    description: '同一套数据和指标，横向对比 embedding 模型的检索效果。',
     highlights: ['多模型对比', '检索指标与样本回放'],
-    stack: ['Python', 'DuckDB'], repo: '#',
+    stack: ['Python', 'DuckDB'],
   },
   {
-    id: 'dotfiles', title: 'dotfiles', status: 'archived', category: '工具链',
-    role: '开发环境维护',
+    id: 'dotfiles', title: 'dotfiles', status: 'archived', category: '工具',
     period: '长期',
-    description: '终端、编辑器和 shell 配置，用来在新机器上快速恢复开发环境。',
+    description: '终端、编辑器、shell 配置，新机器一键恢复环境。',
     highlights: ['Shell 与编辑器配置', '跨机器初始化脚本'],
-    stack: ['Shell', 'Lua'], repo: '#',
+    stack: ['Shell', 'Lua'],
   },
   {
     id: 'logpipe', title: 'logpipe', status: 'shipped', category: '后端',
-    role: '日志建模 / 查询链路',
     period: '2025',
-    description: '把格式混乱的服务日志整理成结构化事件，再写入 ClickHouse，方便之后查询和排错。',
+    description: '把混乱的服务日志整理成结构化事件，写入 ClickHouse 供排错查询。',
     highlights: ['结构化事件提取', 'ClickHouse 写入与查询'],
-    stack: ['Go', 'ClickHouse'], repo: '#', demo: '#',
+    stack: ['Go', 'ClickHouse'],
   },
 ];
 
@@ -147,8 +140,8 @@ export const EXPERIENCES: Experience[] = [
     company: '个人项目',
     role: 'AI 应用与 RAG',
     period: '最近',
-    summary: '最近把更多时间放在 AI 应用和 RAG 上，试着从数据处理、检索到接口和页面，完整做完一条链路。',
-    highlights: ['比较不同的切分与检索方案', '给实验补上可以重复的评估过程'],
+    summary: '从数据处理、检索到接口和页面，完整做完一条链路。',
+    highlights: ['对比不同的切分与检索方案', '给实验补上可重复的评估'],
     stack: ['Python', 'Postgres', 'pgvector', 'FastAPI'],
   },
   {
@@ -156,8 +149,8 @@ export const EXPERIENCES: Experience[] = [
     company: '课程与练习',
     role: '后端基础',
     period: '持续',
-    summary: '用项目练习接口设计、数据库、任务队列和部署。重点不是堆技术，而是把每一层为什么存在想清楚。',
-    highlights: ['从接口到数据库完成一条业务链路', '练习部署、日志和问题排查'],
+    summary: '用项目练接口设计、数据库、任务队列和部署。',
+    highlights: ['从接口到数据库跑通一条业务链路', '部署、日志与问题排查'],
     stack: ['Go', 'Rust', 'Postgres', 'Nginx'],
   },
   {
@@ -165,18 +158,18 @@ export const EXPERIENCES: Experience[] = [
     company: '这个网站',
     role: '全栈开发与写作',
     period: '现在',
-    summary: '自己设计、开发并维护这个网站，用它整理项目和笔记，也顺便练习一套完整的内容管理流程。',
-    highlights: ['完成前台页面和内容后台', '把开发过程整理成可以回看的记录'],
+    summary: '自己设计、开发并维护这个网站。',
+    highlights: ['前台页面和内容后台', '把开发过程写成记录'],
     stack: ['Next.js', 'TypeScript', 'Markdown', 'SQLite'],
   },
 ];
 
 // Status → showcase pill (label + kind class). Mirrors Folio Home.jsx.
 export const SHOWCASE_STATUS: Record<ProjectStatus, [string, string]> = {
-  active: ['持续更新', 'live'],
-  building: ['正在做', 'wip'],
+  active: ['在更新', 'live'],
+  building: ['在做', 'wip'],
   shipped: ['已完成', 'beta'],
-  archived: ['暂停更新', 'archived'],
+  archived: ['已归档', 'archived'],
 };
 
 export const NAV_LINKS = [

@@ -1,6 +1,6 @@
 ---
 title: "AI Agent 工作流：边界比能力更重要"
-description: "关于 coding agent 工作流的一点实践：工具边界、审查点和停止条件决定了系统是否可靠。"
+description: "让 coding agent 可靠的，不是更多工具，而是更清楚的边界。"
 pubDate: 2026-06-18
 tags: ["AI Agent", "Codex", "工作流"]
 ---

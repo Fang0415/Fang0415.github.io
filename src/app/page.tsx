@@ -13,8 +13,8 @@ import { getPublishedPostMetas, getSiteProfile, getVisibleExperiences, getVisibl
 export const dynamic = 'force-dynamic';
 
 function renderHeroQuote(text: string) {
-  return text.split(/\b(don't know|looking)\b/gi).map((part, index) =>
-    /^(don't know|looking)$/i.test(part)
+  return text.split(/\b(don't know|digging)\b/gi).map((part, index) =>
+    /^(don't know|digging)$/i.test(part)
       ? <em key={`${part}-${index}`}>{part}</em>
       : part
   );
@@ -102,8 +102,8 @@ export default async function HomePage() {
             <div>
               <p className="sec-eyebrow" style={{ marginBottom: 10 }}>关于</p>
               <p className="about-preview__line">
-                我是 {profile.name}，一名学生和全栈开发者。最近主要在学后端和 AI 应用开发，
-                RAG 是其中投入比较多的一块。这里放项目，也放我一路写下来的笔记。
+                我是 {profile.name}，学生和全栈开发者，最近在学后端和 AI 应用。
+                这里放项目，也放笔记。
               </p>
             </div>
             <Button variant="ghost" href="/about/" iconRight={<FolioIcon name="arrow-right" className="icon" />}>

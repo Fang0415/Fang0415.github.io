@@ -22,8 +22,8 @@ export default function ExperienceSummary({
       {showHeader && (
         <div className="sec-head">
           <div>
-            <p className="sec-eyebrow">学习与实践</p>
-            <h2 className="sec-title">最近在学，也在做</h2>
+            <p className="sec-eyebrow">经历</p>
+            <h2 className="sec-title">走过的路</h2>
           </div>
         </div>
       )}

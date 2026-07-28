@@ -25,6 +25,11 @@ const statusFromSite: Record<string, ProjectStatus> = {
   archived: ProjectStatus.ARCHIVED,
 };
 
+// The hero string shipped before the 2026-07 copy refresh. If the row still
+// carries it verbatim, the admin never edited it, so reseeding may upgrade it
+// to the current default; a customized hero is left alone.
+const oldHero = "There's still so much I don't know, so I keep looking.";
+
 async function seedProfile() {
   const existing = await prisma.siteProfile.findUnique({ where: { id: 'default' } });
   if (!existing) {
@@ -36,6 +41,7 @@ async function seedProfile() {
   // columns existed should pick up the defaults; anything the admin has already
   // written stays untouched.
   const backfill = {
+    ...(existing.hero === oldHero ? { hero: PROFILE.hero } : {}),
     ...(existing.aboutIntro ? {} : { aboutIntro: PROFILE.aboutIntro }),
     ...(existing.focus.length ? {} : { focus: PROFILE.focus }),
     ...(existing.tools.length ? {} : { tools: PROFILE.tools }),

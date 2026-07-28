@@ -110,7 +110,7 @@ export default function ProfilePanel({ profile, assets, onReload, notify }: Prop
           <input value={form.role} onChange={(e) => set('role', e.target.value)} placeholder="学生 · 全栈开发者" />
         </Field>
         <Field label="Hero 标题" hint="首页会直接显示这句话，适合使用简短的英文题词">
-          <input value={form.hero} onChange={(e) => set('hero', e.target.value)} placeholder="There's still so much I don't know, so I keep looking." />
+          <input value={form.hero} onChange={(e) => set('hero', e.target.value)} placeholder="There's still so much I don't know, so I keep digging." />
         </Field>
         <Field label="首页导语">
           <textarea
