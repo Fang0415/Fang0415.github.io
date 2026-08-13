@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import ProjectGrid from '../../components/ProjectGrid';
+import ProjectShowcase from '../../components/ProjectShowcase';
 import { getVisibleProjects } from '../../lib/managed-content';
 
 export const dynamic = 'force-dynamic';
@@ -25,7 +25,7 @@ export default async function ProjectsPage() {
 
       <section className="kit-section--tight kit-section" style={{ paddingTop: 32 }}>
         <div className="kit-container">
-          <ProjectGrid projects={projects} />
+          <ProjectShowcase projects={projects} />
         </div>
       </section>
     </>

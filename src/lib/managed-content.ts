@@ -66,12 +66,19 @@ function dbStatusToProjectStatus(status: ProjectStatus): Project['status'] {
 }
 
 function dbProjectToProject(project: DbProject): Project {
+  // Project has no dedicated highlights column; the seed stores them as the
+  // leading Markdown bullet list in `content`, so lift them back out here.
+  const highlights = (project.content ?? '')
+    .split('\n')
+    .map((line) => /^-\s+(.+)/.exec(line.trim())?.[1])
+    .filter((line): line is string => !!line);
   return {
     id: project.slug,
     title: project.title,
     status: dbStatusToProjectStatus(project.status),
     category: project.category,
     description: project.summary,
+    highlights,
     stack: project.stack,
     repo: project.repoUrl ?? undefined,
     demo: project.demoUrl ?? undefined,
