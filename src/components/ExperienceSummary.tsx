@@ -1,12 +1,16 @@
 import { EXPERIENCES, type Experience } from '../lib/site';
 import Card from './Card';
 import Tag from './Tag';
+import Link from 'next/link';
+import FolioIcon from './FolioIcon';
 
 interface Props {
   items?: Experience[];
   limit?: number;
   showHeader?: boolean;
   compact?: boolean;
+  moreHref?: string;
+  moreLabel?: string;
 }
 
 export default function ExperienceSummary({
@@ -14,6 +18,8 @@ export default function ExperienceSummary({
   limit,
   showHeader = true,
   compact = false,
+  moreHref,
+  moreLabel = '查看更多',
 }: Props) {
   const shown = typeof limit === 'number' ? items.slice(0, limit) : items;
 
@@ -25,6 +31,11 @@ export default function ExperienceSummary({
             <p className="sec-eyebrow">经历</p>
             <h2 className="sec-title">走过的路</h2>
           </div>
+          {moreHref && (
+            <Link className="sec-link" href={moreHref}>
+              {moreLabel} <FolioIcon name="arrow-right" className="icon" />
+            </Link>
+          )}
         </div>
       )}
 

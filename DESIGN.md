@@ -55,7 +55,23 @@ Scale:
 - Body large: `18px`, line-height `1.6`
 - Eyebrow/meta: mono `12px-13px`
 
+Personal-brand landing profile (Figma `58:2` / Agenta Ref styles):
+
+- Profile display: Geist `40px`, weight `700`, line-height `1.1`
+- Profile heading: Geist `20px`, weight `600`, line-height `28px`, letter-spacing `-1px`
+- Profile body: Geist `16px`, line-height `24px`
+- Profile label: Geist `12px`, weight `500`, line-height `16px`, letter-spacing `1.44px`
+- Secondary contact button: Nunito `14px`, weight `600`, `150 × 40px`, `8px` radius
+
 Keep letter spacing at `0` for normal text. Display and heading tokens may use the existing slight negative tracking from CSS, but do not introduce viewport-based font scaling.
+
+### Pixel botanical decoration
+
+- Source assets live in `public/assets/personal-brand/decor/` and use a transparent background.
+- Use the sunflower-gold and leaf-green palette only; the dark brown pixel outline stays neutral.
+- Render with `image-rendering: pixelated` and preserve the native aspect ratio.
+- Use at most one botanical decoration per section. Corner pieces should remain partially cropped, non-interactive, and between `15%` and `24%` opacity when placed behind content.
+- Do not add glow, drop shadow, gradient, caption, or CSS-drawn botanical parts. Keep the visual effect flat and consistent with the restrained Figma surfaces.
 
 ### Shape
 

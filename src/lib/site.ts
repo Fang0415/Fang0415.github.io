@@ -8,11 +8,14 @@ export const PROFILE = {
   mark: 'F',
   role: '学生 · 全栈开发者',
   location: '',
-  hero: "There's still so much I don't know, so I keep digging.",
+  hero: 'From a simple idea, rebuild the whole world.',
   lead: '这里放我做过的项目，和一路写下来的笔记。',
   email: '',
   github: 'https://github.com/Fang0415',
   wechat: '',
+  qq: '',
+  reddit: '',
+  avatarUrl: '',
   // About-page blocks. The three list fields use "左 | 右" per line where the
   // page renders two columns, so the console can edit them in a plain textarea
   // instead of needing a nested form.

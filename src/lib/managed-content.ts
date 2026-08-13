@@ -1,6 +1,7 @@
 import { Prisma, ProjectStatus, PublishStatus } from '@prisma/client';
 import {
   categoryForTags,
+  firstParagraphFor,
   getAllPosts,
   getPostBySlug,
   isoDate,
@@ -48,6 +49,7 @@ function dbPostToMeta(post: DbPost): PostMeta {
   return {
     title: post.title,
     excerpt: post.description,
+    preview: firstParagraphFor(post.content, post.description),
     date,
     isoDate: date,
     category,
@@ -205,7 +207,10 @@ export async function getVisibleExperiences(): Promise<Experience[]> {
  */
 export async function getSiteProfile(): Promise<typeof PROFILE> {
   try {
-    const profile = await prisma.siteProfile.findUnique({ where: { id: 'default' } });
+    const profile = await prisma.siteProfile.findUnique({
+      where: { id: 'default' },
+      include: { avatarAsset: true },
+    });
     if (!profile) return PROFILE;
     return {
       name: profile.name,
@@ -218,6 +223,9 @@ export async function getSiteProfile(): Promise<typeof PROFILE> {
       email: profile.email,
       github: profile.github,
       wechat: profile.wechat,
+      qq: PROFILE.qq,
+      reddit: PROFILE.reddit,
+      avatarUrl: profile.avatarAsset?.publicUrl ?? PROFILE.avatarUrl,
       // A row saved before these columns existed has empty arrays; falling back
       // to the defaults keeps the About page from rendering empty sections.
       aboutIntro: profile.aboutIntro || PROFILE.aboutIntro,

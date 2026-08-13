@@ -1,32 +1,49 @@
-import SocialRow from './SocialRow';
-import { PROFILE, NAV_LINKS, type SiteProfileData } from '../lib/site';
+import Link from 'next/link';
+import { PROFILE, type SiteProfileData } from '../lib/site';
 
 export default function Footer({ profile = PROFILE }: { profile?: SiteProfileData }) {
   return (
     <footer className="footer">
       <div className="footer-inner">
-        <div className="footer-brand">
-          <div className="mark">{profile.mark}</div>
-          <div className="footer-tag">
-            {profile.name} 的项目和技术笔记。
+        <div className="footer-top">
+          <div className="footer-brand">
+            <div className="footer-brand__name">
+              <img src="/assets/personal-brand/sunflower-mark.png" alt="" width="24" height="24" />
+              <strong>{profile.wordmark}</strong>
+            </div>
+            <p>Student and full-stack developer focused on backend systems, AI applications, RAG, and the craft of shipping complete products.</p>
           </div>
-          <div style={{ marginTop: 18 }}><SocialRow size="sm" profile={profile} /></div>
+          <div className="footer-col">
+            <h3>Computer Brain</h3>
+            <Link href="/#experience">Voice Synthesis</Link>
+            <Link href="/projects/">Projects</Link>
+            <Link href="/#experience">Experience</Link>
+            <Link href="/about/">Now</Link>
+          </div>
+          <div className="footer-col">
+            <h3>Company</h3>
+            <Link href="/about/">About Us</Link>
+            <Link href="/about/">About</Link>
+            <Link href="/blog/">Blog</Link>
+            <a href={profile.github} target="_blank" rel="noreferrer">GitHub</a>
+          </div>
         </div>
-        <div className="footer-col">
-          <h4>站点</h4>
-          {NAV_LINKS.map((link) => <a key={link.href} href={link.href}>{link.label}</a>)}
+
+        <div className="footer-newsletter">
+          <div>
+            <h3>Notes from the work</h3>
+            <p>Occasional writing about projects, engineering trade-offs, and things I am still learning.</p>
+          </div>
+          <form action="/rss.xml">
+            <div><input type="email" aria-label="Email" placeholder="Enter your email" /><button aria-label="Subscribe">→</button></div>
+            <p>No noise. Just new work and useful notes.</p>
+          </form>
         </div>
-        <div className="footer-col">
-          <h4>其他地方</h4>
-          <a href={profile.github}>GitHub</a>
-          {profile.wechat && <a href={profile.wechat}>微信</a>}
-          <a href="/rss.xml">RSS 订阅</a>
-          {profile.email && <a href={`mailto:${profile.email}`}>邮件</a>}
+
+        <div className="footer-base">
+          <span>© {new Date().getFullYear()} {profile.name}. Built by hand.</span>
+          <span><Link href="/about/">Terms</Link><Link href="/about/">Privacy</Link><Link href="/about/">Cookies</Link></span>
         </div>
-      </div>
-      <div className="footer-base">
-        <span>© {new Date().getFullYear()} {profile.name}</span>
-        <span>慢慢更新，不放追踪脚本</span>
       </div>
     </footer>
   );

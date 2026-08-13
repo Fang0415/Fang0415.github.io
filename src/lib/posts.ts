@@ -16,6 +16,8 @@ export type TagVariant = 'solid' | 'teal' | 'sky' | 'amber';
 export interface PostMeta {
   title: string;
   excerpt: string;
+  /** First prose paragraph, shortened for lightweight hover previews. */
+  preview?: string;
   date: string;          // 2026-06-18 (mono meta, Folio style)
   isoDate: string;       // 2026-06-18
   category: string;
@@ -109,6 +111,27 @@ export function categoryForTags(tags: string[]): { category: string; color: TagV
 export function readTimeFor(body: string): string {
   const chars = body.replace(/\s+/g, '').length;
   return `约 ${Math.max(1, Math.round(chars / 400))} 分钟阅读`;
+}
+
+export function firstParagraphFor(body: string, fallback: string): string {
+  const content = body.replace(/^---\s*\n[\s\S]*?\n---\s*(?:\n|$)/, '');
+  const paragraph = content
+    .split(/\n\s*\n/)
+    .map((block) => block.trim())
+    .find((block) => (
+      block.length > 0
+      && !/^(---$|#{1,6}\s|```|~~~|>\s|[-*+]\s|\d+[.)]\s)/.test(block)
+      && !/^(开始|继续|上一篇|下一篇).*?\[\[/.test(block)
+    ));
+
+  const plain = (paragraph || fallback)
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, '')
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
+    .replace(/[*_~`>#]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  return plain.length > 170 ? `${plain.slice(0, 170).trimEnd()}…` : plain;
 }
 
 export function isoDate(d: Date): string {
@@ -295,6 +318,7 @@ export function toMeta(post: BlogPost): PostMeta {
   return {
     title: post.data.title,
     excerpt: post.data.description,
+    preview: firstParagraphFor(post.body ?? '', post.data.description),
     date: iso,
     isoDate: iso,
     category,

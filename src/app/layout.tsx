@@ -68,6 +68,9 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         />
         <link rel="stylesheet" href="/katex/katex.min.css" />
         <link rel="stylesheet" href="/highlight.js/styles/github.min.css" />
+        {process.env.NODE_ENV === 'development' ? (
+          <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async />
+        ) : null}
       </head>
       <body>
         <Navbar profile={profile} />
