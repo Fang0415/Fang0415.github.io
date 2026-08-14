@@ -176,8 +176,8 @@ export const SHOWCASE_STATUS: Record<ProjectStatus, [string, string]> = {
 };
 
 export const NAV_LINKS = [
-  { label: '首页', href: '/' },
-  { label: '项目', href: '/projects/' },
-  { label: '文章', href: '/blog/' },
-  { label: '关于', href: '/about/' },
+  { label: { en: 'About', zh: '关于' }, href: '/about/' },
+  { label: { en: 'Work', zh: '项目' }, href: '/projects/' },
+  { label: { en: 'Skills', zh: '技能' }, href: '/skills/' },
+  { label: { en: 'Writing', zh: '博客' }, href: '/blog/' },
 ];

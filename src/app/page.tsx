@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import HomeAboutOrbit from '../components/HomeAboutOrbit';
 import HomeBlogAccordion from '../components/HomeBlogAccordion';
+import HomeSkillRepository from '../components/HomeSkillRepository';
+import { SiteText } from '../components/SitePreferences';
 import { getPublishedPostMetas, getSiteProfile, getVisibleProjects } from '../lib/managed-content';
 import { PROJECTS, type Project } from '../lib/site';
 
@@ -19,11 +21,11 @@ const LEGACY_HERO = "There's still so much I don't know, so I keep digging.";
 const FIGMA_HERO = 'From a simple idea, rebuild the whole world.';
 
 const PERSONAL_UPDATES = [
-  { text: 'Currently building a RAG evaluation toolkit', href: '/projects/ragkit/' },
-  { text: 'Learning distributed systems' },
-  { text: 'Recently shipped notes-cli', href: '/projects/notes-cli/' },
-  { text: 'Writing about retrieval metrics', href: '/blog/' },
-  { text: 'Open to backend and AI collaboration' },
+  { text: 'Currently building a RAG evaluation toolkit', textZh: '正在构建 RAG 评估工具', href: '/projects/ragkit/' },
+  { text: 'Learning distributed systems', textZh: '正在学习分布式系统' },
+  { text: 'Recently shipped notes-cli', textZh: '最近完成 notes-cli', href: '/projects/notes-cli/' },
+  { text: 'Writing about retrieval metrics', textZh: '正在写检索指标相关笔记', href: '/blog/' },
+  { text: 'Open to backend and AI collaboration', textZh: '期待后端与 AI 方向的合作' },
 ] as const;
 
 function projectImage(project: Project) {
@@ -35,7 +37,7 @@ function PersonalUpdateGroup({ duplicate = false }: { duplicate?: boolean }) {
   return (
     <div className="brand-status-marquee__group" aria-hidden={duplicate || undefined}>
       {PERSONAL_UPDATES.map((item) => {
-        const content = <span className="brand-status-marquee__text">{item.text}</span>;
+        const content = <span className="brand-status-marquee__text"><SiteText en={item.text} zh={item.textZh} /></span>;
 
         if (!duplicate && 'href' in item) {
           return (
@@ -76,10 +78,10 @@ export default async function HomePage() {
       <section className="brand-hero" aria-labelledby="brand-hero-title">
         <div className="brand-hero__copy rise">
           <h1 id="brand-hero-title">{hero}</h1>
-          <p>I build backend systems, AI applications, and RAG experiments — then write down what I learn.</p>
+          <p><SiteText en="I build backend systems, AI applications, and RAG experiments — then write down what I learn." zh="我构建后端系统、AI 应用与 RAG 实验，也把一路学到的内容记录下来。" /></p>
           <div className="brand-hero__actions">
-            <Link className="brand-button brand-button--primary" href="#projects">View Projects</Link>
-            <Link className="brand-button brand-button--secondary" href="#blog">Read Blog</Link>
+            <Link className="brand-button brand-button--primary" href="#projects"><SiteText en="View Projects" zh="查看项目" /></Link>
+            <Link className="brand-button brand-button--secondary" href="#blog"><SiteText en="Read Blog" zh="阅读博客" /></Link>
           </div>
         </div>
 
@@ -108,8 +110,8 @@ export default async function HomePage() {
 
       <section className="brand-archive" id="projects" aria-labelledby="brand-archive-title">
         <div className="brand-section-head">
-          <h2 id="brand-archive-title">What I Done</h2>
-          <p>Ideas turned into tools, experiments, and systems — each one a step toward building something useful.</p>
+          <h2 id="brand-archive-title"><SiteText en="What I Done" zh="我做过的事" /></h2>
+          <p><SiteText en="Ideas turned into tools, experiments, and systems — each one a step toward building something useful." zh="把想法变成工具、实验与系统——每一次实践，都向真正有用的产品迈进一步。" /></p>
         </div>
         <div className="brand-archive__grid">
           {projects.slice(0, 5).map((project, index) => (
@@ -156,13 +158,15 @@ export default async function HomePage() {
             </article>
           ))}
         </div>
-        <p className="brand-archive__foot">Want implementation details? <Link href="/projects/">Browse all projects</Link></p>
+        <p className="brand-archive__foot"><SiteText en="Want implementation details? " zh="想了解实现细节？" /><Link href="/projects/"><SiteText en="Browse all projects" zh="查看全部项目" /></Link></p>
       </section>
+
+      <HomeSkillRepository />
 
       <section className="brand-blog" id="blog" aria-labelledby="brand-blog-title">
         <div className="brand-section-head">
-          <h2 id="brand-blog-title">Latest writing</h2>
-          <p>Project notes and engineering decisions. <Link href="/blog/">All posts →</Link></p>
+          <h2 id="brand-blog-title"><SiteText en="Latest writing" zh="最新文章" /></h2>
+          <p><SiteText en="Project notes and engineering decisions. " zh="记录项目过程与工程决策。" /><Link href="/blog/"><SiteText en="All posts →" zh="全部文章 →" /></Link></p>
         </div>
         <HomeBlogAccordion posts={posts} />
       </section>

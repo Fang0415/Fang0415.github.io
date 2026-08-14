@@ -1,4 +1,7 @@
+'use client';
+
 import SocialIcon from './ui/social-icon';
+import { useSitePreferences } from './SitePreferences';
 
 interface Props {
   name: string;
@@ -33,6 +36,8 @@ export default function HomeAboutOrbit({
   reddit,
   twitter,
 }: Props) {
+  const { locale } = useSitePreferences();
+  const zh = locale === 'zh';
   const hrefs = { github, wechat, qq, reddit, twitter, email };
   const socialItems = contactPlatforms.map((contact) => ({
     id: contact.key,
@@ -49,21 +54,19 @@ export default function HomeAboutOrbit({
         <div className="brand-about__inner">
           <article className="brand-about__profile cb-reveal">
             <header className="brand-about__headline">
-              <h2 id="brand-profile-title">I&apos;m {name}</h2>
+              <h2 id="brand-profile-title">{zh ? `我是 ${name}` : <>I&apos;m {name}</>}</h2>
             </header>
 
             <div className="brand-about__biography">
               <p>
-                A student exploring how backend engineering and AI agents can become reliable,
-                useful products. I enjoy taking an idea from a rough prototype to a complete
-                system—designing APIs, connecting data and retrieval workflows, evaluating model
-                behavior, and writing down the decisions that make the result easier to understand
-                and maintain.
+                {zh
+                  ? '一名学生，也是一名全栈开发者，正在探索如何把后端工程与 AI 智能体做成可靠、真正可用的产品。我喜欢把一个粗糙的想法推进成完整系统：设计 API、连接数据与检索流程、评估模型行为，并记录关键决策，让结果更容易理解和维护。'
+                  : 'A student exploring how backend engineering and AI agents can become reliable, useful products. I enjoy taking an idea from a rough prototype to a complete system—designing APIs, connecting data and retrieval workflows, evaluating model behavior, and writing down the decisions that make the result easier to understand and maintain.'}
               </p>
             </div>
 
             <div className="brand-about__contacts">
-              <h3>Find me online</h3>
+              <h3>{zh ? '联系我' : 'Find me online'}</h3>
               <SocialIcon items={socialItems} />
             </div>
           </article>
@@ -75,23 +78,23 @@ export default function HomeAboutOrbit({
             />
           </figure>
 
-          <aside className="brand-about__traits cb-reveal" aria-label="Personal traits" style={{ '--reveal-delay': '140ms' } as React.CSSProperties}>
-            <h3>Main directions</h3>
+          <aside className="brand-about__traits cb-reveal" aria-label={zh ? '个人方向' : 'Personal traits'} style={{ '--reveal-delay': '140ms' } as React.CSSProperties}>
+            <h3>{zh ? '主要方向' : 'Main directions'}</h3>
             <ol className="brand-about__direction-list">
               <li className="brand-about__direction">
                 <span>01</span>
-                <strong>Backend Systems</strong>
-                <p>APIs, data flows, and services designed for clarity and reliability.</p>
+                <strong>{zh ? '后端系统' : 'Backend Systems'}</strong>
+                <p>{zh ? '围绕清晰度与可靠性设计 API、数据流和服务。' : 'APIs, data flows, and services designed for clarity and reliability.'}</p>
               </li>
               <li className="brand-about__direction">
                 <span>02</span>
-                <strong>Agent Research</strong>
-                <p>Tool use, memory, evaluation, and dependable agent handoffs.</p>
+                <strong>{zh ? 'Agent 研究' : 'Agent Research'}</strong>
+                <p>{zh ? '研究工具调用、记忆、评估和可靠的智能体交接。' : 'Tool use, memory, evaluation, and dependable agent handoffs.'}</p>
               </li>
               <li className="brand-about__direction">
                 <span>03</span>
-                <strong>Applied AI</strong>
-                <p>RAG, retrieval quality, and experiments that can survive real use.</p>
+                <strong>{zh ? 'AI 应用' : 'Applied AI'}</strong>
+                <p>{zh ? '关注 RAG、检索质量，以及能进入真实场景的实验。' : 'RAG, retrieval quality, and experiments that can survive real use.'}</p>
               </li>
             </ol>
           </aside>

@@ -5,6 +5,7 @@ import MobileMenu from '../components/MobileMenu';
 import Footer from '../components/Footer';
 import RevealManager from '../components/RevealManager';
 import ViewTransitions from '../components/ViewTransitions';
+import { SitePreferencesProvider } from '../components/SitePreferences';
 import { PROFILE } from '../lib/site';
 import { getSiteProfile } from '../lib/managed-content';
 import { SITE_URL } from '../lib/site-url';
@@ -58,13 +59,14 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   const profile = await getSiteProfile();
 
   return (
-    <html lang="zh-CN">
+    <html lang="en" data-scroll-behavior="smooth" data-theme="light" data-locale="en" suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('fang-theme');if(t!=='light'&&t!=='dark')t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';var l=localStorage.getItem('fang-locale');if(l!=='zh'&&l!=='en')l='en';var d=document.documentElement;d.dataset.theme=t;d.dataset.locale=l;d.lang=l==='zh'?'zh-CN':'en';d.style.colorScheme=t;}catch(e){}})();` }} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
           rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Nunito:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=JetBrains+Mono:wght@400;500;600&display=swap"
         />
         <link rel="stylesheet" href="/katex/katex.min.css" />
         <link rel="stylesheet" href="/highlight.js/styles/github.min.css" />
@@ -73,12 +75,14 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         ) : null}
       </head>
       <body>
-        <Navbar profile={profile} />
-        <MobileMenu profile={profile} />
-        <main>{children}</main>
-        <Footer profile={profile} />
-        <RevealManager />
-        <ViewTransitions />
+        <SitePreferencesProvider>
+          <Navbar profile={profile} />
+          <MobileMenu profile={profile} />
+          <main>{children}</main>
+          <Footer profile={profile} />
+          <RevealManager />
+          <ViewTransitions />
+        </SitePreferencesProvider>
       </body>
     </html>
   );

@@ -2,10 +2,16 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import FolioIcon from './FolioIcon';
+import { SitePreferenceControls, useSitePreferences } from './SitePreferences';
 import { PROFILE, NAV_LINKS, type SiteProfileData } from '../lib/site';
 
 export default function MobileMenu({ profile = PROFILE }: { profile?: SiteProfileData }) {
+  const pathname = usePathname();
+  const { locale } = useSitePreferences();
+  const currentPath = pathname.replace(/\/+$/, '') || '/';
+
   useEffect(() => {
     const menu = document.getElementById('cb-mobile-menu');
     const openBtn = document.getElementById('cb-menu-open');
@@ -45,20 +51,36 @@ export default function MobileMenu({ profile = PROFILE }: { profile?: SiteProfil
   return (
     <div id="cb-mobile-menu" className="folio-mobilemenu" hidden>
       <div className="folio-mobilemenu__head">
-        <span className="folio-mobilemenu__brand">
-          <span className="folio-nav__mark" style={{ background: 'var(--text-primary)', color: '#fff' }}>{profile.mark}</span>
+        <Link className="folio-mobilemenu__brand" href="/">
+          <img src="/assets/personal-brand/sunflower-mark.png" alt="" width="24" height="24" />
           {profile.wordmark}
-        </span>
-        <button className="folio-iconbtn folio-iconbtn--outline" id="cb-menu-close" aria-label="关闭">
-          <FolioIcon name="x-close" className="icon" />
-        </button>
+        </Link>
+        <div className="folio-mobilemenu__actions">
+          <SitePreferenceControls mobile />
+          <button className="folio-iconbtn folio-iconbtn--outline" id="cb-menu-close" aria-label={locale === 'zh' ? '关闭菜单' : 'Close menu'}>
+            <FolioIcon name="x-close" className="icon" />
+          </button>
+        </div>
       </div>
       <div className="folio-mobilemenu__links">
-        {NAV_LINKS.map((l) => <Link key={l.href} className="cb-menu-link" href={l.href}>{l.label}</Link>)}
+        {NAV_LINKS.map((item) => {
+          const targetPath = item.href.replace(/\/+$/, '') || '/';
+          const active = currentPath === targetPath || currentPath.startsWith(`${targetPath}/`);
+          return (
+            <Link
+              key={item.href}
+              className={`cb-menu-link ${active ? 'is-active' : ''}`}
+              href={item.href}
+              aria-current={active ? 'page' : undefined}
+            >
+              {item.label[locale]}
+            </Link>
+          );
+        })}
       </div>
       <div className="folio-mobilemenu__foot">
         {profile.github && <a href={profile.github}>GitHub</a>}
-        {profile.email && <a href={`mailto:${profile.email}`}>邮件</a>}
+        {profile.email && <a href={`mailto:${profile.email}`}>{locale === 'zh' ? '邮件' : 'Email'}</a>}
         <a href="/rss.xml">RSS</a>
       </div>
     </div>
