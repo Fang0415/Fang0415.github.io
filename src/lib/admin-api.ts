@@ -11,10 +11,10 @@ export function toPublishStatus(value: unknown): PublishStatus {
 }
 
 export function toProjectStatus(value: unknown): ProjectStatus {
-  if (value === 'ACTIVE') return ProjectStatus.ACTIVE;
-  if (value === 'SHIPPED') return ProjectStatus.SHIPPED;
-  if (value === 'ARCHIVED') return ProjectStatus.ARCHIVED;
-  return ProjectStatus.BUILDING;
+  if (value === 'IN_PROGRESS') return ProjectStatus.IN_PROGRESS;
+  if (value === 'COMPLETED') return ProjectStatus.COMPLETED;
+  if (value === 'PUBLISHED') return ProjectStatus.PUBLISHED;
+  return ProjectStatus.PLANNING;
 }
 
 export async function ensureAdminResponse() {
@@ -126,6 +126,54 @@ export function parseStringArray(value: unknown) {
 export function optionalStringArray(body: Record<string, unknown>, field: string) {
   if (body[field] === undefined) return undefined;
   return parseStringArray(body[field]);
+}
+
+export interface LocalizedTextInput extends Record<string, string> {
+  zh: string;
+  en: string;
+}
+
+export interface LocalizedListInput extends Record<string, string[]> {
+  zh: string[];
+  en: string[];
+}
+
+export function parseLocalizedText(value: unknown): LocalizedTextInput {
+  if (typeof value === 'string') {
+    const text = value.trim();
+    return { zh: text, en: text };
+  }
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return { zh: '', en: '' };
+  const record = value as Record<string, unknown>;
+  return {
+    zh: String(record.zh ?? '').trim(),
+    en: String(record.en ?? '').trim(),
+  };
+}
+
+export function requiredLocalizedText(body: Record<string, unknown>, field: string, label: string) {
+  const value = parseLocalizedText(body[field]);
+  if (!value.zh && !value.en) throw new HttpError(400, `${label}不能为空`);
+  return value;
+}
+
+export function optionalLocalizedText(body: Record<string, unknown>, field: string) {
+  if (body[field] === undefined) return undefined;
+  return parseLocalizedText(body[field]);
+}
+
+export function parseLocalizedLines(value: unknown): LocalizedListInput {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return { zh: [], en: [] };
+  const record = value as Record<string, unknown>;
+  return {
+    zh: optionalLines({ value: record.zh }, 'value') ?? [],
+    en: optionalLines({ value: record.en }, 'value') ?? [],
+  };
+}
+
+export function optionalLocalizedLines(body: Record<string, unknown>, field: string) {
+  if (body[field] === undefined) return undefined;
+  return parseLocalizedLines(body[field]);
 }
 
 /**

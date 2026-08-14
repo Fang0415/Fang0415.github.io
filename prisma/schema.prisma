@@ -13,10 +13,10 @@ enum PublishStatus {
 }
 
 enum ProjectStatus {
-  ACTIVE
-  BUILDING
-  SHIPPED
-  ARCHIVED
+  PLANNING
+  IN_PROGRESS
+  COMPLETED
+  PUBLISHED
 }
 
 model Post {
@@ -40,20 +40,24 @@ model Post {
 model Project {
   id           String        @id @default(cuid())
   slug         String        @unique
-  title        String
-  summary      String
-  content      String?
+  title        Json
+  summary      Json
+  content      Json?
+  highlights   Json          @default("{\"zh\":[],\"en\":[]}")
   category     String
-  stack        String[]      @default([])
-  repoUrl      String?
+  tags         String[]      @default([])
+  githubUrl    String?
   demoUrl      String?
   coverAssetId String?
   coverAsset   Asset?        @relation("ProjectCover", fields: [coverAssetId], references: [id], onDelete: SetNull)
-  status       ProjectStatus @default(BUILDING)
+  status       ProjectStatus @default(PLANNING)
+  featured     Boolean       @default(false)
+  visible      Boolean       @default(true)
   sortOrder    Int           @default(0)
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
 
+  @@index([visible, featured, sortOrder])
   @@index([status, sortOrder])
 }
 

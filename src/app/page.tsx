@@ -4,12 +4,12 @@ import HomeBlogAccordion from '../components/HomeBlogAccordion';
 import HomeSkillRepository from '../components/HomeSkillRepository';
 import { SiteText } from '../components/SitePreferences';
 import { getPublishedPostMetas, getSiteProfile, getVisibleProjects } from '../lib/managed-content';
-import { PROJECTS, type Project } from '../lib/site';
+import { SHOWCASE_STATUS, textFor, type Project } from '../lib/site';
 
 export const dynamic = 'force-dynamic';
 
 const PROJECT_IMAGES: Record<string, string> = {
-  ragkit: '/assets/personal-brand/ragkit-mono.png',
+  linkrag: '/assets/projects/linkrag-cover.png',
   'notes-cli': '/assets/personal-brand/notes-cli.png',
   streamq: '/assets/personal-brand/ragkit-mono.png',
   'embed-bench': '/assets/personal-brand/profile-work.png',
@@ -21,7 +21,7 @@ const LEGACY_HERO = "There's still so much I don't know, so I keep digging.";
 const FIGMA_HERO = 'From a simple idea, rebuild the whole world.';
 
 const PERSONAL_UPDATES = [
-  { text: 'Currently building a RAG evaluation toolkit', textZh: '正在构建 RAG 评估工具', href: '/projects/ragkit/' },
+  { text: 'LinkRag is now live', textZh: 'LinkRag 已上线', href: '/projects/linkrag/' },
   { text: 'Learning distributed systems', textZh: '正在学习分布式系统' },
   { text: 'Recently shipped notes-cli', textZh: '最近完成 notes-cli', href: '/projects/notes-cli/' },
   { text: 'Writing about retrieval metrics', textZh: '正在写检索指标相关笔记', href: '/blog/' },
@@ -59,10 +59,7 @@ export default async function HomePage() {
     getVisibleProjects(),
     getSiteProfile(),
   ]);
-  const projects = [
-    ...visibleProjects,
-    ...PROJECTS.filter((item) => !visibleProjects.some((project) => project.id === item.id)),
-  ];
+  const projects = visibleProjects;
   const hero = !profile.hero || profile.hero === LEGACY_HERO ? FIGMA_HERO : profile.hero;
   const posts = [
     ...latest.slice(0, 6),
@@ -121,30 +118,30 @@ export default async function HomePage() {
               key={project.id}
             >
               <div className="brand-archive-card__image">
-                <img src={projectImage(project)} alt={project.coverAlt || `${project.title} 项目视觉`} />
+                <img src={projectImage(project)} alt={project.coverAlt || `${textFor(project.title, 'en')} project visual`} />
                 <span>{project.category}</span>
               </div>
               <div className="brand-archive-card__copy">
-                <h3>{project.title}</h3>
-                <p>{project.description}</p>
+                <h3><SiteText en={project.title.en} zh={project.title.zh} /></h3>
+                <p><SiteText en={project.summary.en} zh={project.summary.zh} /></p>
                 <div>
-                  <span>{project.stack.slice(0, 2).join(' · ')}</span>
-                  <span>{project.period || (project.status === 'active' ? 'Now' : '2025')}</span>
+                  <span>{project.tags.slice(0, 2).join(' · ')}</span>
+                  <span><SiteText en={SHOWCASE_STATUS[project.status][0].en} zh={SHOWCASE_STATUS[project.status][0].zh} /></span>
                 </div>
               </div>
-              {index === 0 && <em>Active</em>}
+              {index === 0 && <em><SiteText en={SHOWCASE_STATUS[project.status][0].en} zh={SHOWCASE_STATUS[project.status][0].zh} /></em>}
             </Link>
           ))}
         </div>
         <div className="brand-archive__mini-grid">
           {projects.slice(5).map((project) => (
             <Link className="brand-archive-mini-card" href={`/projects/${project.id}/`} key={project.id}>
-              <img src={projectImage(project)} alt={project.coverAlt || `${project.title} 项目视觉`} />
+              <img src={projectImage(project)} alt={project.coverAlt || `${textFor(project.title, 'en')} project visual`} />
               <div>
-                <h3>{project.title}</h3>
-                <p>{project.description}</p>
-                <span>{project.stack.slice(0, 2).join(' · ')}</span>
-                <span>{project.period || (project.status === 'active' ? 'Now' : '2025')}</span>
+                <h3><SiteText en={project.title.en} zh={project.title.zh} /></h3>
+                <p><SiteText en={project.summary.en} zh={project.summary.zh} /></p>
+                <span>{project.tags.slice(0, 2).join(' · ')}</span>
+                <span><SiteText en={SHOWCASE_STATUS[project.status][0].en} zh={SHOWCASE_STATUS[project.status][0].zh} /></span>
               </div>
             </Link>
           ))}

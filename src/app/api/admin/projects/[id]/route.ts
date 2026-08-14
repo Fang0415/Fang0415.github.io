@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { Prisma } from '@prisma/client';
 import {
   HttpError,
   adminRoute,
+  optionalBoolean,
   optionalInt,
-  optionalNullableString,
+  optionalLocalizedLines,
+  optionalLocalizedText,
   optionalString,
   optionalStringArray,
   optionalUrl,
@@ -30,23 +33,29 @@ export const PATCH = adminRoute(async (request: NextRequest, { params }: Ctx) =>
   const { id } = await params;
   const body = await readJson(request);
 
-  const title = optionalString(body, 'title');
-  if (title !== undefined && !title) throw new HttpError(400, '项目名称不能为空');
-  const slugSource = optionalString(body, 'slug') || title;
+  const title = optionalLocalizedText(body, 'title');
+  if (title !== undefined && !title.zh && !title.en) throw new HttpError(400, '项目名称不能为空');
+  const slugSource = optionalString(body, 'slug') || title?.en || title?.zh;
+  const content = optionalLocalizedText(body, 'content');
 
   const project = await prisma.project.update({
     where: { id },
     data: {
       title,
       slug: slugSource === undefined ? undefined : await uniqueSlug('project', slugSource, id),
-      summary: optionalString(body, 'summary'),
-      content: optionalNullableString(body, 'content'),
+      summary: optionalLocalizedText(body, 'summary'),
+      content: content === undefined
+        ? undefined
+        : (content.zh || content.en ? content : Prisma.DbNull),
+      highlights: optionalLocalizedLines(body, 'highlights'),
       category: optionalString(body, 'category'),
-      stack: optionalStringArray(body, 'stack'),
-      repoUrl: optionalUrl(body, 'repoUrl', '仓库地址'),
+      tags: optionalStringArray(body, 'tags'),
+      githubUrl: optionalUrl(body, 'githubUrl', 'GitHub 地址'),
       demoUrl: optionalUrl(body, 'demoUrl', '演示地址'),
       coverAssetId: body.coverAssetId === undefined ? undefined : (String(body.coverAssetId) || null),
       status: body.status === undefined ? undefined : toProjectStatus(body.status),
+      featured: optionalBoolean(body, 'featured'),
+      visible: optionalBoolean(body, 'visible'),
       sortOrder: optionalInt(body, 'sortOrder'),
     },
     include: { coverAsset: true },

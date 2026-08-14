@@ -13,7 +13,15 @@ import {
   type PostMeta,
 } from './posts';
 import { prisma } from './db';
-import { EXPERIENCES, PROFILE, PROJECTS, type Experience, type Project } from './site';
+import {
+  EXPERIENCES,
+  PROFILE,
+  PROJECTS,
+  type Experience,
+  type LocalizedList,
+  type LocalizedText,
+  type Project,
+} from './site';
 
 type DbPost = Prisma.PostGetPayload<{ include: { coverAsset: true } }>;
 type DbProject = Prisma.ProjectGetPayload<{ include: { coverAsset: true } }>;
@@ -61,32 +69,50 @@ function dbPostToMeta(post: DbPost): PostMeta {
 }
 
 function dbStatusToProjectStatus(status: ProjectStatus): Project['status'] {
-  if (status === ProjectStatus.ACTIVE) return 'active';
-  if (status === ProjectStatus.SHIPPED) return 'shipped';
-  if (status === ProjectStatus.ARCHIVED) return 'archived';
-  return 'building';
+  if (status === ProjectStatus.IN_PROGRESS) return 'in_progress';
+  if (status === ProjectStatus.COMPLETED) return 'completed';
+  if (status === ProjectStatus.PUBLISHED) return 'published';
+  return 'planning';
+}
+
+function jsonRecord(value: Prisma.JsonValue | null): Record<string, Prisma.JsonValue> {
+  return value && typeof value === 'object' && !Array.isArray(value)
+    ? value as Record<string, Prisma.JsonValue>
+    : {};
+}
+
+function dbLocalizedText(value: Prisma.JsonValue | null): LocalizedText {
+  if (typeof value === 'string') return { zh: value, en: value };
+  const record = jsonRecord(value);
+  const zh = typeof record.zh === 'string' ? record.zh : '';
+  const en = typeof record.en === 'string' ? record.en : '';
+  return { zh, en };
+}
+
+function dbLocalizedList(value: Prisma.JsonValue | null): LocalizedList {
+  const record = jsonRecord(value);
+  const values = (locale: 'zh' | 'en') => Array.isArray(record[locale])
+    ? record[locale].map(String).map((item) => item.trim()).filter(Boolean)
+    : [];
+  return { zh: values('zh'), en: values('en') };
 }
 
 function dbProjectToProject(project: DbProject): Project {
-  // Project has no dedicated highlights column; the seed stores them as the
-  // leading Markdown bullet list in `content`, so lift them back out here.
-  const highlights = (project.content ?? '')
-    .split('\n')
-    .map((line) => /^-\s+(.+)/.exec(line.trim())?.[1])
-    .filter((line): line is string => !!line);
   return {
     id: project.slug,
-    title: project.title,
+    title: dbLocalizedText(project.title),
     status: dbStatusToProjectStatus(project.status),
     category: project.category,
-    description: project.summary,
-    highlights,
-    stack: project.stack,
-    repo: project.repoUrl ?? undefined,
+    summary: dbLocalizedText(project.summary),
+    highlights: dbLocalizedList(project.highlights),
+    tags: project.tags,
+    github: project.githubUrl ?? undefined,
     demo: project.demoUrl ?? undefined,
-    content: project.content ?? undefined,
+    content: project.content ? dbLocalizedText(project.content) : undefined,
     coverUrl: project.coverAsset?.publicUrl ?? undefined,
     coverAlt: project.coverAsset?.filename ?? undefined,
+    featured: project.featured,
+    visible: project.visible,
     updatedAt: isoDate(project.updatedAt),
   };
 }
@@ -120,20 +146,19 @@ export async function getPublishedPostBySlug(slug: string): Promise<BlogPost | u
 export async function getVisibleProjects(): Promise<Project[]> {
   try {
     const projects = await prisma.project.findMany({
-      where: { status: { not: ProjectStatus.ARCHIVED } },
-      orderBy: [{ sortOrder: 'asc' }, { updatedAt: 'desc' }],
+      where: { visible: true },
+      orderBy: [{ featured: 'desc' }, { sortOrder: 'asc' }, { updatedAt: 'desc' }],
       include: { coverAsset: true },
     });
-    return projects.length ? projects.map(dbProjectToProject) : PROJECTS;
+    return projects.map(dbProjectToProject);
   } catch {
-    return PROJECTS;
+    return PROJECTS.filter((project) => project.visible);
   }
 }
 
 /**
- * Detail-page lookup. Archived projects stay reachable by direct link — an old
- * URL in someone's notes should keep working even after the project is retired
- * from the index — so this deliberately does not filter on status.
+ * Detail-page lookup deliberately permits a hidden project by direct URL so
+ * the admin preview action keeps working before publication.
  */
 export async function getProjectBySlug(slug: string): Promise<Project | undefined> {
   try {
@@ -142,20 +167,22 @@ export async function getProjectBySlug(slug: string): Promise<Project | undefine
       include: { coverAsset: true },
     });
     if (project) return dbProjectToProject(project);
+    return undefined;
   } catch {
     // Fall through to the checked-in defaults below.
   }
   return PROJECTS.find((project) => project.id === slug);
 }
 
-/** Every project slug, including archived ones, for the sitemap. */
+/** Every publicly visible project slug for the sitemap. */
 export async function getAllProjects(): Promise<Project[]> {
   try {
     const projects = await prisma.project.findMany({
+      where: { visible: true },
       orderBy: [{ sortOrder: 'asc' }, { updatedAt: 'desc' }],
       include: { coverAsset: true },
     });
-    return projects.length ? projects.map(dbProjectToProject) : PROJECTS;
+    return projects.map(dbProjectToProject);
   } catch {
     return PROJECTS;
   }

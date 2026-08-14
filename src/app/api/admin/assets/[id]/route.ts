@@ -30,7 +30,12 @@ export const DELETE = adminRoute(async (request: NextRequest, { params }: Ctx) =
 
   const usedBy = [
     ...asset.postCovers.map((post) => `文章《${post.title}》`),
-    ...asset.projectCovers.map((project) => `项目《${project.title}》`),
+    ...asset.projectCovers.map((project) => {
+      const title = project.title && typeof project.title === 'object' && !Array.isArray(project.title)
+        ? project.title as Record<string, unknown>
+        : {};
+      return `项目《${String(title.zh || title.en || '未命名')}》`;
+    }),
     ...asset.profileAvatars.map(() => '站点头像'),
   ];
   if (usedBy.length && !force) {

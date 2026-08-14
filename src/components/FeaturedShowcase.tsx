@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { PROJECTS, type Project } from '../lib/site';
 import FolioIcon from './FolioIcon';
 import ProjectShowcase from './ProjectShowcase';
+import { SiteText } from './SitePreferences';
 
 interface Props {
   projects?: Project[];
@@ -12,7 +13,9 @@ interface Props {
  * the editorial heading and limits the selection to four featured projects.
  */
 export default function FeaturedShowcase({ projects }: Props) {
-  const items = (projects?.length ? projects : PROJECTS).slice(0, 4);
+  const source = projects?.length ? projects : PROJECTS;
+  const featured = source.filter((project) => project.visible && project.featured);
+  const items = (featured.length ? featured : source.filter((project) => project.visible)).slice(0, 4);
   if (!items.length) return null;
 
   return (
@@ -20,11 +23,11 @@ export default function FeaturedShowcase({ projects }: Props) {
       <div className="kit-container">
         <div className="sec-head">
           <div>
-            <p className="sec-eyebrow">项目</p>
-            <h2 className="sec-title" id="showcase-title">最近做的几个项目</h2>
+            <p className="sec-eyebrow"><SiteText en="Projects" zh="项目" /></p>
+            <h2 className="sec-title" id="showcase-title"><SiteText en="Featured work" zh="精选项目" /></h2>
           </div>
           <Link className="sec-link" href="/projects/">
-            全部项目 <FolioIcon name="arrow-right" className="icon" />
+            <SiteText en="All projects" zh="全部项目" /> <FolioIcon name="arrow-right" className="icon" />
           </Link>
         </div>
 
