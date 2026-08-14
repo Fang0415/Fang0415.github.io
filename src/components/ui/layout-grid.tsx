@@ -1,6 +1,6 @@
 'use client';
 
-import { AnimatePresence, motion } from 'motion/react';
+import { AnimatePresence, animate, motion, useMotionValue, useTransform } from 'motion/react';
 import Link from 'next/link';
 import { useEffect, useRef, useState, type KeyboardEvent, type MouseEvent } from 'react';
 import { X } from 'lucide-react';
@@ -22,56 +22,133 @@ export interface LayoutGridCard {
 interface SelectedOffset {
   x: number;
   y: number;
-  scale: number;
+  startWidth: number;
+  startHeight: number;
+  width: number;
+  height: number;
 }
 
-const PROJECT_LAYOUT_SPRING = {
-  type: 'spring' as const,
-  stiffness: 155,
-  damping: 24,
-  mass: 0.9,
-  restDelta: 0.5,
-  restSpeed: 10,
+const PROJECT_PATH_TRANSITION = {
+  duration: 0.5,
+  ease: [0.4, 0, 0.2, 1] as [number, number, number, number],
 };
 
-function getSelectedOffset(rect: DOMRect): SelectedOffset {
-  const scale = Math.min(
-    1.1,
-    (window.innerWidth - 24) / rect.width,
-    (window.innerHeight - 24) / rect.height,
+function cubicBezierPoint(progress: number, controlA: number, controlB: number, end: number) {
+  const inverse = 1 - progress;
+  return (
+    3 * inverse * inverse * progress * controlA
+    + 3 * inverse * progress * progress * controlB
+    + progress * progress * progress * end
   );
+}
+
+function getSelectedOffset(rect: DOMRect, image: HTMLImageElement | null): SelectedOffset {
+  const imageAspect = image?.naturalWidth && image?.naturalHeight
+    ? image.naturalWidth / image.naturalHeight
+    : rect.width / rect.height;
+  const targetArea = rect.width * rect.height * 1.21;
+  let width = Math.sqrt(targetArea * imageAspect);
+  let height = width / imageAspect;
+  const viewportFit = Math.min(
+    1,
+    (window.innerWidth - 48) / width,
+    (window.innerHeight - 96) / height,
+  );
+  width *= viewportFit;
+  height *= viewportFit;
+
   return {
-    x: window.innerWidth / 2 - (rect.left + rect.width / 2),
-    y: window.innerHeight / 2 - (rect.top + rect.height / 2),
-    scale,
+    x: window.innerWidth / 2 - (rect.left + width / 2),
+    y: window.innerHeight / 2 - (rect.top + height / 2),
+    startWidth: rect.width,
+    startHeight: rect.height,
+    width,
+    height,
   };
 }
 
 export function LayoutGrid({ cards }: { cards: LayoutGridCard[] }) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [returningId, setReturningId] = useState<string | null>(null);
-  const [selectedOffset, setSelectedOffset] = useState<SelectedOffset>({ x: 0, y: 0, scale: 1 });
+  const [selectedOffset, setSelectedOffset] = useState<SelectedOffset>({
+    x: 0,
+    y: 0,
+    startWidth: 0,
+    startHeight: 0,
+    width: 0,
+    height: 0,
+  });
   const selectedCardRef = useRef<HTMLElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const selectedOffsetRef = useRef(selectedOffset);
+  const pathProgress = useMotionValue(0);
+  selectedOffsetRef.current = selectedOffset;
+
+  const pathX = useTransform(pathProgress, (progress) => {
+    const { x } = selectedOffsetRef.current;
+    return cubicBezierPoint(progress, x * 0.28, x * 0.72, x);
+  });
+  const pathY = useTransform(pathProgress, (progress) => {
+    const { x, y } = selectedOffsetRef.current;
+    const arcLift = Math.min(72, Math.max(34, Math.abs(x) * 0.14));
+    return cubicBezierPoint(
+      progress,
+      y * 0.2 - arcLift * 0.72,
+      y * 0.82 - arcLift * 0.72,
+      y,
+    );
+  });
+  const pathWidth = useTransform(pathProgress, (progress) => (
+    selectedOffsetRef.current.startWidth
+    + (selectedOffsetRef.current.width - selectedOffsetRef.current.startWidth) * progress
+  ));
+  const pathHeight = useTransform(pathProgress, (progress) => (
+    selectedOffsetRef.current.startHeight
+    + (selectedOffsetRef.current.height - selectedOffsetRef.current.startHeight) * progress
+  ));
 
   const closeSelected = () => {
     if (!selectedId) return;
+    selectedCardRef.current?.focus({ preventScroll: true });
     setReturningId(selectedId);
     setSelectedId(null);
   };
 
   const openSelected = (cardId: string, element: HTMLElement) => {
     setReturningId(null);
-    setSelectedOffset(getSelectedOffset(element.getBoundingClientRect()));
+    const image = element.querySelector<HTMLImageElement>('.brand-archive-card__image img');
+    setSelectedOffset(getSelectedOffset(element.getBoundingClientRect(), image));
+    pathProgress.set(0);
     setSelectedId(cardId);
   };
+
+  useEffect(() => {
+    if (!selectedId && !returningId) return;
+
+    const returningCardId = returningId;
+    const controls = animate(
+      pathProgress,
+      selectedId ? 1 : 0,
+      PROJECT_PATH_TRANSITION,
+    );
+
+    if (returningCardId) {
+      controls.then(() => {
+        setReturningId((currentId) => (
+          currentId === returningCardId ? null : currentId
+        ));
+      });
+    }
+
+    return () => controls.stop();
+  }, [pathProgress, returningId, selectedId]);
 
   useEffect(() => {
     if (!selectedId) return;
 
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
-    closeButtonRef.current?.focus();
+    closeButtonRef.current?.focus({ preventScroll: true });
 
     const handleKeyDown = (event: globalThis.KeyboardEvent) => {
       if (event.key === 'Escape') closeSelected();
@@ -98,38 +175,37 @@ export function LayoutGrid({ cards }: { cards: LayoutGridCard[] }) {
           const isExpanded = isSelected || isReturning;
 
           const handleClick = (event: MouseEvent<HTMLElement>) => {
-            if (!isSelected) openSelected(card.id, event.currentTarget);
+            if (!isExpanded) openSelected(card.id, event.currentTarget);
           };
           const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
-            if (!isSelected && (event.key === 'Enter' || event.key === ' ')) {
+            if (!isExpanded && (event.key === 'Enter' || event.key === ' ')) {
               event.preventDefault();
               openSelected(card.id, event.currentTarget);
             }
           };
 
           return (
-            <motion.article
-              animate={isSelected
-                ? { x: selectedOffset.x, y: selectedOffset.y, scale: selectedOffset.scale }
-                : { x: 0, y: 0, scale: 1 }}
-              aria-labelledby={isExpanded ? `layout-grid-title-${card.id}` : undefined}
-              aria-modal={isExpanded ? true : undefined}
-              className={`brand-archive-card brand-archive-card--${index + 1}${isExpanded ? ' layout-grid__selected-card' : ''}`}
-              initial={false}
-              key={card.id}
-              onClick={handleClick}
-              onAnimationComplete={() => {
-                if (isReturning) setReturningId(null);
-              }}
-              onKeyDown={handleKeyDown}
-              ref={isExpanded ? selectedCardRef : undefined}
-              role={isExpanded ? 'dialog' : 'button'}
-              tabIndex={isExpanded ? -1 : 0}
-              transition={PROJECT_LAYOUT_SPRING}
-            >
+            <div className={`brand-archive-card-slot brand-archive-card-slot--${index + 1}`} key={card.id}>
+              <motion.article
+                aria-labelledby={isExpanded ? `layout-grid-title-${card.id}` : undefined}
+                aria-modal={isExpanded ? true : undefined}
+                className={`brand-archive-card brand-archive-card--${index + 1}${isExpanded ? ' layout-grid__selected-card' : ''}${isSelected ? ' layout-grid__selected-card--active' : ''}${isReturning ? ' layout-grid__selected-card--returning' : ''}`}
+                initial={false}
+                onClick={handleClick}
+                onKeyDown={handleKeyDown}
+                ref={isExpanded ? selectedCardRef : undefined}
+                role={isExpanded ? 'dialog' : 'button'}
+                style={isExpanded ? {
+                  height: pathHeight,
+                  width: pathWidth,
+                  x: pathX,
+                  y: pathY,
+                } : undefined}
+                tabIndex={isExpanded ? -1 : 0}
+              >
               <div className="brand-archive-card__image">
                 <img alt={card.thumbnailAlt} src={card.thumbnail} />
-                <span>{card.category}</span>
+                <span><SiteText en={card.title.en} zh={card.title.zh} /></span>
               </div>
 
               <div className="brand-archive-card__copy">
@@ -138,7 +214,8 @@ export function LayoutGrid({ cards }: { cards: LayoutGridCard[] }) {
                 </h3>
                 <p><SiteText en={card.description.en} zh={card.description.zh} /></p>
                 <div className="layout-grid__selected-meta">
-                  <span>{card.tags.slice(0, isExpanded ? 3 : 2).join(' · ')}</span>
+                  <span>{card.category}</span>
+                  <span>{card.tags.slice(0, 3).join(' · ')}</span>
                   <span><SiteText en={card.status.en} zh={card.status.zh} /></span>
                 </div>
                 <div className="layout-grid__selected-actions">
@@ -152,10 +229,6 @@ export function LayoutGrid({ cards }: { cards: LayoutGridCard[] }) {
                   </Link>
                 </div>
               </div>
-
-              {index === 0 && !isExpanded && (
-                <em><SiteText en={card.status.en} zh={card.status.zh} /></em>
-              )}
 
               <AnimatePresence>
                 {isSelected && (
@@ -178,7 +251,8 @@ export function LayoutGrid({ cards }: { cards: LayoutGridCard[] }) {
                   </motion.button>
                 )}
               </AnimatePresence>
-            </motion.article>
+              </motion.article>
+            </div>
           );
         })}
       </div>
