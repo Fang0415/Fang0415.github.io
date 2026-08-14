@@ -3,6 +3,7 @@ import HomeAboutOrbit from '../components/HomeAboutOrbit';
 import HomeBlogAccordion from '../components/HomeBlogAccordion';
 import HomeSkillRepository from '../components/HomeSkillRepository';
 import { SiteText } from '../components/SitePreferences';
+import { LayoutGrid } from '../components/ui/layout-grid';
 import { getPublishedPostMetas, getSiteProfile, getVisibleProjects } from '../lib/managed-content';
 import { SHOWCASE_STATUS, textFor, type Project } from '../lib/site';
 
@@ -110,29 +111,19 @@ export default async function HomePage() {
           <h2 id="brand-archive-title"><SiteText en="What I Done" zh="我做过的事" /></h2>
           <p><SiteText en="Ideas turned into tools, experiments, and systems — each one a step toward building something useful." zh="把想法变成工具、实验与系统——每一次实践，都向真正有用的产品迈进一步。" /></p>
         </div>
-        <div className="brand-archive__grid">
-          {projects.slice(0, 5).map((project, index) => (
-            <Link
-              className={`brand-archive-card brand-archive-card--${index + 1}`}
-              href={`/projects/${project.id}/`}
-              key={project.id}
-            >
-              <div className="brand-archive-card__image">
-                <img src={projectImage(project)} alt={project.coverAlt || `${textFor(project.title, 'en')} project visual`} />
-                <span>{project.category}</span>
-              </div>
-              <div className="brand-archive-card__copy">
-                <h3><SiteText en={project.title.en} zh={project.title.zh} /></h3>
-                <p><SiteText en={project.summary.en} zh={project.summary.zh} /></p>
-                <div>
-                  <span>{project.tags.slice(0, 2).join(' · ')}</span>
-                  <span><SiteText en={SHOWCASE_STATUS[project.status][0].en} zh={SHOWCASE_STATUS[project.status][0].zh} /></span>
-                </div>
-              </div>
-              {index === 0 && <em><SiteText en={SHOWCASE_STATUS[project.status][0].en} zh={SHOWCASE_STATUS[project.status][0].zh} /></em>}
-            </Link>
-          ))}
-        </div>
+        <LayoutGrid
+          cards={projects.slice(0, 5).map((project) => ({
+            id: project.id,
+            href: `/projects/${project.id}/`,
+            title: project.title,
+            description: project.summary,
+            thumbnail: projectImage(project),
+            thumbnailAlt: project.coverAlt || `${textFor(project.title, 'en')} project visual`,
+            category: project.category,
+            tags: project.tags,
+            status: SHOWCASE_STATUS[project.status][0],
+          }))}
+        />
         <div className="brand-archive__mini-grid">
           {projects.slice(5).map((project) => (
             <Link className="brand-archive-mini-card" href={`/projects/${project.id}/`} key={project.id}>
