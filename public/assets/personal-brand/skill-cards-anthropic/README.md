@@ -9,9 +9,11 @@ Generated for the Skill Repository with the local `anthropic-art` skill and the 
 - Bold, rounded, deliberately uneven near-black `#141413` linework.
 - One metaphor per image, no labels, logos, or watermarks.
 
-## Mapping
+## Cover library
 
-| File | Skill | Background | Metaphor |
+These illustrations are reusable visual covers for the AI Skill repository. They are not labels for personal competencies. Runtime name, description, and cover assignments live in `src/lib/ai-skills.ts`.
+
+| File | Original visual theme | Background | Metaphor |
 | --- | --- | --- | --- |
 | `backend-systems.png` | Backend Systems | cactus `#BCD1CA` | Data streams converging into a stable hub |
 | `java.png` | Java | heather `#CBCADB` | Structured blocks held by a boundary |
@@ -30,3 +32,24 @@ Generated for the Skill Repository with the local `anthropic-art` skill and the 
 ## Shared prompt contract
 
 Each image used the same square editorial-card prompt structure: a full-bleed opaque palette color, an irregular ivory carrier shape, one centered symbolic relationship, naive thick black ink gestures, flat two-dimensional forms, no text, and thumbnail-scale readability. The specific subject, metaphor, and palette were changed per skill using the mapping above. All three bundled `anthropic-art` reference images were supplied as style references only.
+
+## Interdisciplinary expansion
+
+The `expansion/` directory contains a second twelve-card set generated as one 4 × 3 contact sheet and exported as 362 × 362 PNG assets. Each grid cell uses a 2px safety inset before resampling so anti-aliased pixels from a neighbouring card cannot remain on an outer edge.
+
+| File | Theme |
+| --- | --- |
+| `expansion/saturn.png` | Saturn and orbital balance |
+| `expansion/mars.png` | Mars and exploration |
+| `expansion/solar-system.png` | Coordinated planetary systems |
+| `expansion/computer-science.png` | Computer science and networks |
+| `expansion/biology.png` | Biology and adaptation |
+| `expansion/physics.png` | Physics and measurable motion |
+| `expansion/chemistry.png` | Chemistry and composition |
+| `expansion/literature.png` | Literature and narrative |
+| `expansion/philosophy.png` | Philosophy and inquiry |
+| `expansion/history.png` | History and context |
+| `expansion/mathematics.png` | Mathematics and abstraction |
+| `expansion/astronomy.png` | Astronomy and scale |
+
+The uncropped source is retained as `expansion/source-contact-sheet.png`. See `expansion/PROMPT.md` for the reusable generation prompt.

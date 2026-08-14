@@ -61,7 +61,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   return (
     <html lang="en" data-scroll-behavior="smooth" data-theme="light" data-locale="en" suppressHydrationWarning>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('fang-theme');if(t!=='light'&&t!=='dark')t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';var l=localStorage.getItem('fang-locale');if(l!=='zh'&&l!=='en')l='en';var d=document.documentElement;d.dataset.theme=t;d.dataset.locale=l;d.lang=l==='zh'?'zh-CN':'en';d.style.colorScheme=t;}catch(e){}})();` }} />
+        <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('fang-theme');if(t!=='light'&&t!=='dark')t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';var l=localStorage.getItem('fang-locale');if(l!=='zh'&&l!=='en')l='en';var d=document.documentElement;d.dataset.theme=t;d.dataset.locale=l;d.lang=l==='zh'?'zh-CN':'en';d.style.colorScheme=t;if(location.hash.indexOf('figmacapture=')!==-1)d.dataset.figmaCapture='true';}catch(e){}})();` }} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
