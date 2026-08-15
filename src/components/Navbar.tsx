@@ -20,7 +20,7 @@ export default function Navbar({ profile = PROFILE }: { profile?: SiteProfileDat
         </Link>
         <div className="folio-nav__links">
           {NAV_LINKS.map((item) => {
-            const targetPath = item.href.replace(/\/+$/, '') || '/';
+            const targetPath = item.href.split('#')[0].replace(/\/+$/, '') || '/';
             const active = currentPath === targetPath || currentPath.startsWith(`${targetPath}/`);
             return (
               <Link

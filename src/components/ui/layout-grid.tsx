@@ -3,7 +3,6 @@
 import { AnimatePresence, animate, motion, useMotionValue, useTransform } from 'motion/react';
 import Link from 'next/link';
 import { useEffect, useRef, useState, type KeyboardEvent, type MouseEvent } from 'react';
-import { X } from 'lucide-react';
 import { SiteText } from '../SitePreferences';
 import type { LocalizedText } from '../../lib/site';
 
@@ -33,6 +32,9 @@ const PROJECT_PATH_TRANSITION = {
   ease: [0.4, 0, 0.2, 1] as [number, number, number, number],
 };
 
+const DETAIL_CARD_ASPECT = 1568 / 1003;
+const DETAIL_CARD_MAX_WIDTH = 760;
+
 function cubicBezierPoint(progress: number, controlA: number, controlB: number, end: number) {
   const inverse = 1 - progress;
   return (
@@ -42,28 +44,24 @@ function cubicBezierPoint(progress: number, controlA: number, controlB: number, 
   );
 }
 
-function getSelectedOffset(rect: DOMRect, image: HTMLImageElement | null): SelectedOffset {
-  const imageAspect = image?.naturalWidth && image?.naturalHeight
-    ? image.naturalWidth / image.naturalHeight
-    : rect.width / rect.height;
-  const targetArea = rect.width * rect.height * 1.21;
-  let width = Math.sqrt(targetArea * imageAspect);
-  let height = width / imageAspect;
+function getSelectedOffset(rect: DOMRect): SelectedOffset {
+  const width = Math.min(DETAIL_CARD_MAX_WIDTH, window.innerWidth - 48);
+  const height = width / DETAIL_CARD_ASPECT;
   const viewportFit = Math.min(
     1,
     (window.innerWidth - 48) / width,
     (window.innerHeight - 96) / height,
   );
-  width *= viewportFit;
-  height *= viewportFit;
+  const fittedWidth = width * viewportFit;
+  const fittedHeight = height * viewportFit;
 
   return {
-    x: window.innerWidth / 2 - (rect.left + width / 2),
-    y: window.innerHeight / 2 - (rect.top + height / 2),
+    x: window.innerWidth / 2 - (rect.left + fittedWidth / 2),
+    y: window.innerHeight / 2 - (rect.top + fittedHeight / 2),
     startWidth: rect.width,
     startHeight: rect.height,
-    width,
-    height,
+    width: fittedWidth,
+    height: fittedHeight,
   };
 }
 
@@ -79,7 +77,6 @@ export function LayoutGrid({ cards }: { cards: LayoutGridCard[] }) {
     height: 0,
   });
   const selectedCardRef = useRef<HTMLElement>(null);
-  const closeButtonRef = useRef<HTMLButtonElement>(null);
   const selectedOffsetRef = useRef(selectedOffset);
   const pathProgress = useMotionValue(0);
   selectedOffsetRef.current = selectedOffset;
@@ -116,8 +113,7 @@ export function LayoutGrid({ cards }: { cards: LayoutGridCard[] }) {
 
   const openSelected = (cardId: string, element: HTMLElement) => {
     setReturningId(null);
-    const image = element.querySelector<HTMLImageElement>('.brand-archive-card__image img');
-    setSelectedOffset(getSelectedOffset(element.getBoundingClientRect(), image));
+    setSelectedOffset(getSelectedOffset(element.getBoundingClientRect()));
     pathProgress.set(0);
     setSelectedId(cardId);
   };
@@ -148,7 +144,7 @@ export function LayoutGrid({ cards }: { cards: LayoutGridCard[] }) {
 
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
-    closeButtonRef.current?.focus({ preventScroll: true });
+    selectedCardRef.current?.focus({ preventScroll: true });
 
     const handleKeyDown = (event: globalThis.KeyboardEvent) => {
       if (event.key === 'Escape') closeSelected();
@@ -168,7 +164,7 @@ export function LayoutGrid({ cards }: { cards: LayoutGridCard[] }) {
 
   return (
     <>
-      <div className="brand-archive__grid">
+      <div className={`brand-archive__grid brand-archive__grid--count-${cards.length}`}>
         {cards.map((card, index) => {
           const isSelected = selectedId === card.id;
           const isReturning = returningId === card.id;
@@ -230,27 +226,6 @@ export function LayoutGrid({ cards }: { cards: LayoutGridCard[] }) {
                 </div>
               </div>
 
-              <AnimatePresence>
-                {isSelected && (
-                  <motion.button
-                    animate={{ opacity: 1, scale: 1 }}
-                    aria-label="Close project preview"
-                    className="layout-grid__close"
-                    exit={{ opacity: 0, scale: 0.92 }}
-                    initial={{ opacity: 0, scale: 0.92 }}
-                    key="close"
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      closeSelected();
-                    }}
-                    ref={closeButtonRef}
-                    transition={{ duration: 0.2, ease: 'easeOut' }}
-                    type="button"
-                  >
-                    <X aria-hidden="true" size={18} strokeWidth={1.8} />
-                  </motion.button>
-                )}
-              </AnimatePresence>
               </motion.article>
             </div>
           );

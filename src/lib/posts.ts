@@ -177,6 +177,19 @@ const SUNFLOWER_ICON = `
   </svg>
 `;
 
+/**
+ * Wraps rendered tables in a scroll container so wide tables can scroll
+ * horizontally on narrow screens. Scrolling used to be done by forcing
+ * `display: block` on the `<table>` itself, but that also strips the table
+ * of its real table formatting context — thead/tbody then get laid out as
+ * two separately auto-sized tables (or, with a long caption-style row
+ * thrown in, one table whose column widths swing wildly), so header and
+ * body columns stop lining up. A wrapper keeps `<table>` a real table.
+ */
+function wrapTables(html: string): string {
+  return html.replace(/<table>([\s\S]*?)<\/table>/g, (match) => `<div class="table-scroll">${match}</div>`);
+}
+
 function renderCallout(html: string): string {
   return html.replace(
     /<blockquote>\s*<p>\s*\[!([a-zA-Z]+)\](?:\s+([^\n]*))?\n?([\s\S]*?)<\/p>\s*<\/blockquote>/g,
@@ -246,10 +259,14 @@ export function renderMarkdown(body: string): { html: string; toc: TocEntry[] } 
     if (!text) return;
     const id = headingId(text, used);
     token.attrSet('id', id);
-    toc.push({ id, text, level: level as 1 | 2 | 3 });
+    // The sidebar rail only lists chapter/section headings (h1/h2) — a
+    // third tier makes it too long to scan at a glance. h3s keep their
+    // anchor id so in-content links still work, just aren't listed here.
+    if (level <= 2) toc.push({ id, text, level: level as 1 | 2 });
   });
 
   let html = md.renderer.render(tokens, md.options, {});
+  html = wrapTables(html);
   html = renderCallout(html);
   html = unstashMath(html, math);
   return { html, toc };

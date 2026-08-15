@@ -64,7 +64,7 @@ export default function MobileMenu({ profile = PROFILE }: { profile?: SiteProfil
       </div>
       <div className="folio-mobilemenu__links">
         {NAV_LINKS.map((item) => {
-          const targetPath = item.href.replace(/\/+$/, '') || '/';
+          const targetPath = item.href.split('#')[0].replace(/\/+$/, '') || '/';
           const active = currentPath === targetPath || currentPath.startsWith(`${targetPath}/`);
           return (
             <Link

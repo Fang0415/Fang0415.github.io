@@ -72,7 +72,7 @@ export default async function HomePage() {
   ].slice(0, 6);
 
   return (
-    <div className="brand-home">
+    <div className="brand-home" id="top">
       <section className="brand-hero" aria-labelledby="brand-hero-title">
         <div className="brand-hero__copy rise">
           <h1 id="brand-hero-title">{hero}</h1>
@@ -124,28 +124,6 @@ export default async function HomePage() {
             status: SHOWCASE_STATUS[project.status][0],
           }))}
         />
-        <div className="brand-archive__mini-grid">
-          {projects.slice(5).map((project) => (
-            <Link className="brand-archive-mini-card" href={`/projects/${project.id}/`} key={project.id}>
-              <img src={projectImage(project)} alt={project.coverAlt || `${textFor(project.title, 'en')} project visual`} />
-              <div>
-                <h3><SiteText en={project.title.en} zh={project.title.zh} /></h3>
-                <p><SiteText en={project.summary.en} zh={project.summary.zh} /></p>
-                <span>{project.tags.slice(0, 2).join(' · ')}</span>
-                <span><SiteText en={SHOWCASE_STATUS[project.status][0].en} zh={SHOWCASE_STATUS[project.status][0].zh} /></span>
-              </div>
-            </Link>
-          ))}
-          {[
-            ['Fang Blog', 'A personal site designed, developed, deployed, and maintained as one complete product.', '/assets/personal-brand/notes-cli.png', 'Next.js · TypeScript', 'Now'],
-            ['AI Agent Workflow', 'Experiments with agent boundaries, tool use, and reliable handoffs between judgment and automation.', '/assets/personal-brand/agent-workflow.png', 'AI · Product', 'Writing'],
-          ].map(([title, description, image, stack, state]) => (
-            <article key={title}>
-              <img src={image} alt="" />
-              <div><h3>{title}</h3><p>{description}</p><span>{stack}</span><span>{state}</span></div>
-            </article>
-          ))}
-        </div>
         <p className="brand-archive__foot"><SiteText en="Want implementation details? " zh="想了解实现细节？" /><Link href="/projects/"><SiteText en="Browse all projects" zh="查看全部项目" /></Link></p>
       </section>
 

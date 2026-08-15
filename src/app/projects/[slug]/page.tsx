@@ -1,15 +1,12 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import Button from '../../../components/Button';
 import FolioIcon from '../../../components/FolioIcon';
 import Badge from '../../../components/Badge';
-import Tag from '../../../components/Tag';
-import ProjectCard from '../../../components/ProjectCard';
 import { SiteText } from '../../../components/SitePreferences';
-import { getProjectBySlug, getVisibleProjects } from '../../../lib/managed-content';
+import { getProjectBySlug } from '../../../lib/managed-content';
 import { renderMarkdown } from '../../../lib/posts';
-import { SHOWCASE_STATUS, listFor, textFor } from '../../../lib/site';
+import { SHOWCASE_STATUS, textFor } from '../../../lib/site';
 
 interface Params {
   slug: string;
@@ -53,14 +50,6 @@ export default async function ProjectDetailPage({ params }: { params: Promise<Pa
   const bodyEn = bodyEnSource.trim() ? renderMarkdown(bodyEnSource) : null;
   const [statusLabel] = SHOWCASE_STATUS[project.status];
 
-  // Two sibling projects to keep the page from dead-ending. Same category first,
-  // because "more like this" beats "whatever sorted next".
-  const all = await getVisibleProjects();
-  const related = [
-    ...all.filter((item) => item.id !== project.id && item.category === project.category),
-    ...all.filter((item) => item.id !== project.id && item.category !== project.category),
-  ].slice(0, 2);
-
   return (
     <>
       <div className="kit-container project-shell" style={{ paddingTop: 28 }}>
@@ -73,25 +62,28 @@ export default async function ProjectDetailPage({ params }: { params: Promise<Pa
         <div className="project-head__meta">
           <span className="sec-eyebrow" style={{ margin: 0 }}>{project.category}</span>
           <Badge variant={STATUS_VARIANT[project.status]} dot><SiteText en={statusLabel.en} zh={statusLabel.zh} /></Badge>
-          {project.updatedAt && <span className="project-head__date"><SiteText en={`Updated ${project.updatedAt}`} zh={`更新于 ${project.updatedAt}`} /></span>}
         </div>
-        <h1><SiteText en={project.title.en} zh={project.title.zh} /></h1>
-        <p className="project-head__summary"><SiteText en={project.summary.en} zh={project.summary.zh} /></p>
-
-        {(project.github || project.demo) && (
-          <div className="project-head__actions">
-            {project.demo && (
-              <Button variant="primary" href={project.demo} iconRight={<FolioIcon name="arrow-up-right" className="icon" />}>
-                <SiteText en="Open demo" zh="打开演示" />
-              </Button>
-            )}
-            {project.github && (
-              <Button variant="secondary" href={project.github} iconLeft={<FolioIcon name="github" className="icon" />}>
-                <SiteText en="View code" zh="查看代码" />
-              </Button>
-            )}
+        <div className="project-head__main">
+          <div className="project-head__copy">
+            <h1><SiteText en={project.title.en} zh={project.title.zh} /></h1>
+            <p className="project-head__summary"><SiteText en={project.summary.en} zh={project.summary.zh} /></p>
           </div>
-        )}
+
+          {(project.github || project.demo) && (
+            <div className="project-head__actions">
+              {project.demo && (
+                <Button variant="primary" href={project.demo} iconRight={<FolioIcon name="arrow-up-right" className="icon" />}>
+                  <SiteText en="Open demo" zh="打开演示" />
+                </Button>
+              )}
+              {project.github && (
+                <Button variant="text" href={project.github} iconLeft={<FolioIcon name="github" className="icon" />}>
+                  <SiteText en="View code" zh="查看代码" />
+                </Button>
+              )}
+            </div>
+          )}
+        </div>
       </header>
 
       {project.coverUrl && (
@@ -104,36 +96,6 @@ export default async function ProjectDetailPage({ params }: { params: Promise<Pa
 
       <section className="kit-section" style={{ paddingTop: project.coverUrl ? 40 : 24 }}>
         <div className="kit-container project-shell project-grid">
-          <aside className="project-aside">
-            <div className="project-aside__block">
-              <h2 className="sec-eyebrow" style={{ margin: '0 0 12px' }}><SiteText en="Tags" zh="标签" /></h2>
-              {project.tags.length > 0
-                ? <div className="tool-grid">{project.tags.map((item) => <Tag key={item}>{item}</Tag>)}</div>
-                : <p className="project-aside__empty"><SiteText en="Not provided" zh="未填写" /></p>}
-            </div>
-            {(project.highlights.zh.length > 0 || project.highlights.en.length > 0) && (
-              <div className="project-aside__block">
-                <h2 className="sec-eyebrow" style={{ margin: '0 0 12px' }}><SiteText en="Highlights" zh="要点" /></h2>
-                <SiteText
-                  en={<ul className="project-aside__list">{listFor(project.highlights, 'en').map((item) => <li key={item}>{item}</li>)}</ul>}
-                  zh={<ul className="project-aside__list">{listFor(project.highlights, 'zh').map((item) => <li key={item}>{item}</li>)}</ul>}
-                />
-              </div>
-            )}
-            <div className="project-aside__block">
-              <h2 className="sec-eyebrow" style={{ margin: '0 0 12px' }}><SiteText en="Links" zh="链接" /></h2>
-              <div className="project-aside__links">
-                {project.github && (
-                  <a href={project.github}><FolioIcon name="github" className="icon" /> GitHub</a>
-                )}
-                {project.demo && (
-                  <a href={project.demo}><FolioIcon name="arrow-up-right" className="icon" /> <SiteText en="Demo" zh="演示" /></a>
-                )}
-                {!project.github && !project.demo && <p className="project-aside__empty"><SiteText en="Not public yet" zh="暂未公开" /></p>}
-              </div>
-            </div>
-          </aside>
-
           <div className="project-body">
             {(bodyZh || bodyEn)
               ? (
@@ -153,35 +115,6 @@ export default async function ProjectDetailPage({ params }: { params: Promise<Pa
           </div>
         </div>
       </section>
-
-      {related.length > 0 && (
-        <section className="kit-section kit-section--tight" style={{ background: 'var(--bg-soft)' }}>
-          <div className="kit-container project-shell">
-            <div className="sec-head">
-              <div>
-                <p className="sec-eyebrow"><SiteText en="Keep exploring" zh="继续看" /></p>
-                <h2 className="sec-title"><SiteText en="Other projects" zh="其他项目" /></h2>
-              </div>
-              <Link className="sec-link" href="/projects/">
-                <SiteText en="All projects" zh="全部项目" /> <FolioIcon name="arrow-right" className="icon" />
-              </Link>
-            </div>
-            <div className="grid-2">
-              {related.map((item) => (
-                <ProjectCard
-                  key={item.id}
-                  title={item.title}
-                  description={item.summary}
-                  tags={item.tags}
-                  status={item.status}
-                  highlights={item.highlights}
-                  href={`/projects/${item.id}/`}
-                />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
     </>
   );
 }
