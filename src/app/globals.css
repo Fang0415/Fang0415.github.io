@@ -1396,6 +1396,15 @@ a.home-about-card__contact:hover {
   color: var(--text-muted);
   font-weight: 500;
 }
+/* A trailing "note" row — everything but the first cell was empty — reads
+   as a caption below the data instead of squeezing into one data column. */
+.article-body .table-caption-cell {
+  padding-top: 14px;
+  color: var(--text-secondary);
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body);
+  white-space: normal;
+}
 
 .img-well {
   background: var(--bg-soft);

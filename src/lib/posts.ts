@@ -190,6 +190,34 @@ function wrapTables(html: string): string {
   return html.replace(/<table>([\s\S]*?)<\/table>/g, (match) => `<div class="table-scroll">${match}</div>`);
 }
 
+/**
+ * Authors sometimes add a trailing explanatory sentence to a data table by
+ * writing it as one more row — the sentence in the first cell, the rest of
+ * the row left as empty `| |` cells to keep the column count. That's a
+ * caption, not data, but `table-layout: fixed` (see .article-body table in
+ * globals.css) gives it the same narrow column as every other cell, so a
+ * full sentence wraps one or two characters per line. Detect rows where
+ * every cell but the first is empty and collapse them into a single
+ * full-width cell so they render as a caption instead.
+ */
+function collapseCaptionRows(html: string): string {
+  return html.replace(
+    // The first cell's content is captured with a negative lookahead that
+    // bans "</tr>" from ever entering the lazy match. Without it, a plain
+    // [\s\S]*? happily backtrack-expands PAST this row's own </tr> and the
+    // next row's cells too, hunting for the nearest run of empty <td>s —
+    // silently swallowing whole neighboring rows into "content" (they read
+    // as unchanged html.replace() output because the swallowed text is
+    // itself valid-looking tag markup, so the corruption isn't visible by
+    // eye — it only shows up as a colspan on the wrong row once rendered).
+    /<tr>\s*<td>((?:(?!<\/tr>)[\s\S])*?)<\/td>((?:\s*<td>\s*<\/td>)+)\s*<\/tr>/g,
+    (match, content: string, emptyCells: string) => {
+      const colspan = (emptyCells.match(/<td>/g) || []).length + 1;
+      return `<tr><td class="table-caption-cell" colspan="${colspan}">${content}</td></tr>`;
+    },
+  );
+}
+
 function renderCallout(html: string): string {
   return html.replace(
     /<blockquote>\s*<p>\s*\[!([a-zA-Z]+)\](?:\s+([^\n]*))?\n?([\s\S]*?)<\/p>\s*<\/blockquote>/g,
@@ -266,6 +294,7 @@ export function renderMarkdown(body: string): { html: string; toc: TocEntry[] } 
   });
 
   let html = md.renderer.render(tokens, md.options, {});
+  html = collapseCaptionRows(html);
   html = wrapTables(html);
   html = renderCallout(html);
   html = unstashMath(html, math);
