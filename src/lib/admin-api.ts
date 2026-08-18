@@ -178,7 +178,7 @@ export function optionalLocalizedLines(body: Record<string, unknown>, field: str
 
 /**
  * Newline-only variant of {@link optionalStringArray}. Prose entries — an
- * About-page bullet, a highlight — routinely contain commas, so splitting on
+ * Profile bullet, a highlight — routinely contain commas, so splitting on
  * them would tear one sentence into several list items.
  */
 export function optionalLines(body: Record<string, unknown>, field: string) {

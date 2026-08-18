@@ -254,7 +254,7 @@ export async function getSiteProfile(): Promise<typeof PROFILE> {
       reddit: PROFILE.reddit,
       avatarUrl: profile.avatarAsset?.publicUrl ?? PROFILE.avatarUrl,
       // A row saved before these columns existed has empty arrays; falling back
-      // to the defaults keeps the About page from rendering empty sections.
+      // to the defaults keeps profile surfaces from rendering empty sections.
       aboutIntro: profile.aboutIntro || PROFILE.aboutIntro,
       focus: profile.focus.length ? profile.focus : PROFILE.focus,
       tools: profile.tools.length ? profile.tools : PROFILE.tools,

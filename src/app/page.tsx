@@ -124,7 +124,6 @@ export default async function HomePage() {
             status: SHOWCASE_STATUS[project.status][0],
           }))}
         />
-        <p className="brand-archive__foot"><SiteText en="Want implementation details? " zh="想了解实现细节？" /><Link href="/projects/"><SiteText en="Browse all projects" zh="查看全部项目" /></Link></p>
       </section>
 
       <HomeSkillRepository />

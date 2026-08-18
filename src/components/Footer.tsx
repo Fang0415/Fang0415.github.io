@@ -28,7 +28,6 @@ export default function Footer({ profile = PROFILE }: { profile?: SiteProfileDat
           </div>
           <div className="footer-col">
             <h3>{zh ? '站点' : 'Site'}</h3>
-            <Link href="/about/">{zh ? '关于我' : 'About'}</Link>
             <Link href="/projects/">{zh ? '全部项目' : 'All work'}</Link>
             <Link href="/blog/">{zh ? '全部文章' : 'All posts'}</Link>
             <a href={profile.github} target="_blank" rel="noreferrer">GitHub</a>
@@ -48,7 +47,6 @@ export default function Footer({ profile = PROFILE }: { profile?: SiteProfileDat
 
         <div className="footer-base">
           <span>© {new Date().getFullYear()} {profile.name}. {zh ? '独立设计与开发。' : 'Built by hand.'}</span>
-          <span><Link href="/about/">{zh ? '条款' : 'Terms'}</Link><Link href="/about/">{zh ? '隐私' : 'Privacy'}</Link><Link href="/about/">{zh ? 'Cookies' : 'Cookies'}</Link></span>
         </div>
       </div>
     </footer>

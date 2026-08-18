@@ -1,5 +1,5 @@
 // Central site data for the Folio persona. Profile + projects power the
-// home hero, showcase, footer, and about page. Real posts come from the
+// home hero, showcase, footer, and home profile section. Real posts come from the
 // content collection (see posts.ts); these are the static persona bits.
 
 import { LINKRAG_README_EN, LINKRAG_README_ZH } from './linkrag-readme.ts';
@@ -18,7 +18,7 @@ export const PROFILE = {
   qq: '',
   reddit: '',
   avatarUrl: '',
-  // About-page blocks. The three list fields use "左 | 右" per line where the
+  // Profile blocks. The three list fields use "左 | 右" per line where the
   // page renders two columns, so the console can edit them in a plain textarea
   // instead of needing a nested form.
   aboutIntro: [
@@ -273,7 +273,6 @@ export const SHOWCASE_STATUS: Record<ProjectStatus, [LocalizedText, string]> = {
 
 export const NAV_LINKS = [
   { label: { en: 'Home', zh: '首页' }, href: '/#top' },
-  { label: { en: 'About', zh: '关于' }, href: '/about/' },
   { label: { en: 'Work', zh: '项目' }, href: '/projects/' },
   { label: { en: 'Skills', zh: '技能' }, href: '/skills/' },
   { label: { en: 'Writing', zh: '博客' }, href: '/blog/' },

@@ -14,7 +14,7 @@ export type HomePost = {
 };
 
 const VISIBLE_SLOTS = 6;
-const FLIP_DELAY_MS = 7600;
+const FLIP_DELAY_MS = 5000;
 const FLIP_DURATION_MS = 1160;
 const HOVER_INTENT_MS = 260;
 const POPOVER_LEAVE_MS = 180;
