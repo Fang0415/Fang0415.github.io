@@ -13,10 +13,10 @@ enum PublishStatus {
 }
 
 enum ProjectStatus {
-  ACTIVE
-  BUILDING
-  SHIPPED
-  ARCHIVED
+  PLANNING
+  IN_PROGRESS
+  COMPLETED
+  PUBLISHED
 }
 
 model Post {
@@ -40,24 +40,28 @@ model Post {
 model Project {
   id           String        @id @default(cuid())
   slug         String        @unique
-  title        String
-  summary      String
-  content      String?
+  title        Json
+  summary      Json
+  content      Json?
+  highlights   Json          @default("{\"zh\":[],\"en\":[]}")
   category     String
-  stack        String[]      @default([])
-  repoUrl      String?
+  tags         String[]      @default([])
+  githubUrl    String?
   demoUrl      String?
   coverAssetId String?
   coverAsset   Asset?        @relation("ProjectCover", fields: [coverAssetId], references: [id], onDelete: SetNull)
-  status       ProjectStatus @default(BUILDING)
+  status       ProjectStatus @default(PLANNING)
+  featured     Boolean       @default(false)
+  visible      Boolean       @default(true)
   sortOrder    Int           @default(0)
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
 
+  @@index([visible, featured, sortOrder])
   @@index([status, sortOrder])
 }
 
-/// The About-page timeline. Previously hardcoded in src/lib/site.ts, which
+/// Managed experience records. Previously hardcoded in src/lib/site.ts, which
 /// meant editing a job entry required a deploy.
 model Experience {
   id         String   @id @default(cuid())
@@ -77,7 +81,7 @@ model Experience {
 }
 
 /// Single-row table (id is pinned to "default") holding the persona strings
-/// the header, hero, footer and About page all read.
+/// the header, hero, footer and home profile surfaces read.
 model SiteProfile {
   id             String   @id @default("default")
   name           String
@@ -90,7 +94,7 @@ model SiteProfile {
   email          String
   github         String
   wechat         String   @default("")
-  /// About page, first block: Markdown, blank line = new paragraph.
+  /// Profile introduction: Markdown, blank line = new paragraph.
   aboutIntro     String   @default("")
   /// "标题 | 说明" per entry — the three cards under 关注方向.
   focus          String[] @default([])

@@ -50,7 +50,7 @@ export default function PostCard({
           </div>
           {coverUrl && (
             <span className="folio-post__thumb">
-              <img src={coverUrl} alt="" loading="lazy" />
+              <img src={coverUrl} alt="" loading="lazy" className="img-fade" />
             </span>
           )}
         </div>
@@ -63,7 +63,7 @@ export default function PostCard({
       <div className="folio-post">
         {coverUrl && (
           <span className="folio-post__cover">
-            <img src={coverUrl} alt="" loading="lazy" />
+            <img src={coverUrl} alt="" loading="lazy" className="img-fade" />
           </span>
         )}
         <div className="folio-post__meta">

@@ -14,8 +14,7 @@ export default function NotFound() {
         <p className="statuspage__code rise">404</p>
         <h1 className="rise rise-2">这个地址没有内容</h1>
         <p className="statuspage__lead rise rise-2">
-          链接可能拼错了，或者这篇内容已经改名、下线。
-          下面几个入口都还在。
+          链接可能拼错了，或者内容已经改名、下线。
         </p>
         <div className="statuspage__actions rise rise-3">
           <Button variant="primary" href="/" iconLeft={<FolioIcon name="arrow-left" className="icon" />}>

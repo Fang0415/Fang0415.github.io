@@ -108,7 +108,7 @@ export default function ExperiencesPanel({ experiences, onReload, notify }: Prop
     <div className="admin-workspace">
       <section className="admin-card admin-card--list">
         <PanelHeader title="经历" count={experiences.length} />
-        <p className="admin-note">首页「学习与实践」和关于页时间线读的是这份列表。</p>
+        <p className="admin-note">这份列表用于维护个人经历和实践记录。</p>
         {experiences.length === 0 && <EmptyState>还没有经历条目。</EmptyState>}
         <div className="admin-rows">
           {experiences.map((experience, index) => (

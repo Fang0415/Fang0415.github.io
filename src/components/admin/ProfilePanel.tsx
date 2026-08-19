@@ -86,7 +86,7 @@ export default function ProfilePanel({ profile, assets, onReload, notify }: Prop
       <form className="admin-card" onSubmit={submit}>
         <PanelHeader title="站点资料" />
         <p className="admin-note">
-          这些字段直接决定导航、首页 Hero、页脚和关于页显示的内容，保存后刷新前台即可看到。
+          这些字段直接决定导航、首页 Hero、页脚和个人资料相关内容，保存后刷新前台即可看到。
         </p>
 
         <div className="admin-subhead">身份与导航</div>
@@ -110,7 +110,7 @@ export default function ProfilePanel({ profile, assets, onReload, notify }: Prop
           <input value={form.role} onChange={(e) => set('role', e.target.value)} placeholder="学生 · 全栈开发者" />
         </Field>
         <Field label="Hero 标题" hint="首页会直接显示这句话，适合使用简短的英文题词">
-          <input value={form.hero} onChange={(e) => set('hero', e.target.value)} placeholder="There's still so much I don't know, so I keep looking." />
+          <input value={form.hero} onChange={(e) => set('hero', e.target.value)} placeholder="There's still so much I don't know, so I keep digging." />
         </Field>
         <Field label="首页导语">
           <textarea
@@ -131,8 +131,8 @@ export default function ProfilePanel({ profile, assets, onReload, notify }: Prop
         <Field label="微信 / 其他联系方式" hint="留空则不显示该图标">
           <input value={form.wechat} onChange={(e) => set('wechat', e.target.value)} placeholder="微信号或二维码链接" />
         </Field>
-        <div className="admin-subhead">关于页</div>
-        <Field label="自我介绍" hint="Markdown，空行分段；显示在关于页第一块">
+        <div className="admin-subhead">个人资料补充</div>
+        <Field label="自我介绍" hint="Markdown，空行分段；作为个人资料内容保存">
           <textarea
             rows={6}
             value={form.aboutIntro}

@@ -1,58 +1,51 @@
 'use client';
 
-import { useEffect } from 'react';
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import Button from './Button';
 import FolioIcon from './FolioIcon';
-import { PROFILE, NAV_LINKS, type SiteProfileData } from '../lib/site';
+import { SitePreferenceControls, useSitePreferences } from './SitePreferences';
+import { NAV_LINKS, PROFILE, type SiteProfileData } from '../lib/site';
 
 export default function Navbar({ profile = PROFILE }: { profile?: SiteProfileData }) {
-  const path = usePathname() || '/';
-  const isHome = path === '/';
-  const isActive = (href: string) => href === '/' ? isHome : path.startsWith(href);
-
-  // Only the home page has a state to track: elsewhere the nav is always the
-  // solid pill, and the CSS keys that off data-home so it is right on the first
-  // paint instead of waiting for this effect.
-  useEffect(() => {
-    if (!isHome) {
-      document.body.classList.remove('nav-scrolled');
-      return;
-    }
-    const onScroll = () => {
-      document.body.classList.toggle('nav-scrolled', window.scrollY > 16);
-    };
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, [isHome]);
+  const pathname = usePathname();
+  const { locale } = useSitePreferences();
+  const currentPath = pathname.replace(/\/+$/, '') || '/';
 
   return (
-    <nav className="folio-nav" data-home="false">
+    <nav className="folio-nav" aria-label={locale === 'zh' ? '主导航' : 'Main navigation'}>
       <div className="folio-nav__inner">
-        <a className="folio-nav__brand" href="/">
-          <span className="folio-nav__mark">{profile.mark}</span>{profile.wordmark}
-        </a>
+        <Link className="folio-nav__brand" href="/">
+          <img src="/assets/personal-brand/sunflower-mark.png" alt="" width="24" height="24" />
+          <span>{profile.wordmark}</span>
+        </Link>
         <div className="folio-nav__links">
-          {NAV_LINKS.map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
-              aria-current={isActive(l.href) ? 'page' : undefined}
-              className={`folio-nav__link ${isActive(l.href) ? 'folio-nav__link--active' : ''}`.trim()}
-            >
-              {l.label}
-            </a>
-          ))}
+          {NAV_LINKS.map((item) => {
+            const targetPath = item.href.split('#')[0].replace(/\/+$/, '') || '/';
+            const active = currentPath === targetPath || currentPath.startsWith(`${targetPath}/`);
+            return (
+              <Link
+                className={`folio-nav__link ${active ? 'folio-nav__link--active' : ''}`}
+                href={item.href}
+                key={item.href}
+                aria-current={active ? 'page' : undefined}
+              >
+                {item.label[locale]}
+              </Link>
+            );
+          })}
+          <SitePreferenceControls />
+          <a
+            className="folio-nav__contact"
+            href={profile.email ? `mailto:${profile.email}` : profile.github}
+            target={!profile.email ? '_blank' : undefined}
+            rel={!profile.email ? 'noreferrer' : undefined}
+          >
+            {locale === 'zh' ? '联系' : 'Contact'}
+          </a>
         </div>
-        <div className="folio-nav__right">
-          <Button size="sm" variant="primary" href="/rss.xml" iconLeft={<FolioIcon name="rss" className="icon" />}>
-            订阅
-          </Button>
-          <button className="folio-nav__menu" id="cb-menu-open" aria-label="菜单">
-            <FolioIcon name="menu" className="icon" />
-          </button>
-        </div>
+        <button className="folio-nav__menu" id="cb-menu-open" aria-label={locale === 'zh' ? '打开菜单' : 'Open menu'}>
+          <FolioIcon name="menu" className="icon" />
+        </button>
       </div>
     </nav>
   );

@@ -1,116 +1,140 @@
-import type { CSSProperties } from 'react';
-import FeaturedShowcase from '../components/FeaturedShowcase';
-import PostCard from '../components/PostCard';
-import Card from '../components/Card';
-import Avatar from '../components/Avatar';
-import Button from '../components/Button';
-import SocialRow from '../components/SocialRow';
-import FolioIcon from '../components/FolioIcon';
-import ExperienceSummary from '../components/ExperienceSummary';
-import { getPublishedPostMetas, getSiteProfile, getVisibleExperiences, getVisibleProjects } from '../lib/managed-content';
+import Link from 'next/link';
+import HomeAboutOrbit from '../components/HomeAboutOrbit';
+import HomeBlogAccordion from '../components/HomeBlogAccordion';
+import HomeSkillRepository from '../components/HomeSkillRepository';
+import { SiteText } from '../components/SitePreferences';
+import { LayoutGrid } from '../components/ui/layout-grid';
+import { getPublishedPostMetas, getSiteProfile, getVisibleProjects } from '../lib/managed-content';
+import { SHOWCASE_STATUS, textFor, type Project } from '../lib/site';
 
 export const dynamic = 'force-dynamic';
 
-function renderHeroQuote(text: string) {
-  return text.split(/\b(don't know|looking)\b/gi).map((part, index) =>
-    /^(don't know|looking)$/i.test(part)
-      ? <em key={`${part}-${index}`}>{part}</em>
-      : part
+const PROJECT_IMAGES: Record<string, string> = {
+  linkrag: '/assets/projects/linkrag-cover.png',
+  'notes-cli': '/assets/personal-brand/notes-cli.png',
+  streamq: '/assets/personal-brand/ragkit-mono.png',
+  'embed-bench': '/assets/personal-brand/profile-work.png',
+  logpipe: '/assets/personal-brand/hero.png',
+  dotfiles: '/assets/personal-brand/ragkit-mono.png',
+};
+
+const LEGACY_HERO = "There's still so much I don't know, so I keep digging.";
+const FIGMA_HERO = 'From a simple idea, rebuild the whole world.';
+
+const PERSONAL_UPDATES = [
+  { text: 'LinkRag is now live', textZh: 'LinkRag 已上线', href: '/projects/linkrag/' },
+  { text: 'Learning distributed systems', textZh: '正在学习分布式系统' },
+  { text: 'Recently shipped notes-cli', textZh: '最近完成 notes-cli', href: '/projects/notes-cli/' },
+  { text: 'Writing about retrieval metrics', textZh: '正在写检索指标相关笔记', href: '/blog/' },
+  { text: 'Open to backend and AI collaboration', textZh: '期待后端与 AI 方向的合作' },
+] as const;
+
+function projectImage(project: Project) {
+  if (project.coverUrl) return project.coverUrl;
+  return PROJECT_IMAGES[project.id] || '/assets/personal-brand/agent-workflow.png';
+}
+
+function PersonalUpdateGroup({ duplicate = false }: { duplicate?: boolean }) {
+  return (
+    <div className="brand-status-marquee__group" aria-hidden={duplicate || undefined}>
+      {PERSONAL_UPDATES.map((item) => {
+        const content = <span className="brand-status-marquee__text"><SiteText en={item.text} zh={item.textZh} /></span>;
+
+        if (!duplicate && 'href' in item) {
+          return (
+            <Link className="brand-status-marquee__item" href={item.href} key={item.text}>
+              {content}
+            </Link>
+          );
+        }
+
+        return <span className="brand-status-marquee__item" key={item.text}>{content}</span>;
+      })}
+    </div>
   );
 }
 
 export default async function HomePage() {
-  const [latest, projects, experiences, profile] = await Promise.all([
+  const [latest, visibleProjects, profile] = await Promise.all([
     getPublishedPostMetas(),
     getVisibleProjects(),
-    getVisibleExperiences(),
     getSiteProfile(),
   ]);
+  const projects = visibleProjects;
+  const hero = !profile.hero || profile.hero === LEGACY_HERO ? FIGMA_HERO : profile.hero;
+  const posts = [
+    ...latest.slice(0, 6),
+    ...(latest.length < 6 ? [{
+      title: 'More notes will arrive as the projects evolve',
+      excerpt: '项目仍在迭代，新的实现记录会随着工程决策逐步补齐。',
+      href: '/blog/',
+    }] : []),
+  ].slice(0, 6);
 
   return (
-    <>
-      <section className="hero hero--feature">
-        <div className="hero-banner hero-banner--color rise">
-          <div className="hero-banner__frame">
-            <img className="hero-banner-img" src="/assets/hero-sunflower.jpg" alt="夏日下午的向日葵田" />
-            <div className="hero-banner-inner">
-              <h1 className="hero-quote">{renderHeroQuote(profile.hero)}</h1>
-            </div>
+    <div className="brand-home" id="top">
+      <section className="brand-hero" aria-labelledby="brand-hero-title">
+        <div className="brand-hero__copy rise">
+          <h1 id="brand-hero-title">{hero}</h1>
+          <p><SiteText en="I build backend systems, AI applications, and RAG experiments — then write down what I learn." zh="我构建后端系统、AI 应用与 RAG 实验，也把一路学到的内容记录下来。" /></p>
+          <div className="brand-hero__actions">
+            <Link className="brand-button brand-button--primary" href="#projects"><SiteText en="View Projects" zh="查看项目" /></Link>
+            <Link className="brand-button brand-button--secondary" href="#blog"><SiteText en="Read Blog" zh="阅读博客" /></Link>
           </div>
         </div>
-        <div className="kit-container hero-sub rise rise-2">
-          <p className="hero-lead">{profile.lead}</p>
-          <div className="hero-actions">
-            <Button variant="primary" href="/projects/" iconRight={<FolioIcon name="arrow-right" className="icon" />}>
-              看项目
-            </Button>
-            <Button variant="secondary" href="/blog/">读文章</Button>
+
+        <div className="brand-status-marquee" aria-label="Current status and recent updates">
+          <div className="brand-status-marquee__track">
+            <PersonalUpdateGroup />
+            <PersonalUpdateGroup duplicate />
           </div>
-          <div className="hero-foot">
-            <SocialRow profile={profile} />
-            {profile.now[0] && (
-              <p className="hero-now">
-                <span className="hero-now-dot"></span>
-                最近 · {profile.now[0]}
-              </p>
-            )}
-          </div>
+        </div>
+
+        <div className="brand-hero__visual rise rise-2">
+          <img src="/assets/personal-brand/hero.png" alt="向日葵田里的动漫女孩" />
         </div>
       </section>
 
-      <FeaturedShowcase projects={projects} />
+      <HomeAboutOrbit
+        name={profile.name}
+        avatarUrl={profile.avatarUrl}
+        email={profile.email}
+        github={profile.github}
+        wechat={profile.wechat}
+        qq={profile.qq}
+        reddit={profile.reddit}
+        intro="I’m Fang, a student and full-stack developer focused on backend systems, AI applications, and RAG experiments. I enjoy turning small ideas into complete, useful products."
+      />
 
-      <section className="kit-section kit-section--tight">
-        <div className="kit-container">
-          <ExperienceSummary items={experiences} />
+      <section className="brand-archive" id="projects" aria-labelledby="brand-archive-title">
+        <div className="brand-section-head">
+          <h2 id="brand-archive-title"><SiteText en="What I Done" zh="我做过的事" /></h2>
+          <p><SiteText en="Ideas turned into tools, experiments, and systems — each one a step toward building something useful." zh="把想法变成工具、实验与系统——每一次实践，都向真正有用的产品迈进一步。" /></p>
         </div>
+        <LayoutGrid
+          cards={projects.slice(0, 5).map((project) => ({
+            id: project.id,
+            href: `/projects/${project.id}/`,
+            title: project.title,
+            description: project.summary,
+            thumbnail: projectImage(project),
+            thumbnailAlt: project.coverAlt || `${textFor(project.title, 'en')} project visual`,
+            category: project.category,
+            tags: project.tags,
+            status: SHOWCASE_STATUS[project.status][0],
+          }))}
+        />
       </section>
 
-      <section className="kit-section kit-section--tight" style={{ background: 'var(--bg-soft)' }}>
-        <div className="kit-container">
-          <div className="sec-head">
-            <div>
-              <p className="sec-eyebrow">写作</p>
-              <h2 className="sec-title">最近写的文章</h2>
-            </div>
-            <a className="sec-link" href="/blog/">全部文章 <FolioIcon name="arrow-right" className="icon" /></a>
-          </div>
-          <div className="grid-3">
-            {latest.slice(0, 3).map((post, i) => (
-              <div key={post.href} className="cb-reveal" style={{ '--reveal-delay': `${i * 100}ms` } as CSSProperties}>
-                <PostCard
-                  layout="card"
-                  title={post.title}
-                  excerpt={post.excerpt}
-                  date={post.date}
-                  readingTime={post.readTime}
-                  category={post.category}
-                  href={post.href}
-                  coverUrl={post.coverUrl}
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <HomeSkillRepository />
 
-      <section className="kit-section">
-        <div className="kit-container">
-          <Card padLg soft className="cb-reveal about-preview">
-            <Avatar name={profile.name} size="xl" />
-            <div>
-              <p className="sec-eyebrow" style={{ marginBottom: 10 }}>关于</p>
-              <p className="about-preview__line">
-                我是 {profile.name}，一名学生和全栈开发者。最近主要在学后端和 AI 应用开发，
-                RAG 是其中投入比较多的一块。这里放项目，也放我一路写下来的笔记。
-              </p>
-            </div>
-            <Button variant="ghost" href="/about/" iconRight={<FolioIcon name="arrow-right" className="icon" />}>
-              了解更多
-            </Button>
-          </Card>
+      <section className="brand-blog" id="blog" aria-labelledby="brand-blog-title">
+        <div className="brand-section-head">
+          <h2 id="brand-blog-title"><SiteText en="Latest writing" zh="最新文章" /></h2>
+          <p><SiteText en="Project notes and engineering decisions. " zh="记录项目过程与工程决策。" /><Link href="/blog/"><SiteText en="All posts →" zh="全部文章 →" /></Link></p>
         </div>
+        <HomeBlogAccordion posts={posts} />
       </section>
-    </>
+    </div>
   );
 }

@@ -9,7 +9,9 @@
  *   npm run seed
  */
 import 'dotenv/config';
-import { PrismaClient, ProjectStatus, PublishStatus } from '@prisma/client';
+import { stat } from 'node:fs/promises';
+import path from 'node:path';
+import { Prisma, PrismaClient, ProjectStatus, PublishStatus } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { EXPERIENCES, PROFILE, PROJECTS } from '../src/lib/site.ts';
 import { getAllPosts, sortedPosts } from '../src/lib/posts.ts';
@@ -19,11 +21,16 @@ const connectionString = process.env.DATABASE_URL
 const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString }) });
 
 const statusFromSite: Record<string, ProjectStatus> = {
-  active: ProjectStatus.ACTIVE,
-  building: ProjectStatus.BUILDING,
-  shipped: ProjectStatus.SHIPPED,
-  archived: ProjectStatus.ARCHIVED,
+  planning: ProjectStatus.PLANNING,
+  in_progress: ProjectStatus.IN_PROGRESS,
+  completed: ProjectStatus.COMPLETED,
+  published: ProjectStatus.PUBLISHED,
 };
+
+// The hero string shipped before the 2026-07 copy refresh. If the row still
+// carries it verbatim, the admin never edited it, so reseeding may upgrade it
+// to the current default; a customized hero is left alone.
+const oldHero = "There's still so much I don't know, so I keep looking.";
 
 async function seedProfile() {
   const existing = await prisma.siteProfile.findUnique({ where: { id: 'default' } });
@@ -36,6 +43,7 @@ async function seedProfile() {
   // columns existed should pick up the defaults; anything the admin has already
   // written stays untouched.
   const backfill = {
+    ...(existing.hero === oldHero ? { hero: PROFILE.hero } : {}),
     ...(existing.aboutIntro ? {} : { aboutIntro: PROFILE.aboutIntro }),
     ...(existing.focus.length ? {} : { focus: PROFILE.focus }),
     ...(existing.tools.length ? {} : { tools: PROFILE.tools }),
@@ -49,16 +57,61 @@ async function seedProfile() {
 }
 
 async function seedProjects() {
+  // The first checked-in project used a temporary `ragkit` slug. Preserve the
+  // existing row (and its timestamps/relations) when upgrading it to LinkRag,
+  // instead of leaving two cards in databases that have already been seeded.
+  const [legacyLinkRag, currentLinkRag] = await Promise.all([
+    prisma.project.findUnique({ where: { slug: 'ragkit' } }),
+    prisma.project.findUnique({ where: { slug: 'linkrag' } }),
+  ]);
+  if (legacyLinkRag && !currentLinkRag) {
+    await prisma.project.update({ where: { slug: 'ragkit' }, data: { slug: 'linkrag' } });
+  }
+
   for (const [index, project] of PROJECTS.entries()) {
+    let coverAssetId: string | null | undefined;
+    if (project.coverUrl?.startsWith('/')) {
+      const filePath = path.join(process.cwd(), 'public', project.coverUrl.replace(/^\/+/, ''));
+      const file = await stat(filePath);
+      const filename = path.basename(filePath);
+      const asset = await prisma.asset.upsert({
+        where: { key: `bundled-project-cover:${project.id}` },
+        update: {
+          filename,
+          mimeType: 'image/png',
+          size: file.size,
+          width: 1568,
+          height: 1003,
+          bucket: 'public',
+          publicUrl: project.coverUrl,
+        },
+        create: {
+          key: `bundled-project-cover:${project.id}`,
+          filename,
+          mimeType: 'image/png',
+          size: file.size,
+          width: 1568,
+          height: 1003,
+          bucket: 'public',
+          publicUrl: project.coverUrl,
+        },
+      });
+      coverAssetId = asset.id;
+    }
+
     const data = {
       title: project.title,
-      summary: project.description,
-      content: project.highlights?.length ? project.highlights.map((h) => `- ${h}`).join('\n') : null,
+      summary: project.summary,
+      content: project.content ?? Prisma.DbNull,
+      highlights: project.highlights,
       category: project.category,
-      stack: project.stack,
-      repoUrl: project.repo && project.repo !== '#' ? project.repo : null,
+      tags: project.tags,
+      githubUrl: project.github && project.github !== '#' ? project.github : null,
       demoUrl: project.demo && project.demo !== '#' ? project.demo : null,
-      status: statusFromSite[project.status] ?? ProjectStatus.BUILDING,
+      ...(coverAssetId !== undefined ? { coverAssetId } : {}),
+      status: statusFromSite[project.status] ?? ProjectStatus.PLANNING,
+      featured: project.featured,
+      visible: project.visible,
       sortOrder: (index + 1) * 10,
     };
     await prisma.project.upsert({

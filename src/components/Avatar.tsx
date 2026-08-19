@@ -17,7 +17,7 @@ export default function Avatar({ name, size = 'md', src, square = false }: Props
   const initial = name.trim().slice(0, 1).toUpperCase();
   return (
     <span className={`folio-avatar ${square ? 'folio-avatar--square' : ''}`} style={{ '--_s': `${px}px` } as CSSProperties}>
-      {src ? <img src={src} alt={name} /> : initial}
+      {src ? <img src={src} alt={name} className="img-fade" /> : initial}
     </span>
   );
 }

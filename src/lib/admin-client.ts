@@ -33,19 +33,32 @@ export interface AdminPost {
   updatedAt: string;
 }
 
+export interface AdminLocalizedText {
+  zh: string;
+  en: string;
+}
+
+export interface AdminLocalizedList {
+  zh: string[];
+  en: string[];
+}
+
 export interface AdminProject {
   id: string;
   slug: string;
-  title: string;
-  summary: string;
-  content: string | null;
+  title: AdminLocalizedText;
+  summary: AdminLocalizedText;
+  content: AdminLocalizedText | null;
+  highlights: AdminLocalizedList;
   category: string;
-  stack: string[];
-  repoUrl: string | null;
+  tags: string[];
+  githubUrl: string | null;
   demoUrl: string | null;
   coverAssetId: string | null;
   coverAsset?: AdminAsset | null;
-  status: 'BUILDING' | 'ACTIVE' | 'SHIPPED' | 'ARCHIVED';
+  status: 'PLANNING' | 'IN_PROGRESS' | 'COMPLETED' | 'PUBLISHED';
+  featured: boolean;
+  visible: boolean;
   sortOrder: number;
   updatedAt: string;
 }
@@ -170,8 +183,8 @@ export const POST_STATUS_LABEL: Record<AdminPost['status'], string> = {
 };
 
 export const PROJECT_STATUS_LABEL: Record<AdminProject['status'], string> = {
-  BUILDING: '开发中',
-  ACTIVE: '活跃维护',
-  SHIPPED: '已发布',
-  ARCHIVED: '已归档',
+  PLANNING: '筹划中',
+  IN_PROGRESS: '进行中',
+  COMPLETED: '已完成',
+  PUBLISHED: '已上架',
 };

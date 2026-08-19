@@ -17,3 +17,4 @@ my blog design system/
 # Local preview/tooling config
 .claude/
 .minio-data/
+.idea/

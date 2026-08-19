@@ -16,6 +16,8 @@ export type TagVariant = 'solid' | 'teal' | 'sky' | 'amber';
 export interface PostMeta {
   title: string;
   excerpt: string;
+  /** First prose paragraph, shortened for lightweight hover previews. */
+  preview?: string;
   date: string;          // 2026-06-18 (mono meta, Folio style)
   isoDate: string;       // 2026-06-18
   category: string;
@@ -111,6 +113,27 @@ export function readTimeFor(body: string): string {
   return `约 ${Math.max(1, Math.round(chars / 400))} 分钟阅读`;
 }
 
+export function firstParagraphFor(body: string, fallback: string): string {
+  const content = body.replace(/^---\s*\n[\s\S]*?\n---\s*(?:\n|$)/, '');
+  const paragraph = content
+    .split(/\n\s*\n/)
+    .map((block) => block.trim())
+    .find((block) => (
+      block.length > 0
+      && !/^(---$|#{1,6}\s|```|~~~|>\s|[-*+]\s|\d+[.)]\s)/.test(block)
+      && !/^(开始|继续|上一篇|下一篇).*?\[\[/.test(block)
+    ));
+
+  const plain = (paragraph || fallback)
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, '')
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
+    .replace(/[*_~`>#]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  return plain.length > 170 ? `${plain.slice(0, 170).trimEnd()}…` : plain;
+}
+
 export function isoDate(d: Date): string {
   return d.toISOString().slice(0, 10); // 2026-06-18
 }
@@ -153,6 +176,47 @@ const SUNFLOWER_ICON = `
     <circle cx="12" cy="12" r="1.8" fill="currentColor"/>
   </svg>
 `;
+
+/**
+ * Wraps rendered tables in a scroll container so wide tables can scroll
+ * horizontally on narrow screens. Scrolling used to be done by forcing
+ * `display: block` on the `<table>` itself, but that also strips the table
+ * of its real table formatting context — thead/tbody then get laid out as
+ * two separately auto-sized tables (or, with a long caption-style row
+ * thrown in, one table whose column widths swing wildly), so header and
+ * body columns stop lining up. A wrapper keeps `<table>` a real table.
+ */
+function wrapTables(html: string): string {
+  return html.replace(/<table>([\s\S]*?)<\/table>/g, (match) => `<div class="table-scroll">${match}</div>`);
+}
+
+/**
+ * Authors sometimes add a trailing explanatory sentence to a data table by
+ * writing it as one more row — the sentence in the first cell, the rest of
+ * the row left as empty `| |` cells to keep the column count. That's a
+ * caption, not data, but `table-layout: fixed` (see .article-body table in
+ * globals.css) gives it the same narrow column as every other cell, so a
+ * full sentence wraps one or two characters per line. Detect rows where
+ * every cell but the first is empty and collapse them into a single
+ * full-width cell so they render as a caption instead.
+ */
+function collapseCaptionRows(html: string): string {
+  return html.replace(
+    // The first cell's content is captured with a negative lookahead that
+    // bans "</tr>" from ever entering the lazy match. Without it, a plain
+    // [\s\S]*? happily backtrack-expands PAST this row's own </tr> and the
+    // next row's cells too, hunting for the nearest run of empty <td>s —
+    // silently swallowing whole neighboring rows into "content" (they read
+    // as unchanged html.replace() output because the swallowed text is
+    // itself valid-looking tag markup, so the corruption isn't visible by
+    // eye — it only shows up as a colspan on the wrong row once rendered).
+    /<tr>\s*<td>((?:(?!<\/tr>)[\s\S])*?)<\/td>((?:\s*<td>\s*<\/td>)+)\s*<\/tr>/g,
+    (match, content: string, emptyCells: string) => {
+      const colspan = (emptyCells.match(/<td>/g) || []).length + 1;
+      return `<tr><td class="table-caption-cell" colspan="${colspan}">${content}</td></tr>`;
+    },
+  );
+}
 
 function renderCallout(html: string): string {
   return html.replace(
@@ -223,10 +287,15 @@ export function renderMarkdown(body: string): { html: string; toc: TocEntry[] } 
     if (!text) return;
     const id = headingId(text, used);
     token.attrSet('id', id);
-    toc.push({ id, text, level: level as 1 | 2 | 3 });
+    // The sidebar rail only lists chapter/section headings (h1/h2) — a
+    // third tier makes it too long to scan at a glance. h3s keep their
+    // anchor id so in-content links still work, just aren't listed here.
+    if (level <= 2) toc.push({ id, text, level: level as 1 | 2 });
   });
 
   let html = md.renderer.render(tokens, md.options, {});
+  html = collapseCaptionRows(html);
+  html = wrapTables(html);
   html = renderCallout(html);
   html = unstashMath(html, math);
   return { html, toc };
@@ -295,6 +364,7 @@ export function toMeta(post: BlogPost): PostMeta {
   return {
     title: post.data.title,
     excerpt: post.data.description,
+    preview: firstParagraphFor(post.body ?? '', post.data.description),
     date: iso,
     isoDate: iso,
     category,
